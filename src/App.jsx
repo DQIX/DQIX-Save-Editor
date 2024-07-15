@@ -3,14 +3,35 @@ import NavBar from "./components/NavBar.jsx"
 import FileUpload from "./components/FileUpload.jsx"
 import "./App.scss"
 import { SaveManagerContext, useSaveManagerContext } from "./SaveManagerContext.jsx"
+import Editor from "./components/Editor.jsx"
+import { STATE_LOADED, STATE_LOADING, STATE_NULL } from "./saveManager.js"
 
 function App() {
-  let { save } = useSaveManagerContext()
+  let saveCtx = useSaveManagerContext()
+
   return (
-    <>
+    <SaveManagerContext.Provider value={saveCtx}>
       <NavBar />
-      {!save.loaded() ? <FileUpload /> : <h1>loaded</h1>}
-    </>
+      {(() => {
+        switch (saveCtx.save.state) {
+          case STATE_NULL:
+            {
+              return <FileUpload />
+            }
+            break
+          case STATE_LOADING:
+            {
+              return <h1>loading...</h1>
+            }
+            break
+          case STATE_LOADED:
+            {
+              return <Editor />
+            }
+            break
+        }
+      })()}
+    </SaveManagerContext.Provider>
   )
 }
 

@@ -1,13 +1,14 @@
 import { useContext, useRef } from "react"
 
 import "./FileUpload.scss"
-import { SaveManagerContext, useSaveManagerContext } from "../SaveManagerContext.jsx"
+import { SaveManagerContext } from "../SaveManagerContext.jsx"
+import SaveManager, { STATE_LOADING } from "../saveManager.js"
 
 export default props => {
   const parentRef = useRef(null)
   const fileInputRef = useRef(null)
 
-  let { save, updateSave } = useSaveManagerContext()
+  let { save, setSave, updateSave } = useContext(SaveManagerContext)
 
   return (
     <div id="upload" ref={parentRef}>
@@ -29,7 +30,7 @@ export default props => {
         <button id="input" onClick={() => fileInputRef.current.click()}>
           Or choose a file
         </button>
-        <button id="demo" onClick={e => loadDemoFile(e, save)}>
+        <button id="demo" onClick={e => loadDemoFile(e, save, updateSave, setSave)}>
           Or load the demo file
         </button>
       </div>
@@ -37,6 +38,11 @@ export default props => {
   )
 }
 
-function loadDemoFile(e, save) {
-  save.loadDemo()
+function loadDemoFile(e, save, updateSave, setSave) {
+  updateSave({
+    state: STATE_LOADING,
+  })
+  save.loadDemo().then(res => {
+    setSave(new SaveManager(res))
+  })
 }
