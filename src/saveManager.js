@@ -1,19 +1,48 @@
 import { Buffer } from "buffer"
+import crc32 from "crc-32"
 
 import game_data from "./game/data"
-import { ReadStringFromBuffer } from "./game/string"
+import { readStringFromBuffer, writeStringToBuffer } from "./game/string"
 
 export const STATE_NULL = 0
 export const STATE_LOADING = 1
 export const STATE_LOADED = 2
 
-/// total size of character data
+/// total size of one save slot in bytes
+const SAVE_SIZE = 32768
+
+const CHECKSUM_A_OFFSET = 16
+const CHECKSUM_A_DATA_OFFSET = 20
+const CHECKSUM_A_DATA_END = 36
+
+const CHECKSUM_B_OFFSET = 132
+const CHECKSUM_B_DATA_OFFSET = 136
+const CHECKSUM_B_DATA_END = 28644
+
+/// total size of a character's data in bytes
 const CHARACTER_SIZE = 572
+
+/// offset of name relative to beginning of character data
+const NAME_OFFSET = 456
+/// max length of name in bytes
+const NAME_LENGTH = 10
 
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
     this.buffer = buffer
+
+    this.saveIdx = 0
+    this.saveSlots = []
+
+    if (this.buffer) {
+      this.saveSlots = [
+        this.buffer.subarray(0, SAVE_SIZE),
+        this.buffer.subarray(SAVE_SIZE, SAVE_SIZE + SAVE_SIZE),
+      ]
+
+      this.validate()
+    }
   }
 
   validate() {
@@ -26,15 +55,36 @@ export default class SaveManager {
     }
 
     const MAGIC_NUMBER = Buffer.from([
-      // `DRAGON QUEST IX` in hex, save file magic "number"
+      // `DRAGON QUEST IX` in hex, the save file's magic "number"
       0x44, 0x52, 0x41, 0x47, 0x4f, 0x4e, 0x20, 0x51, 0x55, 0x45, 0x53, 0x54, 0x20, 0x49, 0x58,
     ])
 
-    if (MAGIC_NUMBER.compare(this.buffer.subarray(0, 0 + MAGIC_NUMBER.length)) == 0) {
-      return true
+    if (!MAGIC_NUMBER.compare(this.buffer.subarray(0, 0 + MAGIC_NUMBER.length)) == 0) {
+      return false
     }
 
-    return false
+    for (let i = 0; i < 2; i++) {
+      //FIXME
+      this.getChecksums(i)
+      const a = crc32.buf(
+        this.saveSlots[i].subarray(CHECKSUM_A_DATA_OFFSET, CHECKSUM_A_DATA_END),
+        0
+      )
+      const b = crc32.buf(
+        this.saveSlots[i].subarray(CHECKSUM_B_DATA_OFFSET, CHECKSUM_B_DATA_END),
+        0
+      )
+
+      // NOTE: crc-32 returns an int instead of a uint
+      const srcA = this.saveSlots[i].readInt32LE(CHECKSUM_A_OFFSET)
+      const srcB = this.saveSlots[i].readInt32LE(CHECKSUM_B_OFFSET)
+
+      if (a != srcA || b != srcB) {
+        return false
+      }
+    }
+
+    return true
   }
 
   load(buffer) {
@@ -225,22 +275,95 @@ revocations ${vocation.revocations} \
     }
   }
 
-  /// TODO: make this right
-  getCharacterCount() {
-    return 4
+  download() {
+    for (let i = 0; i < 2; i++) {
+      let newChecksums = this.makeChecksums(i)
+      this.saveSlots[i].writeInt32LE(newChecksums[0], CHECKSUM_A_OFFSET)
+      this.saveSlots[i].writeInt32LE(newChecksums[1], CHECKSUM_B_OFFSET)
+    }
+
+    const el = document.createElement("a")
+    const blob = new Blob([this.buffer], { type: "octet/stream" })
+    const url = window.URL.createObjectURL(blob)
+    el.href = url
+    el.download = "edited.sav"
+    el.click()
+    window.URL.revokeObjectURL(url)
   }
 
-  /// returns the utf8 encoded, any unknown characters will be returned as ?
+  /// returns the new checksums for the current save buffer
+  makeChecksums(slot) {
+    return [
+      crc32.buf(this.saveSlots[slot].subarray(CHECKSUM_A_DATA_OFFSET, CHECKSUM_A_DATA_END), 0),
+      crc32.buf(this.saveSlots[slot].subarray(CHECKSUM_B_DATA_OFFSET, CHECKSUM_B_DATA_END), 0),
+    ]
+  }
+
+  /// returns the current checksums in the save buffer
+  getChecksums(slot) {
+    return [
+      this.saveSlots[slot].readInt32LE(CHECKSUM_A_OFFSET),
+      this.saveSlots[slot].readInt32LE(CHECKSUM_B_OFFSET),
+    ]
+  }
+
+  /// returns the party's order
+  getPartyOrder() {
+    /// order of party members
+    const PARTY_ORDER_OFFSET = 7573
+
+    const order = []
+    const partyCount = this.getPartyCount()
+    for (let i = 0; i < partyCount; i++) {
+      order.push(this.saveSlots[this.saveIdx][PARTY_ORDER_OFFSET + i])
+    }
+
+    return order
+  }
+
+  /// returns the number of characters waiting in the wings
+  getStandbyCount() {
+    /// number of characters in standby
+    const STANDBY_COUNT_OFFSET = 7572
+
+    return this.saveSlots[this.saveIdx][STANDBY_COUNT_OFFSET]
+  }
+
+  /// returns the number of characters in the party
+  getPartyCount() {
+    /// number of characters in party
+    const PARTY_COUNT_OFFSET = 7577
+
+    return this.saveSlots[this.saveIdx][PARTY_COUNT_OFFSET]
+  }
+
+  /// returns the total number of characters
+  getCharacterCount() {
+    return this.getStandbyCount() + this.getPartyCount()
+  }
+
+  /// returns the utf8 encoded name, any unknown characters will be returned as ?
   getCharacterName(n) {
-    const data_offset = CHARACTER_SIZE * n
+    const character_offset = CHARACTER_SIZE * n
 
-    /// offset of name relative to beginning of character data
-    const NAME_OFFSET = 456
-    /// max length of name in bytes
-    const NAME_LENGTH = 10
-
-    return ReadStringFromBuffer(
-      this.buffer.subarray(data_offset + NAME_OFFSET, data_offset + NAME_OFFSET + NAME_LENGTH)
+    return readStringFromBuffer(
+      this.saveSlots[this.saveIdx].subarray(
+        character_offset + NAME_OFFSET,
+        character_offset + NAME_OFFSET + NAME_LENGTH
+      )
     )
+  }
+
+  /// sets the character name from a utf8 encoded string, any unknown characters will be serialized
+  /// as ?, if the name is longer than the maximum name length it will be trimmed
+  writeCharacterName(n, name) {
+    const character_offset = CHARACTER_SIZE * n
+
+    name = name.substr(0, NAME_LENGTH).padEnd(NAME_LENGTH, "\0")
+    console.log(name)
+
+    let b = writeStringToBuffer(name)
+
+    b.copy(this.saveSlots[this.saveIdx], character_offset + NAME_OFFSET)
   }
 }

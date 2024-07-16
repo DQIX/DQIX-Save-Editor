@@ -1,3 +1,5 @@
+import { Buffer } from "buffer"
+
 const string_tables = {}
 
 function prepare_string_tables() {
@@ -39,9 +41,13 @@ function prepare_string_tables() {
 
 prepare_string_tables()
 
-export function ReadStringFromBuffer(buffer) {
+export function readStringFromBuffer(buffer) {
   return Array.from(buffer)
     .map(b => b != 0 && (string_tables.encode[b] || "?"))
     .filter(x => x)
     .join("")
+}
+
+export function writeStringToBuffer(str) {
+  return Buffer.from([...str].map(c => string_tables.decode[c]))
 }
