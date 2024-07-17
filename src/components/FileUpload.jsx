@@ -23,7 +23,6 @@ export default props => {
         onDragLeave={() => parentRef.current.classList.remove("drag-over")}
         onDrop={e => {
           parentRef.current.classList.remove("drag-over")
-          console.log(e)
         }}
       />
       <div className="buttons">

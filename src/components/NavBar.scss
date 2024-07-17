@@ -2,6 +2,9 @@ nav {
   padding: 0 1em;
   overflow: hidden;
   box-shadow: 0 0 16px 8px rgba(#000, 0.2);
-  background-color: var(--header-bg);
+  background-color: var(--alt-bg-color);
   z-index: 10000;
+
+  display: flex;
+  justify-content: space-between;
 }

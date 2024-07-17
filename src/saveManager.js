@@ -27,6 +27,12 @@ const NAME_OFFSET = 456
 /// max length of name in bytes
 const NAME_LENGTH = 10
 
+/// offset of name equipments relative to beginning of character data
+const EQUIPMENT_OFFSET = 488
+
+/// offset of current vocation index relative to beginning of character data
+const CURRENT_VOCATION_OFFSET = 216
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -365,5 +371,38 @@ revocations ${vocation.revocations} \
     let b = writeStringToBuffer(name)
 
     b.copy(this.saveSlots[this.saveIdx], character_offset + NAME_OFFSET)
+  }
+
+  /// returns the item id for the equipped item in the given slot, n is the character index
+  /// type is the item type, `ITEM_TYPE_COMMON` and `ITEM_TYPE_IMPORTANT` are not valid
+  getCharacterEquipment(n, type) {
+    if (type <= 0 || type > game_data.ITEM_TYPE_ACCESSORY) {
+      return null
+    }
+
+    const character_offset = CHARACTER_SIZE * n
+
+    return this.saveSlots[this.saveIdx].readUInt16LE(
+      character_offset + EQUIPMENT_OFFSET + (type - 1) * 2
+    )
+  }
+
+  setCharacterEquipment(n, type, id) {
+    console.log(id)
+    if (type <= 0 || type > game_data.ITEM_TYPE_ACCESSORY) {
+      return null
+    }
+
+    const character_offset = CHARACTER_SIZE * n
+
+    return this.saveSlots[this.saveIdx].writeUInt16LE(
+      id,
+      character_offset + EQUIPMENT_OFFSET + (type - 1) * 2
+    )
+  }
+
+  getCharacterVocation(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx][character_offset + CURRENT_VOCATION_OFFSET]
   }
 }

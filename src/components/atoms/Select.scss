@@ -1,0 +1,13 @@
+select {
+  border: none;
+  outline: none;
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
+  background-color: var(--alt-bg-color);
+  color: var(--font-color);
+  padding: 0.2em;
+  border-radius: 4px;
+
+  &:focus {
+    border-bottom: 2px solid var(--accent-color);
+  }
+}

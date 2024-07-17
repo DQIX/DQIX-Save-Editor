@@ -21,14 +21,18 @@
 :root {
   --font-color: #424242;
   --bg-color: #f1f1f1;
-  --header-bg: #f1f1f1;
+  --alt-bg-color: #f1f1f1;
+  --accent-color: #7e7edd;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --font-color: #e1e1e1;
-    --bg-color: #161616;
-    --header-bg: #111111;
+    --font-color: #cdd6f4;
+    // --bg-color: #313244;
+    // --alt-bg-color: #1e1e2e;
+    --bg-color: #1e1e2e;
+    --alt-bg-color: #181825;
+    --accent-color: #cba6f7;
   }
 }
 

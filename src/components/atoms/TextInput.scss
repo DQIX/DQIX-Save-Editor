@@ -1,0 +1,10 @@
+input[type="text"] {
+  background-color: var(--alt-bg-color);
+  outline: none;
+  border: none;
+  border-bottom: 2px solid var(--font-color);
+  padding: 0.3em;
+  &:focus {
+    border-bottom: 2px solid var(--accent-color);
+  }
+}
