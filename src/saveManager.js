@@ -33,6 +33,9 @@ const EQUIPMENT_OFFSET = 488
 /// offset of current vocation index relative to beginning of character data
 const CURRENT_VOCATION_OFFSET = 216
 
+/// offset of character's held items, relative to the beginning of the save
+const HELD_ITEM_OFFSET = 7578
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -233,14 +236,22 @@ export default class SaveManager {
   }
 
   /// returns the ith item held by the nth character, assumes the character is in the party
-  getHeldItems(n, i) {
+  getHeldItem(n, i) {
     n -= this.getStandbyCount()
     if (!(0 <= n && n < 4) || !(0 <= i && i < 8)) {
       return []
     }
 
-    const HELD_ITEM_OFFSET = 7578
-
     return this.saveSlots[this.saveIdx].readUInt16LE(HELD_ITEM_OFFSET + 18 * n + 2 * i)
+  }
+
+  /// sets the ith item held by the nth character, assumes the character is in the party
+  setHeldItem(n, i, id) {
+    n -= this.getStandbyCount()
+    if (!(0 <= n && n < 4) || !(0 <= i && i < 8)) {
+      return
+    }
+
+    return this.saveSlots[this.saveIdx].writeUInt16LE(id, HELD_ITEM_OFFSET + 18 * n + 2 * i)
   }
 }

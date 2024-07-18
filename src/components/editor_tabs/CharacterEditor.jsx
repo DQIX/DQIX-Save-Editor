@@ -125,11 +125,11 @@ export default props => {
               <ItemSelect
                 key={j}
                 items={GameData.everydayItems}
-                id={save.getHeldItems(i, j)}
+                id={save.getHeldItem(i, j)}
                 nothingName={"---"}
                 nothingValue={0xffff}
                 onChange={e => {
-                  // save.setCharacterEquipment(i, GameData.ITEM_TYPE_ACCESSORY, e.target.value)
+                  save.setHeldItem(i, j, e.target.value)
                   setSave(new SaveManager(save.buffer))
                 }}
               />

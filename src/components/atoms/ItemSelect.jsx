@@ -23,7 +23,7 @@ export default props => {
               </option>
             ))
           : Object.entries(props.items).map(([key, items]) => (
-              <optgroup label={key}>
+              <optgroup key={key} label={key}>
                 {items.map(item => (
                   <option key={item.id} value={item.id}>
                     {item.name}
