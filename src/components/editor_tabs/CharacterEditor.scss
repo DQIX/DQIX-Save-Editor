@@ -21,6 +21,11 @@
     }
   }
 
+  .disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
   .character-header {
     display: flex;
     align-items: center;

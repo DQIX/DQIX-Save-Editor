@@ -47,6 +47,8 @@ export default props => {
             <ItemSelect
               items={GameData.shields}
               id={save.getCharacterEquipment(i, GameData.ITEM_TYPE_SHIELD)}
+              nothingName={"Nothing Equipped"}
+              nothingValue={0xffff}
               onChange={e => {
                 save.setCharacterEquipment(i, GameData.ITEM_TYPE_SHIELD, e.target.value)
                 setSave(new SaveManager(save.buffer))
@@ -115,7 +117,7 @@ export default props => {
           </div>
 
           <div
-            className="item-list"
+            className={`item-list ${save.inParty(i) ? "" : "disabled"}`}
             style={{
               gridArea: "2 / 2 / 4 / 3",
             }}
@@ -128,6 +130,7 @@ export default props => {
                 id={save.getHeldItem(i, j)}
                 nothingName={"---"}
                 nothingValue={0xffff}
+                disabled={!save.inParty(i)}
                 onChange={e => {
                   save.setHeldItem(i, j, e.target.value)
                   setSave(new SaveManager(save.buffer))

@@ -14,7 +14,7 @@ export default props => {
           opacity: selected ? 1 : 0,
         }}
       />
-      <select defaultValue={props.id} onChange={props.onChange}>
+      <select defaultValue={props.id} onChange={props.onChange} disabled={props.disabled}>
         <option value={props.nothingValue || 0xffffff}>{props.nothingName}</option>
         {Array.isArray(props.items)
           ? props.items.map(item => (

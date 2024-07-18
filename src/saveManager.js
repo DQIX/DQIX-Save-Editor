@@ -176,6 +176,11 @@ export default class SaveManager {
     return this.getStandbyCount() + this.getPartyCount()
   }
 
+  /// returns true if the character index is in the party
+  inParty(n) {
+    return n >= this.getStandbyCount()
+  }
+
   /// returns the utf8 encoded name, any unknown characters will be returned as ?
   getCharacterName(n) {
     const character_offset = CHARACTER_SIZE * n
