@@ -106,10 +106,6 @@ export default class SaveManager {
     return Buffer.from(await response.arrayBuffer())
   }
 
-  loaded() {
-    return !!this.buffer
-  }
-
   print() {
     this.validate()
 
@@ -387,8 +383,8 @@ revocations ${vocation.revocations} \
     )
   }
 
+  /// Sets the equipped item in the given slot for the given character
   setCharacterEquipment(n, type, id) {
-    console.log(id)
     if (type <= 0 || type > game_data.ITEM_TYPE_ACCESSORY) {
       return null
     }
@@ -401,6 +397,7 @@ revocations ${vocation.revocations} \
     )
   }
 
+  /// returns the vocation index of the given character
   getCharacterVocation(n) {
     const character_offset = CHARACTER_SIZE * n
     return this.saveSlots[this.saveIdx][character_offset + CURRENT_VOCATION_OFFSET]

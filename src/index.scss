@@ -28,11 +28,10 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --font-color: #cdd6f4;
-    // --bg-color: #313244;
-    // --alt-bg-color: #1e1e2e;
-    --bg-color: #1e1e2e;
+    --bg-color: #24273a;
     --alt-bg-color: #181825;
     --accent-color: #cba6f7;
+    --accent-fade: rgba(203, 166, 247, 0.2);
   }
 }
 

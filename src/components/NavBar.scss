@@ -7,4 +7,25 @@ nav {
 
   display: flex;
   justify-content: space-between;
+
+  ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    li {
+      padding: 1em 1.5em;
+      vertical-align: middle;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3 cubic-bezier(0.645, 0.045, 0.355, 1);
+      &:hover {
+        background-color: var(--accent-fade);
+      }
+      &.active {
+        border-bottom: 2px solid var(--accent-color);
+      }
+    }
+  }
 }
