@@ -9,6 +9,7 @@
   justify-content: center;
   flex-direction: column;
   transition: 0.3s all ease-in-out;
+  text-align: center;
 
   &.drag-over {
     background-color: var(--accent-fade);

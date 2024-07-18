@@ -1,4 +1,5 @@
 import { useContext, useRef } from "react"
+import { Buffer } from "buffer"
 
 import "./FileUpload.scss"
 import { SaveManagerContext } from "../SaveManagerContext.jsx"
@@ -25,8 +26,14 @@ export default props => {
         ref={fileInputRef}
         onDragOver={() => parentRef.current.classList.add("drag-over")}
         onDragLeave={() => parentRef.current.classList.remove("drag-over")}
-        onDrop={e => {
-          parentRef.current.classList.remove("drag-over")
+        onDrop={e => parentRef.current.classList.remove("drag-over")}
+        onChange={async e => {
+          updateSave({
+            state: STATE_LOADING,
+          })
+          await e.target.files[0].arrayBuffer().then(res => {
+            setSave(new SaveManager(new Buffer(res)))
+          })
         }}
       />
       <div className="buttons">
