@@ -4,6 +4,7 @@ import FileUpload from "./components/FileUpload.jsx"
 import "./App.scss"
 import { SaveManagerContext, useSaveManagerContext } from "./SaveManagerContext.jsx"
 import Editor from "./components/Editor.jsx"
+import Loading from "./components/Loading.jsx"
 import { STATE_LOADED, STATE_LOADING, STATE_NULL } from "./saveManager.js"
 import { EditorUiContext, useEditorUiContext } from "./EditorUiContext.jsx"
 
@@ -21,7 +22,7 @@ function App() {
               return <FileUpload />
             }
             case STATE_LOADING: {
-              return <h1>loading...</h1>
+              return <Loading />
             }
             case STATE_LOADED: {
               return <Editor />

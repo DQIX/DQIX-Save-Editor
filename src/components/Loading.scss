@@ -1,0 +1,101 @@
+$size: 48px;
+$pad: 16px;
+$wiggle-factor: 0.4;
+$duration: 3s;
+
+.loader {
+  .slime {
+    width: $size;
+    height: $size;
+    position: absolute;
+    bottom: $pad;
+    background-color: var(--slime-blue);
+    &.she {
+      background-color: var(--slime-red);
+    }
+    &.metal {
+      background-color: var(--slime-grey);
+    }
+
+    animation: bounce $duration linear infinite forwards;
+    transform: scale(0);
+    clip-path: path(
+      "M 23.9997 -1.01242e-07 C 23.9269 0.124161 23.8547 0.248264 23.7825 0.372694 C 22.0596 3.34298 20.4904 6.40777 18.5841 9.26384 C 16.6778 12.1199 14.4009 14.7898 11.534 16.6798 C 8.74485 18.5185 5.42368 19.6078 3.05914 21.9678 C 0.953983 24.0689 -0.190134 27.1036 0.0259429 30.07 C 0.242019 33.0364 1.82166 35.8804 4.23881 37.6135 C 5.72708 38.6805 7.48506 39.325 9.27734 39.7009 C 11.0696 40.0769 12.905 40.1947 14.734 40.2864 C 17.8199 40.4412 20.9109 40.525 23.9997 40.4438 C 27.0884 40.525 30.1795 40.4413 33.2654 40.2864 C 35.0944 40.1947 36.9297 40.0769 38.722 39.7009 C 40.5143 39.325 42.2729 38.6805 43.7612 37.6135 C 46.1783 35.8804 47.758 33.0364 47.974 30.07 C 48.1901 27.1036 47.0454 24.0689 44.9402 21.9678 C 42.5757 19.6078 39.2545 18.5185 36.4653 16.6798 C 33.5984 14.7898 31.3216 12.1199 29.4152 9.26384 C 27.5089 6.40777 25.9404 3.34298 24.2174 0.372694 C 24.1453 0.248264 24.0725 0.124161 23.9997 -1.01242e-07 Z"
+    );
+
+    &:nth-child(1) {
+      right: $pad * 3 + $size * 2;
+    }
+
+    &:nth-child(2) {
+      right: $pad * 2 + $size;
+      animation-delay: $duration * 0.16;
+    }
+
+    &:nth-child(3) {
+      right: $pad;
+      animation-delay: $duration * 0.16 * 2;
+    }
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(0);
+  }
+
+  3% {
+    transform: scale(100%);
+  }
+
+  5% {
+    transform: translateX(-$pad * $wiggle-factor);
+  }
+
+  9% {
+    transform: translateX($pad * $wiggle-factor);
+  }
+
+  11% {
+    transform: translateX(0);
+  }
+
+  56% {
+    transform: scale(100%) translateX(0);
+  }
+
+  60% {
+    transform: scale(0) translateX(0);
+  }
+
+  100% {
+    transform: scale(0) translateX(0);
+  }
+  //   3% {
+  //     transform: translateX(0);
+  //   }
+
+  //   5% {
+  //     transform: translateX($pad * 0.8);
+  //   }
+
+  //   6% {
+  //     transform: translateX(-$pad * 0.8);
+  //   }
+
+  //   8% {
+  //     transform: translateX(0);
+  //   }
+
+  //   60% {
+  //     transform: scale(100%);
+  //   }
+
+  //   //   64% {
+  //   //     transform: scale(0);
+  //   //   }
+
+  //   100% {
+  //     transform: scale(0);
+  //   }
+}
