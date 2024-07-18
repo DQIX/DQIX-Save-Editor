@@ -1,7 +1,7 @@
 nav {
   padding: 0 1em;
   overflow: hidden;
-  box-shadow: 0 0 16px 8px rgba(#000, 0.2);
+  box-shadow: 0 4px 8px rgba(#000, 0.2);
   background-color: var(--card-bg-color);
   z-index: 10000;
 
@@ -10,6 +10,7 @@ nav {
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   ul {
     list-style: none;
@@ -30,5 +31,36 @@ nav {
         border-bottom: 2px solid var(--accent-color);
       }
     }
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+
+  .export {
+    margin-right: 1em;
+    background-color: var(--accent-color);
+    border: none;
+    outline: none;
+    padding: 0.5em 1em;
+    border-radius: var(--border-radius);
+    color: var(--on-accent-color);
+    cursor: pointer;
+  }
+
+  .github-link {
+    background-image: var(--github-icon-url);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    margin-right: 1em;
+  }
+
+  .theme-toggle {
+    font-size: 24px;
+    cursor: pointer;
   }
 }

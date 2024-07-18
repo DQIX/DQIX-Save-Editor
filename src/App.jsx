@@ -1,4 +1,3 @@
-import { useContext, useState } from "react"
 import NavBar from "./components/NavBar.jsx"
 import FileUpload from "./components/FileUpload.jsx"
 import "./App.scss"

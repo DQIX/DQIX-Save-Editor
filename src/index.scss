@@ -23,25 +23,35 @@
 
 //TODO: better colors
 :root {
-  --font-color: #424242;
-  --bg-color: #f1f1f1;
-  --alt-bg-color: #f1f1f1;
-  --accent-color: #7e7edd;
+  --font-color: #4c4f69;
+  --bg-color: #eff1f5;
+  --surface-bg: #ccd0da;
+  --card-bg-color: #dce0e8;
+  --accent-color: #ea76cb;
+  --accent-fade: rgba(234, 118, 203, 0.2);
+  --on-accent-color: var(--bg-color);
+  --box-shadow: 0 8px 16px rgba(#000, 0.2);
+  --slime-blue: #1e66f5;
+  --slime-red: #d20f39;
+  --slime-grey: #6c6f85;
+  --github-icon-url: url("github-mark.svg");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --font-color: #cdd6f4;
-    --bg-color: #1e1e2e;
-    --alt-bg-color: #181825;
-    --card-bg-color: #11111b;
-    --accent-color: #cba6f7;
-    --accent-fade: rgba(203, 166, 247, 0.2);
-    --slime-blue: #89b4fa;
-    --slime-red: #f38ba8;
-    --slime-grey: #a6adc8;
-  }
+// @media (prefers-color-scheme: dark) {
+[data-theme="dark"] {
+  --font-color: #cdd6f4;
+  --bg-color: #1e1e2e;
+  --surface-bg: #181825;
+  --card-bg-color: #11111b;
+  --accent-color: #cba6f7;
+  --accent-fade: rgba(203, 166, 247, 0.2);
+  --on-accent-color: var(--bg-color);
+  --slime-blue: #89b4fa;
+  --slime-red: #f38ba8;
+  --slime-grey: #a6adc8;
+  --github-icon-url: url("github-mark-white.svg");
 }
+// }
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -60,6 +70,7 @@
 
 * {
   box-sizing: border-box;
+  color: var(--text-color);
 }
 
 body {

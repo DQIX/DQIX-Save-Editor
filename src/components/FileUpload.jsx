@@ -14,6 +14,10 @@ export default props => {
     <div id="upload" ref={parentRef}>
       <h1>DQIX Editor</h1>
       <h2>To start, drag and drop your save file into the browser</h2>
+      <p>
+        Please note this editor is still in pre-alpha, if you run into any bugs feel free to share
+        in the discord
+      </p>
       <input
         type="file"
         id="file-input"
@@ -27,10 +31,10 @@ export default props => {
       />
       <div className="buttons">
         <button id="input" onClick={() => fileInputRef.current.click()}>
-          Or choose a file
+          Choose a file
         </button>
         <button id="demo" onClick={e => loadDemoFile(e, save, updateSave, setSave)}>
-          Or load the demo file
+          Load the demo file
         </button>
       </div>
     </div>
