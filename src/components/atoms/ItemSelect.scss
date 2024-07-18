@@ -1,0 +1,28 @@
+.item-select {
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
+  background-color: var(--alt-bg-color);
+  color: var(--font-color);
+  padding: 4px;
+  border-radius: 4px;
+  margin: 0.2em;
+
+  .item-icon {
+    margin-left: 8px;
+  }
+
+  select {
+    width: calc(100% - 32px);
+    margin: 0;
+
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--font-color);
+    padding: 0.2em;
+    border-radius: 4px;
+  }
+
+  &:has(select:focus) {
+    border-bottom: 2px solid var(--accent-color);
+  }
+}

@@ -17,6 +17,10 @@
   --game-white: #efefef;
 }
 
+:root {
+  --border-radius: 0.3em;
+}
+
 //TODO: better colors
 :root {
   --font-color: #424242;
@@ -28,8 +32,9 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --font-color: #cdd6f4;
-    --bg-color: #24273a;
+    --bg-color: #1e1e2e;
     --alt-bg-color: #181825;
+    --card-bg-color: #11111b;
     --accent-color: #cba6f7;
     --accent-fade: rgba(203, 166, 247, 0.2);
   }

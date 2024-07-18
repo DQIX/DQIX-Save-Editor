@@ -1,9 +1,11 @@
 input[type="text"] {
-  background-color: var(--alt-bg-color);
+  background-color: var(--bg-color);
   outline: none;
   border: none;
-  border-bottom: 2px solid var(--font-color);
+  border-bottom: 2px solid transparent;
   padding: 0.3em;
+  border-radius: var(--border-radius);
+  transition: all 0.05s ease-in-out;
   &:focus {
     border-bottom: 2px solid var(--accent-color);
   }

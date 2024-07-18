@@ -1110,7 +1110,7 @@ for (const item of accessories) {
 }
 
 // prettier-ignore
-const common_items = [
+const everydayItems = [
   { id: 22000, alchemy_index: -1,   item_type: ITEM_TYPE_COMMON,    icon: 749,      name: "Medicinal herb",             },
   { id: 22001, alchemy_index: 439,  item_type: ITEM_TYPE_COMMON,    icon: 750,      name: "Strong medicine",            },
   { id: 22002, alchemy_index: 440,  item_type: ITEM_TYPE_COMMON,    icon: 751,      name: "Special medicine",           },
@@ -1259,12 +1259,12 @@ const common_items = [
   { id: 22126, alchemy_index: 1,    item_type: ITEM_TYPE_COMMON,    icon: 982,      name: "BLARNEY STONE",              },
 ]
 
-for (const item of common_items) {
+for (const item of everydayItems) {
   items[item.id] = item
 }
 
 // prettier-ignore
-const important_items = [
+const importantItems = [
   { id: 22042, alchemy_index: -1,   item_type: ITEM_TYPE_IMPORTANT, icon: 893,      name: "Thief's key",                },
   { id: 22043, alchemy_index: -1,   item_type: ITEM_TYPE_IMPORTANT, icon: 894,      name: "Magic key",                  },
   { id: 22044, alchemy_index: -1,   item_type: ITEM_TYPE_IMPORTANT, icon: 895,      name: "Ultimate key",               },
@@ -1355,7 +1355,7 @@ const important_items = [
   { id: 22255, alchemy_index: -1,   item_type: ITEM_TYPE_IMPORTANT, icon: 980,      name: "Turbo toad oil",             },
 ]
 
-for (const item of important_items) {
+for (const item of importantItems) {
   items[item.id] = item
 }
 
@@ -1457,8 +1457,8 @@ export default {
   leg_equipment,
   feet_equipment,
   accessories,
-  common_items,
-  important_items,
+  everydayItems,
+  importantItems,
 
   NUM_VOCATIONS,
   vocations,

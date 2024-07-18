@@ -2,13 +2,8 @@ import { useContext } from "react"
 
 import "./Editor.scss"
 
-import TextInput from "./atoms/TextInput"
-import { ItemIcon, VocationIcon } from "./atoms/Icon"
 import { SaveManagerContext } from "../SaveManagerContext"
 import { EditorUiContext } from "../EditorUiContext"
-import SaveManager from "../saveManager"
-import game_data from "../game/data"
-import Select from "./atoms/Select"
 import CharacterEditor from "./editor_tabs/CharacterEditor"
 import ItemEditor from "./editor_tabs/ItemEditor"
 import { PARTY_TAB, ITEMS_TAB } from "../EditorUiContext"
