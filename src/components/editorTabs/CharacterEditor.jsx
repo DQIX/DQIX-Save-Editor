@@ -2,11 +2,11 @@ import { useContext } from "react"
 
 import "./CharacterEditor.scss"
 
-import SaveManager from "../../saveManager"
+import SaveManager from "../../saveManager.js"
 import Input from "../atoms/Input.jsx"
-import { ItemIcon, VocationIcon } from "../atoms/Icon"
-import { SaveManagerContext } from "../../SaveManagerContext"
-import GameData from "../../game/data"
+import { ItemIcon, VocationIcon } from "../atoms/Icon.jsx"
+import { SaveManagerContext } from "../../SaveManagerContext.jsx"
+import GameData from "../../game/data.js"
 import ItemSelect from "../atoms/ItemSelect.jsx"
 import Card from "../atoms/Card.jsx"
 

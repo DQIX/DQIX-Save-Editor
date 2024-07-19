@@ -5,6 +5,7 @@ export const LIGHT_THEME_NAME = "light"
 
 export const PARTY_TAB = 1
 export const ITEMS_TAB = 2
+export const MISC_TAB = 3
 
 const initialTheme =
   localStorage.getItem("theme") ||
@@ -12,13 +13,13 @@ const initialTheme =
 document.documentElement.setAttribute("data-theme", initialTheme)
 
 export const EditorUiContext = createContext({
-  tab: ITEMS_TAB,
+  tab: MISC_TAB,
   theme: initialTheme,
 })
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: ITEMS_TAB,
+    tab: MISC_TAB,
     theme: initialTheme,
   })
 

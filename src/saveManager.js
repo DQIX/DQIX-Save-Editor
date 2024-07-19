@@ -51,6 +51,9 @@ const itemOffsets = {
   [gameData.ITEM_TYPE_ACCESSORY]: { idOffset: 10008, countOffset: 11080 },
 }
 
+const GOLD_ON_HAND_OFFSET = 11448
+const GOLD_IN_BANK_OFFSET = 11452
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -275,6 +278,8 @@ export default class SaveManager {
     return this.saveSlots[this.saveIdx].writeUInt16LE(id, HELD_ITEM_OFFSET + 18 * n + 2 * i)
   }
 
+  /// returns the number of an item in the bag
+  /// NOTE: this can be expensive
   getItemCount(id) {
     const itemType = gameData.items[id].item_type
     const offset = itemOffsets[itemType]
@@ -291,6 +296,8 @@ export default class SaveManager {
     return idx != 0xffff ? this.saveSlots[this.saveIdx][offset.countOffset + idx] : 0
   }
 
+  /// sets the number of an item in the bag
+  /// NOTE: this can be expensive
   setItemCount(id, count) {
     const itemType = gameData.items[id].item_type
 
@@ -350,5 +357,23 @@ export default class SaveManager {
         break
       }
     }
+  }
+
+  getGoldOnHand() {
+    return this.saveSlots[this.saveIdx].readUInt32LE(GOLD_ON_HAND_OFFSET)
+  }
+
+  getGoldInBank() {
+    return this.saveSlots[this.saveIdx].readUInt32LE(GOLD_IN_BANK_OFFSET)
+  }
+
+  setGoldOnHand(gold) {
+    gold = Math.max(0, Math.min(gold, 9999999))
+    return this.saveSlots[this.saveIdx].writeUInt32LE(gold, GOLD_ON_HAND_OFFSET)
+  }
+
+  setGoldInBank(gold) {
+    gold = Math.max(0, Math.min(gold, 1000000000))
+    return this.saveSlots[this.saveIdx].writeUInt32LE(gold, GOLD_IN_BANK_OFFSET)
   }
 }

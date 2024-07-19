@@ -1,4 +1,3 @@
-import { useState } from "react"
 import "./Card.scss"
 
 export default props => {

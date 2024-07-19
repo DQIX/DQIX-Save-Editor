@@ -1,0 +1,32 @@
+.misc-root {
+  display: grid;
+  grid-auto-flow: dense;
+  gap: 1em;
+  padding: 1em 1em 1em;
+  grid-template-columns: repeat(auto-fit, 12em);
+  justify-content: center;
+  width: 100%;
+  > div {
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+
+  .gold {
+    aspect-ratio: auto;
+    grid-column: span 2;
+    > div {
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      gap: 1em 0.3em;
+
+      label {
+        vertical-align: middle;
+      }
+    }
+    > p:last-child {
+      font-size: 0.8em;
+      margin: 0.4em 0 0;
+      color: var(--alt-text-color);
+    }
+  }
+}

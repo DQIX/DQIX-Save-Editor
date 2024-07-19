@@ -6,6 +6,7 @@ import {
   PARTY_TAB,
   EditorUiContext,
   ITEMS_TAB,
+  MISC_TAB,
   DARK_THEME_NAME,
   LIGHT_THEME_NAME,
 } from "../EditorUiContext"
@@ -29,6 +30,9 @@ export default props => {
         </li>
         <li className={state.tab == ITEMS_TAB ? "active" : ""} onClick={e => setTab(ITEMS_TAB)}>
           items
+        </li>
+        <li className={state.tab == MISC_TAB ? "active" : ""} onClick={e => setTab(MISC_TAB)}>
+          misc
         </li>
       </ul>
 
