@@ -30,6 +30,7 @@ const ItemCard = props => {
               defaultValue={save.getItemCount(item.id)}
               min={0}
               max={99}
+              size="3"
               onChange={e => {
                 save.setItemCount(item.id, e.target.value)
                 setSave(new SaveManager(save.buffer))
