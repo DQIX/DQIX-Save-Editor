@@ -1,19 +1,33 @@
+$grid-size: 184px;
+
 .misc-root {
   display: grid;
   grid-auto-flow: dense;
   gap: 1em;
   padding: 1em 1em 1em;
-  grid-template-columns: repeat(auto-fit, 12em);
+  grid-template-columns: repeat(auto-fit, $grid-size);
+  grid-template-rows: repeat(auto-fill, $grid-size);
+
   justify-content: center;
-  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+
   > div {
     aspect-ratio: 1;
     overflow: hidden;
+    position: relative;
+
+    > p:has(> small) {
+      position: absolute;
+      bottom: 0;
+      line-height: 1.1;
+    }
   }
 
   .gold {
     aspect-ratio: auto;
     grid-column: span 2;
+    height: $grid-size;
     > div {
       display: grid;
       grid-template-columns: repeat(3, max-content);
@@ -23,10 +37,19 @@
         vertical-align: middle;
       }
     }
-    > p:last-child {
-      font-size: 0.8em;
-      margin: 0.4em 0 0;
-      color: var(--alt-text-color);
+  }
+
+  .party-tricks {
+    grid-row: span 2;
+    grid-column: span 2;
+    > div {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3em 0;
     }
+  }
+
+  .mini-medals {
+    height: $grid-size;
   }
 }

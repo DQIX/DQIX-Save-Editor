@@ -73,10 +73,16 @@
 
 * {
   box-sizing: border-box;
-  color: var(--text-color);
+  color: var(--font-color);
 }
 
 body {
   margin: var(--navbar-height) 0 0;
   padding: 0;
+}
+
+small {
+  font-size: 0.8em;
+  color: var(--alt-text-color);
+  line-height: 1.2;
 }

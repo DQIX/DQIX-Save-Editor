@@ -1,13 +1,15 @@
 .card {
   background-color: var(--card-bg-color);
   border-radius: var(--border-radius);
-  padding: 1em;
+  padding: 0.4em 1em 1em;
   box-shadow: 0 4px 8px rgba(#000, 0.2);
 
   > .card-label {
-    margin: 0 0 1em;
-    padding: 0;
+    margin: 0 0 0.5em -1em;
+    padding: 0 0 0.5em 1em;
     color: var(--alt-text-color);
     font-weight: bold;
+    border-bottom: 1px solid var(--surface-bg);
+    width: calc(100% + 2em);
   }
 }

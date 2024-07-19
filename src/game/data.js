@@ -1446,6 +1446,44 @@ const skills = [
   { name: "Ruggedness" },
 ]
 
+const LEARNABLE_PARTY_TRICK_START = 16
+const LEARNABLE_PARTY_TRICK_END = 31
+
+const partyTricks = [
+  "Air Punch",
+  "Clap",
+  "Bye Bye",
+  "Weep",
+  "Despair",
+  "Tantrum",
+  "Surprised",
+  "Jump",
+  "Sit",
+  "Recline",
+  "Dive",
+  "Hello!",
+  "Thanks!",
+  "Goodbye!",
+  "Eek!",
+  "Hmm...",
+  "Pray",
+  "Pirouette",
+  "Bow",
+  "Belly Dance",
+  "Royal Regards",
+  "Swinedimples Salute",
+  "Cap'n's Curtsy",
+  "Sultry Dance",
+  "Weird Dance",
+  "Wallop",
+  "Cheer",
+  "Provoke",
+  "Salute",
+  "Inspiration",
+  "Professor's Pose",
+  "------",
+]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -1508,4 +1546,8 @@ export default {
 
   NUM_SKILLS,
   skills,
+
+  LEARNABLE_PARTY_TRICK_START,
+  LEARNABLE_PARTY_TRICK_END,
+  partyTricks,
 }

@@ -54,6 +54,9 @@ const itemOffsets = {
 const GOLD_ON_HAND_OFFSET = 11448
 const GOLD_IN_BANK_OFFSET = 11452
 
+const MINI_MEDAL_OFFSET = 11460
+const PARTY_TRICK_LEARNED_OFFSET = 12108
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -375,5 +378,36 @@ export default class SaveManager {
   setGoldInBank(gold) {
     gold = Math.max(0, Math.min(gold, 1000000000))
     return this.saveSlots[this.saveIdx].writeUInt32LE(gold, GOLD_IN_BANK_OFFSET)
+  }
+
+  getMiniMedals() {
+    return this.saveSlots[this.saveIdx].readUint32LE(MINI_MEDAL_OFFSET)
+  }
+
+  setMiniMedals(medals) {
+    this.saveSlots[this.saveIdx].writeUint32LE(medals, MINI_MEDAL_OFFSET)
+  }
+
+  getPartyTrickLearned(i) {
+    if (!(0 <= i && i <= 14)) {
+      return null
+    }
+
+    return this.saveSlots[this.saveIdx].readInt32LE(PARTY_TRICK_LEARNED_OFFSET) & (1 << (i + 2))
+  }
+
+  setPartyTrickLearned(i, learned) {
+    if (!(0 <= i && i <= 14)) {
+      return
+    }
+    learned = learned ? 1 : 0
+    i += 2
+
+    let prev = this.saveSlots[this.saveIdx].readInt32LE(PARTY_TRICK_LEARNED_OFFSET)
+
+    this.saveSlots[this.saveIdx].writeInt32LE(
+      (prev & ~(1 << i)) | (learned << i),
+      PARTY_TRICK_LEARNED_OFFSET
+    )
   }
 }
