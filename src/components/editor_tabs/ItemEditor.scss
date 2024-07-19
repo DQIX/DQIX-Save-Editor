@@ -1,0 +1,45 @@
+.items-root {
+  padding: 1em 1em 1em;
+  display: flex;
+
+  .item-cards {
+    flex-grow: 1;
+    > div {
+      margin-bottom: 1em;
+    }
+  }
+
+  .config {
+    position: sticky;
+    align-self: start;
+    top: calc(var(--navbar-height) + 1em);
+    height: calc(100vh - var(--navbar-height) - 2em);
+    margin-right: 1em;
+    input[type="text"] {
+      margin-bottom: 1em;
+    }
+    > p {
+      margin-top: 0;
+    }
+    label {
+      display: block;
+    }
+  }
+
+  .item-grid {
+    display: grid;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-column-gap: 1em;
+    grid-row-gap: 0.5em;
+    > div {
+      text-wrap: nowrap;
+      span {
+        margin-left: 0.4em;
+        div {
+          margin-right: 0.1em;
+        }
+      }
+    }
+  }
+}

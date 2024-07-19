@@ -7,7 +7,7 @@ export const ItemIcon = props => (
       width: "24px",
       height: "24px",
       display: "inline-block",
-      verticalAlign: "middle",
+      verticalAlign: "top",
       backgroundImage: `url(${item_icons})`,
       backgroundPosition: `-${1 + 25 * (props.icon % 11)}px -${
         1 + 25 * Math.floor(props.icon / 11)
@@ -23,7 +23,7 @@ export const VocationIcon = props => (
       width: "24px",
       height: "24px",
       display: "inline-block",
-      verticalAlign: "bottom",
+      verticalAlign: "top",
       backgroundImage: `url(${vocation_icons})`,
       backgroundPosition: `0px -${props.icon * 24}px`,
       ...props.style,

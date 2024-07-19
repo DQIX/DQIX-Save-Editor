@@ -18,7 +18,7 @@ export const EditorUiContext = createContext({
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: PARTY_TAB,
+    tab: ITEMS_TAB,
     theme: initialTheme,
   })
 

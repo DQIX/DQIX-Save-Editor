@@ -1,7 +1,7 @@
 import { Buffer } from "buffer"
 import crc32 from "crc-32"
 
-import GameData from "./game/data"
+import gameData from "./game/data"
 import { readStringFromBuffer, writeStringToBuffer } from "./game/string"
 
 export const STATE_NULL = 0
@@ -35,6 +35,21 @@ const CURRENT_VOCATION_OFFSET = 216
 
 /// offset of character's held items, relative to the beginning of the save
 const HELD_ITEM_OFFSET = 7578
+
+/// items are stored in 2 contiguous arrays, one of the ids which are u16s and one of the counts which are u8s
+// prettier-ignore
+const itemOffsets = {
+  [gameData.ITEM_TYPE_COMMON]:    { idOffset: 7664,  countOffset: 7968,  needsPacking: true },
+  [gameData.ITEM_TYPE_IMPORTANT]: { idOffset: 11164, countOffset: 11352, needsPacking: true },
+  [gameData.ITEM_TYPE_WEAPON]:    { idOffset: 8120,  countOffset: 10136 },
+  [gameData.ITEM_TYPE_SHIELD]:    { idOffset: 8664,  countOffset: 10408 },
+  [gameData.ITEM_TYPE_TORSO]:     { idOffset: 8760,  countOffset: 10456 },
+  [gameData.ITEM_TYPE_HEAD]:      { idOffset: 9336,  countOffset: 10744 },
+  [gameData.ITEM_TYPE_ARM]:       { idOffset: 9624,  countOffset: 10888 },
+  [gameData.ITEM_TYPE_FEET]:      { idOffset: 9784,  countOffset: 10968 },
+  [gameData.ITEM_TYPE_LEGS]:      { idOffset: 9144,  countOffset: 10648 },
+  [gameData.ITEM_TYPE_ACCESSORY]: { idOffset: 10008, countOffset: 11080 },
+}
 
 export default class SaveManager {
   constructor(buffer) {
@@ -209,7 +224,7 @@ export default class SaveManager {
   /// returns the item id for the equipped item in the given slot, n is the character index
   /// type is the item type, `ITEM_TYPE_COMMON` and `ITEM_TYPE_IMPORTANT` are not valid
   getCharacterEquipment(n, type) {
-    if (type <= 0 || type > GameData.ITEM_TYPE_ACCESSORY) {
+    if (type <= 0 || type > gameData.ITEM_TYPE_ACCESSORY) {
       return null
     }
 
@@ -222,7 +237,7 @@ export default class SaveManager {
 
   /// Sets the equipped item in the given slot for the given character
   setCharacterEquipment(n, type, id) {
-    if (type <= 0 || type > GameData.ITEM_TYPE_ACCESSORY) {
+    if (type <= 0 || type > gameData.ITEM_TYPE_ACCESSORY) {
       return null
     }
 
@@ -258,5 +273,82 @@ export default class SaveManager {
     }
 
     return this.saveSlots[this.saveIdx].writeUInt16LE(id, HELD_ITEM_OFFSET + 18 * n + 2 * i)
+  }
+
+  getItemCount(id) {
+    const itemType = gameData.items[id].item_type
+    const offset = itemOffsets[itemType]
+
+    let idx = 0xffff
+    //NOTE: linear search isn't ideal here, maybe make this a hashmap created in the constructor?
+    for (let i = 0; i < gameData.itemTables[itemType].length; i++) {
+      if (this.saveSlots[this.saveIdx].readUInt16LE(offset.idOffset + 2 * i) == id) {
+        idx = i
+        break
+      }
+    }
+
+    return idx != 0xffff ? this.saveSlots[this.saveIdx][offset.countOffset + idx] : 0
+  }
+
+  setItemCount(id, count) {
+    const itemType = gameData.items[id].item_type
+
+    const offset = itemOffsets[gameData.items[id].item_type]
+    let idx = 0xffff
+
+    let available = null
+    for (let i = 0; i < gameData.itemTables[itemType].length; i++) {
+      if (this.saveSlots[this.saveIdx].readUInt16LE(offset.idOffset + 2 * i) == id) {
+        idx = i
+        break
+      }
+      if (
+        available === null &&
+        this.saveSlots[this.saveIdx].readUInt16LE(offset.idOffset + 2 * i) == 0xffff
+      ) {
+        available = i
+      }
+    }
+
+    if (idx == 0xffff) idx = available
+
+    this.saveSlots[this.saveIdx][offset.countOffset + idx] = count
+    if (count == 0) {
+      this.saveSlots[this.saveIdx].writeUInt16LE(0xffff, offset.idOffset + 2 * idx)
+    } else {
+      this.saveSlots[this.saveIdx].writeUInt16LE(id, offset.idOffset + 2 * idx)
+    }
+
+    if (offset.needsPacking) {
+      this.packItems(itemType)
+    }
+  }
+
+  /// everyday and important items need to be packed densely for the game's ui to work well,
+  /// this is not the case with equipment
+  packItems(type) {
+    const offset = itemOffsets[type]
+    outer: for (let i = 0; i < gameData.itemTables[type].length; i++) {
+      if (this.saveSlots[this.saveIdx].readUInt16LE(offset.idOffset + 2 * i) == 0xffff) {
+        for (let j = i + 1; j < gameData.itemTables[type].length; j++) {
+          if (this.saveSlots[this.saveIdx].readUInt16LE(offset.idOffset + 2 * j) != 0xffff) {
+            this.saveSlots[this.saveIdx].writeUInt16LE(
+              this.saveSlots[this.saveIdx].readUInt16LE(offset.idOffset + 2 * j),
+              offset.idOffset + 2 * i
+            )
+            this.saveSlots[this.saveIdx][offset.countOffset + i] =
+              this.saveSlots[this.saveIdx][offset.countOffset + j]
+
+            this.saveSlots[this.saveIdx][offset.countOffset + j] = 0
+            this.saveSlots[this.saveIdx].writeUInt16LE(0xffff, offset.idOffset + 2 * j)
+
+            continue outer
+          }
+        }
+
+        break
+      }
+    }
   }
 }

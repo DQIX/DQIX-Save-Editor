@@ -5,8 +5,11 @@ nav {
   background-color: var(--card-bg-color);
   z-index: 10000;
 
-  position: sticky;
+  position: fixed;
   top: 0;
+  height: var(--navbar-height);
+  width: 100%;
+  left: 0;
 
   display: flex;
   justify-content: space-between;
@@ -18,12 +21,15 @@ nav {
     align-items: center;
     justify-content: center;
     margin: 0;
+    height: 100%;
     li {
-      padding: 1em 1.5em;
+      padding: 0 1.5em;
+      height: 100%;
       vertical-align: middle;
+      line-height: var(--navbar-height);
       cursor: pointer;
       border-bottom: 2px solid transparent;
-      transition: all 0.3 cubic-bezier(0.645, 0.045, 0.355, 1);
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       &:hover {
         background-color: var(--accent-fade);
       }
@@ -62,5 +68,6 @@ nav {
   .theme-toggle {
     font-size: 24px;
     cursor: pointer;
+    user-select: none;
   }
 }

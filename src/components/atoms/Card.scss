@@ -1,0 +1,12 @@
+.card {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius);
+  padding: 1em;
+  box-shadow: 0 4px 8px rgba(#000, 0.2);
+
+  > .card-label {
+    margin-top: 0;
+    padding: 0;
+    color: var(--alt-text-color);
+  }
+}

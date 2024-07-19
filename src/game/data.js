@@ -8,8 +8,34 @@ const ITEM_TYPE_HEAD = 7
 const ITEM_TYPE_WEAPON = 8
 const ITEM_TYPE_SHIELD = 9
 const ITEM_TYPE_ACCESSORY = 10
-const ITEM_TYPE_COMMON = 9
-const ITEM_TYPE_IMPORTANT = 10
+const ITEM_TYPE_COMMON = 11
+const ITEM_TYPE_IMPORTANT = 12
+
+const itemTypes = [
+  ITEM_TYPE_COMMON,
+  ITEM_TYPE_IMPORTANT,
+  ITEM_TYPE_WEAPON,
+  ITEM_TYPE_SHIELD,
+  ITEM_TYPE_HEAD,
+  ITEM_TYPE_TORSO,
+  ITEM_TYPE_ARM,
+  ITEM_TYPE_LEGS,
+  ITEM_TYPE_FEET,
+  ITEM_TYPE_ACCESSORY,
+]
+
+const itemTypeNames = {
+  [ITEM_TYPE_TORSO]: "torso armour",
+  [ITEM_TYPE_LEGS]: "leg armour",
+  [ITEM_TYPE_ARM]: "arm armour",
+  [ITEM_TYPE_FEET]: "footwear",
+  [ITEM_TYPE_HEAD]: "headwear",
+  [ITEM_TYPE_WEAPON]: "weapons",
+  [ITEM_TYPE_SHIELD]: "shields",
+  [ITEM_TYPE_ACCESSORY]: "accessories",
+  [ITEM_TYPE_COMMON]: "everyday items",
+  [ITEM_TYPE_IMPORTANT]: "important items",
+}
 
 // weapon types
 const WEAPON_TYPE_SWORD = 1
@@ -571,7 +597,7 @@ for (const item of headEquipment) {
 }
 
 // prettier-ignore
-const torso_equipment = [
+const torsoEquipment = [
   { id: 13101, alchemy_index: -1,  item_type: ITEM_TYPE_TORSO,     icon: 278,      name: "Leather armour",             },
   { id: 13102, alchemy_index: -1,  item_type: ITEM_TYPE_TORSO,     icon: 279,      name: "Scale armour",               },
   { id: 13196, alchemy_index: 215, item_type: ITEM_TYPE_TORSO,     icon: 279,      name: "Large-scale armour",         },
@@ -757,12 +783,12 @@ const torso_equipment = [
   { id: 13034, alchemy_index: -1,  item_type: ITEM_TYPE_TORSO,     icon: 621,      name: "Aquila's armour",            },
 ]
 
-for (const item of torso_equipment) {
+for (const item of torsoEquipment) {
   items[item.id] = item
 }
 
 // prettier-ignore
-const arm_equipment = [
+const armEquipment = [
   { id: 15200, alchemy_index: -1,  item_type: ITEM_TYPE_ARM,       icon: 388,      name: "Leather gauntlets",          },
   { id: 15291, alchemy_index: -1,  item_type: ITEM_TYPE_ARM,       icon: 389,      name: "Iron gauntlets",             },
   { id: 15293, alchemy_index: 359, item_type: ITEM_TYPE_ARM,       icon: 389,      name: "Steel gauntlets",            },
@@ -843,12 +869,12 @@ const arm_equipment = [
   { id: 15042, alchemy_index: -1,  item_type: ITEM_TYPE_ARM,       icon: 634,      name: "Grandissimo gloves",         },
 ]
 
-for (const item of arm_equipment) {
+for (const item of armEquipment) {
   items[item.id] = item
 }
 
 // prettier-ignore
-const leg_equipment = [
+const legEquipment = [
   { id: 16094, alchemy_index: -1,  item_type: ITEM_TYPE_LEGS,      icon: 428,      name: "Boxer shorts",               },
   { id: 16095, alchemy_index: 284, item_type: ITEM_TYPE_LEGS,      icon: 429,      name: "Leather kilt",               },
   { id: 16213, alchemy_index: -1,  item_type: ITEM_TYPE_LEGS,      icon: 430,      name: "Cotton trousers",            },
@@ -936,12 +962,12 @@ const leg_equipment = [
   { id: 16257, alchemy_index: -1,  item_type: ITEM_TYPE_LEGS,      icon: 642,      name: "Aquila's trousers",          },
 ]
 
-for (const item of leg_equipment) {
+for (const item of legEquipment) {
   items[item.id] = item
 }
 
 // prettier-ignore
-const feet_equipment = [
+const feetEquipment = [
   { id: 17118, alchemy_index: -1,  item_type: ITEM_TYPE_FEET,      icon: 477,      name: "Leather boots",              },
   { id: 17195, alchemy_index: 384, item_type: ITEM_TYPE_FEET,      icon: 477,      name: "Hobnail boots",              },
   { id: 17119, alchemy_index: -1,  item_type: ITEM_TYPE_FEET,      icon: 478,      name: "Wellington boots",           },
@@ -1045,7 +1071,7 @@ const feet_equipment = [
   { id: 17142, alchemy_index: -1,  item_type: ITEM_TYPE_FEET,      icon: 696,      name: "Aquila's boots",             },
 ]
 
-for (const item of feet_equipment) {
+for (const item of feetEquipment) {
   items[item.id] = item
 }
 
@@ -1359,6 +1385,19 @@ for (const item of importantItems) {
   items[item.id] = item
 }
 
+const itemTables = {
+  [ITEM_TYPE_COMMON]: everydayItems,
+  [ITEM_TYPE_IMPORTANT]: importantItems,
+  [ITEM_TYPE_WEAPON]: weapons,
+  [ITEM_TYPE_SHIELD]: shields,
+  [ITEM_TYPE_TORSO]: torsoEquipment,
+  [ITEM_TYPE_HEAD]: headEquipment,
+  [ITEM_TYPE_ARM]: armEquipment,
+  [ITEM_TYPE_FEET]: feetEquipment,
+  [ITEM_TYPE_LEGS]: legEquipment,
+  [ITEM_TYPE_ACCESSORY]: accessories,
+}
+
 const NUM_VOCATIONS = 13
 const vocations = [
   // before the hero falls they're classed as a guardian, the vocation isn't accessible any other time
@@ -1419,6 +1458,9 @@ export default {
   ITEM_TYPE_FEET,
   ITEM_TYPE_ACCESSORY,
 
+  itemTypes,
+  itemTypeNames,
+
   WEAPON_TYPE_SWORD,
   WEAPON_TYPE_SPEAR,
   WEAPON_TYPE_DAGGER,
@@ -1433,6 +1475,7 @@ export default {
   WEAPON_TYPE_BOW,
 
   items,
+  itemTables,
 
   swords,
   spears,
@@ -1452,10 +1495,10 @@ export default {
 
   shields,
   headEquipment,
-  torso_equipment,
-  arm_equipment,
-  leg_equipment,
-  feet_equipment,
+  torsoEquipment,
+  armEquipment,
+  legEquipment,
+  feetEquipment,
   accessories,
   everydayItems,
   importantItems,

@@ -1,17 +1,10 @@
 .character-root {
-  margin: 1em 1em 3em;
+  padding: 1em 1em 3em;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: 0.2fr 1fr;
   grid-column-gap: 1em;
   grid-row-gap: 1em;
-
-  > div {
-    background-color: var(--card-bg-color);
-    border-radius: 1em;
-    padding: 1em;
-    box-shadow: 0 4px 8px rgba(#000, 0.2);
-  }
 
   .item-list {
     padding: 0.6em 1em;

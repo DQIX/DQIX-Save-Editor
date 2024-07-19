@@ -19,29 +19,29 @@
 
 :root {
   --border-radius: 0.3em;
+  --navbar-height: 56px;
 }
 
-//TODO: better colors
 :root {
   --font-color: #4c4f69;
+  --alt-text-color: #6c6f85;
   --bg-color: #eff1f5;
   --surface-bg: #ccd0da;
   --card-bg-color: #dce0e8;
   --accent-color: #ea76cb;
   --accent-fade: rgba(234, 118, 203, 0.2);
   --on-accent-color: var(--bg-color);
-  --box-shadow: 0 8px 16px rgba(#000, 0.2);
   --slime-blue: #1e66f5;
   --slime-red: #d20f39;
   --slime-grey: #6c6f85;
   --github-icon-url: url("/github-mark.svg");
 }
 
-// @media (prefers-color-scheme: dark) {
 [data-theme="dark"] {
   --font-color: #cdd6f4;
+  --alt-text-color: ##a6adc8;
   --bg-color: #1e1e2e;
-  --surface-bg: #181825;
+  --surface-bg: #313244;
   --card-bg-color: #11111b;
   --accent-color: #cba6f7;
   --accent-fade: rgba(203, 166, 247, 0.2);
@@ -51,7 +51,6 @@
   --slime-grey: #a6adc8;
   --github-icon-url: url("/github-mark-white.svg");
 }
-// }
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -68,12 +67,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+  background-color: var(--accent-fade);
+}
+
 * {
   box-sizing: border-box;
   color: var(--text-color);
 }
 
 body {
-  margin: 0;
+  margin: var(--navbar-height) 0 0;
   padding: 0;
 }

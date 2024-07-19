@@ -3,11 +3,12 @@ import { useContext } from "react"
 import "./CharacterEditor.scss"
 
 import SaveManager from "../../saveManager"
-import TextInput from "../atoms/TextInput"
+import Input from "../atoms/Input.jsx"
 import { ItemIcon, VocationIcon } from "../atoms/Icon"
 import { SaveManagerContext } from "../../SaveManagerContext"
 import GameData from "../../game/data"
 import ItemSelect from "../atoms/ItemSelect.jsx"
+import Card from "../atoms/Card.jsx"
 
 export default props => {
   let { save, setSave } = useContext(SaveManagerContext)
@@ -16,9 +17,10 @@ export default props => {
     <div>
       {Array.from({ length: save.getCharacterCount() }, (_, i) => (
         <div className="character-root" key={i}>
-          <div className="character-header" style={{ gridArea: "1 / 1 / 2 / 5" }}>
+          <Card className="character-header" style={{ gridArea: "1 / 1 / 2 / 5" }}>
             <VocationIcon icon={GameData.vocations[save.getCharacterVocation(i)].icon} />
-            <TextInput
+            <Input
+              type="text"
               value={save.getCharacterName(i)}
               onChange={e => {
                 save.writeCharacterName(i, e.target.value)
@@ -26,14 +28,14 @@ export default props => {
               }}
               style={{ display: "inline-block", marginLeft: "1em" }}
             />
-          </div>
-          <div
+          </Card>
+          <Card
+            label="equipment:"
             className="item-list"
             style={{
               gridArea: "2 / 1 / 4 / 2",
             }}
           >
-            <p>equipment:</p>
             <ItemSelect
               items={GameData.weaponsTable}
               nothingName={"Nothing Equipped"}
@@ -65,7 +67,7 @@ export default props => {
               }}
             />
             <ItemSelect
-              items={GameData.torso_equipment}
+              items={GameData.torsoEquipment}
               id={save.getCharacterEquipment(i, GameData.ITEM_TYPE_TORSO)}
               nothingName={"Nothing Equipped"}
               nothingValue={0xffff}
@@ -75,7 +77,7 @@ export default props => {
               }}
             />
             <ItemSelect
-              items={GameData.arm_equipment}
+              items={GameData.armEquipment}
               id={save.getCharacterEquipment(i, GameData.ITEM_TYPE_ARM)}
               nothingName={"Nothing Equipped"}
               nothingValue={0xffff}
@@ -85,7 +87,7 @@ export default props => {
               }}
             />
             <ItemSelect
-              items={GameData.leg_equipment}
+              items={GameData.legEquipment}
               id={save.getCharacterEquipment(i, GameData.ITEM_TYPE_LEGS)}
               nothingName={"Nothing Equipped"}
               nothingValue={0xffff}
@@ -95,7 +97,7 @@ export default props => {
               }}
             />
             <ItemSelect
-              items={GameData.feet_equipment}
+              items={GameData.feetEquipment}
               id={save.getCharacterEquipment(i, GameData.ITEM_TYPE_FEET)}
               nothingName={"Nothing Equipped"}
               nothingValue={0xffff}
@@ -114,15 +116,15 @@ export default props => {
                 setSave(new SaveManager(save.buffer))
               }}
             />
-          </div>
+          </Card>
 
-          <div
+          <Card
+            label="held items:"
             className={`item-list ${save.inParty(i) ? "" : "disabled"}`}
             style={{
               gridArea: "2 / 2 / 4 / 3",
             }}
           >
-            <p>held items:</p>
             {Array.from({ length: 8 }, (_, j) => (
               <ItemSelect
                 key={j}
@@ -137,7 +139,7 @@ export default props => {
                 }}
               />
             ))}
-          </div>
+          </Card>
         </div>
       ))}
     </div>

@@ -1,0 +1,44 @@
+input[type="text"],
+input[type="number"] {
+  background-color: var(--surface-bg);
+  outline: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.3em;
+  border-radius: var(--border-radius);
+  transition: all 0.05s ease-in-out;
+  &:focus {
+    border-bottom: 2px solid var(--accent-color);
+  }
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid var(--font-color);
+  border-radius: var(--border-radius);
+  transform: translateY(-0.075em);
+  position: relative;
+  vertical-align: middle;
+
+  &:focus {
+    border: 0.15em solid var(--accent-color);
+  }
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    transform: scale(0);
+    transition: 0.1s transform ease-in-out;
+    box-shadow: inset 1em 1em var(--accent-color);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+  &:checked::before {
+    transform: scale(1);
+  }
+}
