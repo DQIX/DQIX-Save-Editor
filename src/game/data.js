@@ -1399,22 +1399,31 @@ const itemTables = {
 }
 
 const NUM_VOCATIONS = 13
+const UNLOCKABLE_VOCATION_START = 7
+const UNLOCKABLE_VOCATION_END = 13
+
+// prettier-ignore
 const vocations = [
   // before the hero falls they're classed as a guardian, the vocation isn't accessible any other time
-  { name: "Guardian", icon: 0 },
-  { name: "Warrior", icon: 1 },
-  { name: "Priest", icon: 2 },
-  { name: "Mage", icon: 3 },
-  { name: "Martial Artist", icon: 4 },
-  { name: "Thief", icon: 5 },
-  { name: "Minstrel", icon: 6 },
-  { name: "Gladiator", icon: 7 },
-  { name: "Armamentalist", icon: 9 },
-  { name: "Paladin", icon: 8 },
-  { name: "Sage", icon: 11 },
-  { name: "Luminary", icon: 12 },
-  { name: "Ranger", icon: 10 },
+  { id: 0,  name: "Guardian",       icon: 0,  unlockable: false },
+  { id: 1,  name: "Warrior",        icon: 1,  unlockable: false },
+  { id: 2,  name: "Priest",         icon: 2,  unlockable: false },
+  { id: 3,  name: "Mage",           icon: 3,  unlockable: false },
+  { id: 4,  name: "Martial Artist", icon: 4,  unlockable: false },
+  { id: 5,  name: "Thief",          icon: 5,  unlockable: false },
+  { id: 6,  name: "Minstrel",       icon: 6,  unlockable: false },
+  { id: 7,  name: "Gladiator",      icon: 7,  unlockable: true  },
+  { id: 9,  name: "Paladin",        icon: 8,  unlockable: true  },
+  { id: 8,  name: "Armamentalist",  icon: 9,  unlockable: true  },
+  { id: 12, name: "Ranger",         icon: 10, unlockable: true  },
+  { id: 10, name: "Sage",           icon: 11, unlockable: true  },
+  { id: 11, name: "Luminary",       icon: 12, unlockable: true  },
 ]
+
+const vocationTable = {}
+for (const v of vocations) {
+  vocationTable[v.id] = v
+}
 
 const NUM_SKILLS = 26
 const skills = [
@@ -1541,7 +1550,10 @@ export default {
   everydayItems,
   importantItems,
 
+  UNLOCKABLE_VOCATION_START,
+  UNLOCKABLE_VOCATION_END,
   NUM_VOCATIONS,
+  vocationTable,
   vocations,
 
   NUM_SKILLS,

@@ -6,6 +6,7 @@ import { SaveManagerContext } from "../../SaveManagerContext"
 import Card from "../atoms/Card"
 import Input from "../atoms/Input"
 import SaveManager from "../../saveManager"
+import { VocationIcon } from "../atoms/Icon"
 
 import gameData from "../../game/data"
 
@@ -172,8 +173,25 @@ export default props => {
           <small>counts all medals given to Cap'n Max Meddlin'</small>
         </p>
       </Card>
-      <Card label="flags:" className="flags">
-        todo
+      <Card label="unlocked vocations:" className="unlocked-vocations">
+        <div>
+          {gameData.vocations
+            .filter(v => v.unlockable)
+            .map((v, i) => (
+              <label key={i}>
+                <Input
+                  type="checkbox"
+                  name={v.name}
+                  checked={save.isVocationUnlocked(v.id)}
+                  onChange={e => {
+                    save.setVocationUnlocked(v.id, e.target.checked)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                />
+                <VocationIcon icon={v.icon} />
+              </label>
+            ))}
+        </div>
       </Card>
     </div>
   )

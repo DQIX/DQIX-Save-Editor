@@ -18,7 +18,7 @@ export default props => {
       {Array.from({ length: save.getCharacterCount() }, (_, i) => (
         <div className="character-root" key={i}>
           <Card className="character-header" style={{ gridArea: "1 / 1 / 2 / 5" }}>
-            <VocationIcon icon={GameData.vocations[save.getCharacterVocation(i)].icon} />
+            <VocationIcon icon={GameData.vocationTable[save.getCharacterVocation(i)].icon} />
             <Input
               type="text"
               value={save.getCharacterName(i)}

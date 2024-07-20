@@ -66,6 +66,8 @@ const MULTIPLAYER_HOURS = 16028
 const MULTIPLAYER_MINUTES = 16030
 const MULTIPLAYER_SECONDS = 16031
 
+const UNLOCKABLE_VOCATION_OFFSET = 12276
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -452,5 +454,24 @@ export default class SaveManager {
     this.saveSlots[this.saveIdx].writeUint16LE(value[0], MULTIPLAYER_HOURS)
     this.saveSlots[this.saveIdx][MULTIPLAYER_MINUTES] = value[1]
     this.saveSlots[this.saveIdx][MULTIPLAYER_SECONDS] = value[2]
+  }
+
+  /// Returns true if the vocation is unlocked, id is the index into `gameData.vocationTable`
+  isVocationUnlocked(id) {
+    return !!(
+      this.saveSlots[this.saveIdx].readUint16LE(UNLOCKABLE_VOCATION_OFFSET) &
+      (1 << (id - 1))
+    )
+  }
+
+  setVocationUnlocked(id, unlocked) {
+    id -= 1
+    unlocked = unlocked ? 1 : 0
+
+    const prev = this.saveSlots[this.saveIdx].readUint16LE(UNLOCKABLE_VOCATION_OFFSET)
+    this.saveSlots[this.saveIdx].writeUint16LE(
+      (prev & ~(1 << id)) | (unlocked << id),
+      UNLOCKABLE_VOCATION_OFFSET
+    )
   }
 }
