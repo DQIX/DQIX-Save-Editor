@@ -1398,10 +1398,6 @@ const itemTables = {
   [ITEM_TYPE_ACCESSORY]: accessories,
 }
 
-const NUM_VOCATIONS = 13
-const UNLOCKABLE_VOCATION_START = 7
-const UNLOCKABLE_VOCATION_END = 13
-
 // prettier-ignore
 const vocations = [
   // before the hero falls they're classed as a guardian, the vocation isn't accessible any other time
@@ -1418,6 +1414,27 @@ const vocations = [
   { id: 12, name: "Ranger",         icon: 10, unlockable: true  },
   { id: 10, name: "Sage",           icon: 11, unlockable: true  },
   { id: 11, name: "Luminary",       icon: 12, unlockable: true  },
+]
+
+const locationNames = [
+  "Angel Falls",
+  "Zere",
+  "Stornway",
+  "Coffinwell",
+  "Alltrades Abbey",
+  "Porth Llaffan",
+  "Slurry Quay",
+  "Dourbridge",
+  "Zere Rocks",
+  "Bloomingdale",
+  "Gleeba",
+  "Batsureg",
+  "Swinedimples",
+  "Wormwood Creek",
+  "Upover",
+  "The Magmaroo",
+  "The Gortress",
+  "Gittingham Palace",
 ]
 
 const vocationTable = {}
@@ -1550,9 +1567,6 @@ export default {
   everydayItems,
   importantItems,
 
-  UNLOCKABLE_VOCATION_START,
-  UNLOCKABLE_VOCATION_END,
-  NUM_VOCATIONS,
   vocationTable,
   vocations,
 
@@ -1562,4 +1576,6 @@ export default {
   LEARNABLE_PARTY_TRICK_START,
   LEARNABLE_PARTY_TRICK_END,
   partyTricks,
+
+  locationNames,
 }

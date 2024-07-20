@@ -68,6 +68,8 @@ const MULTIPLAYER_SECONDS = 16031
 
 const UNLOCKABLE_VOCATION_OFFSET = 12276
 
+const VISITED_LOCATIONS_OFFSET = 11788
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -472,6 +474,20 @@ export default class SaveManager {
     this.saveSlots[this.saveIdx].writeUint16LE(
       (prev & ~(1 << id)) | (unlocked << id),
       UNLOCKABLE_VOCATION_OFFSET
+    )
+  }
+
+  visitedLocation(i) {
+    return this.saveSlots[this.saveIdx].readInt32LE(VISITED_LOCATIONS_OFFSET) & (1 << i)
+  }
+
+  setVisitedLocation(i, visited) {
+    visited = visited ? 1 : 0
+
+    const prev = this.saveSlots[this.saveIdx].readInt32LE(VISITED_LOCATIONS_OFFSET)
+    this.saveSlots[this.saveIdx].writeInt32LE(
+      (prev & ~(1 << i)) | (visited << i),
+      VISITED_LOCATIONS_OFFSET
     )
   }
 }

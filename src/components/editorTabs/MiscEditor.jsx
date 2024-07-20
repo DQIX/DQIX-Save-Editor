@@ -193,6 +193,27 @@ export default props => {
             ))}
         </div>
       </Card>
+
+      <Card label="visited locations:" className="visited-locations">
+        <div>
+          {gameData.locationNames.map((name, i) => (
+            <label>
+              <Input
+                type="checkbox"
+                checked={save.visitedLocation(i)}
+                onChange={e => {
+                  save.setVisitedLocation(i, e.target.checked)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+              {name}
+            </label>
+          ))}
+        </div>
+        <p>
+          <small>counts for zoom and chimera wings</small>
+        </p>
+      </Card>
     </div>
   )
 }
