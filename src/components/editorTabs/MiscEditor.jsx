@@ -9,12 +9,102 @@ import SaveManager from "../../saveManager"
 
 import gameData from "../../game/data"
 
+const TimeInput = props => {
+  const time = [...props.value]
+  return (
+    <>
+      <label>
+        <Input
+          type="number"
+          defaultValue={props.value[0]}
+          size={2}
+          min={0}
+          max={0xffff}
+          onChange={
+            props.onChange &&
+            (e => {
+              if (e.target.value === "") return
+              time[0] = e.target.value
+              props.onChange(time)
+            })
+          }
+          onBlur={e => {
+            e.target.value = props.value[0]
+          }}
+        />
+        h
+      </label>
+      <label>
+        <Input
+          type="number"
+          defaultValue={props.value[1]}
+          size={3}
+          min={0}
+          max={59}
+          onChange={
+            props.onChange &&
+            (e => {
+              if (e.target.value === "") return
+              time[1] = e.target.value
+              props.onChange(time)
+            })
+          }
+          onBlur={e => {
+            e.target.value = props.value[1]
+          }}
+        />
+        m
+      </label>
+      <label>
+        <Input
+          type="number"
+          defaultValue={props.value[2]}
+          size={3}
+          min={0}
+          max={59}
+          onChange={
+            props.onChange &&
+            (e => {
+              if (e.target.value === "") return
+              time[2] = e.target.value
+              props.onChange(time)
+            })
+          }
+          onBlur={e => {
+            e.target.value = props.value[2]
+          }}
+        />
+        s
+      </label>
+    </>
+  )
+}
+
 export default props => {
   let { save, setSave } = useContext(SaveManagerContext)
 
   return (
     <div className="misc-root">
-      <Card label="play time:">todo</Card>
+      <Card label="play time:" className="play-time">
+        <div>
+          <span>total time:</span>{" "}
+          <TimeInput
+            value={save.getPlaytime()}
+            onChange={value => {
+              save.setPlaytime(value)
+              setSave(new SaveManager(save.buffer))
+            }}
+          />
+          <span>multiplayer:</span>{" "}
+          <TimeInput
+            value={save.getMultiplayerTime()}
+            onChange={value => {
+              save.setMultiplayerTime(value)
+              setSave(new SaveManager(save.buffer))
+            }}
+          />
+        </div>
+      </Card>
       <Card label="gold:" className="gold">
         <div>
           <label htmlFor="hand-gold">on hand:</label>
@@ -50,7 +140,7 @@ export default props => {
             return gameData.partyTricks
               .slice(gameData.LEARNABLE_PARTY_TRICK_START, gameData.LEARNABLE_PARTY_TRICK_END)
               .map((name, i) => (
-                <div>
+                <div key={i}>
                   <Input
                     type="checkbox"
                     defaultChecked={save.getPartyTrickLearned(i)}

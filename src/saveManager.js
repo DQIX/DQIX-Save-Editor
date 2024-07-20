@@ -55,7 +55,16 @@ const GOLD_ON_HAND_OFFSET = 11448
 const GOLD_IN_BANK_OFFSET = 11452
 
 const MINI_MEDAL_OFFSET = 11460
+
 const PARTY_TRICK_LEARNED_OFFSET = 12108
+
+const PLAYTIME_HOURS = 16024
+const PLAYTIME_MINUTES = 16026
+const PLAYTIME_SECONDS = 16027
+
+const MULTIPLAYER_HOURS = 16028
+const MULTIPLAYER_MINUTES = 16030
+const MULTIPLAYER_SECONDS = 16031
 
 export default class SaveManager {
   constructor(buffer) {
@@ -409,5 +418,39 @@ export default class SaveManager {
       (prev & ~(1 << i)) | (learned << i),
       PARTY_TRICK_LEARNED_OFFSET
     )
+  }
+
+  getPlaytime() {
+    return [
+      this.saveSlots[this.saveIdx].readUint16LE(PLAYTIME_HOURS),
+      this.saveSlots[this.saveIdx][PLAYTIME_MINUTES],
+      this.saveSlots[this.saveIdx][PLAYTIME_SECONDS],
+    ]
+  }
+
+  getMultiplayerTime() {
+    return [
+      this.saveSlots[this.saveIdx].readUint16LE(MULTIPLAYER_HOURS),
+      this.saveSlots[this.saveIdx][MULTIPLAYER_MINUTES],
+      this.saveSlots[this.saveIdx][MULTIPLAYER_SECONDS],
+    ]
+  }
+
+  setPlaytime(value) {
+    value[0] = Math.max(0, Math.min(0xffff, value[0]))
+    value[1] = Math.max(0, Math.min(59, value[1]))
+    value[2] = Math.max(0, Math.min(59, value[2]))
+    this.saveSlots[this.saveIdx].writeUint16LE(value[0], PLAYTIME_HOURS)
+    this.saveSlots[this.saveIdx][PLAYTIME_MINUTES] = value[1]
+    this.saveSlots[this.saveIdx][PLAYTIME_SECONDS] = value[2]
+  }
+
+  setMultiplayerTime(value) {
+    value[0] = Math.max(0, Math.min(0xffff, value[0]))
+    value[1] = Math.max(0, Math.min(59, value[1]))
+    value[2] = Math.max(0, Math.min(59, value[2]))
+    this.saveSlots[this.saveIdx].writeUint16LE(value[0], MULTIPLAYER_HOURS)
+    this.saveSlots[this.saveIdx][MULTIPLAYER_MINUTES] = value[1]
+    this.saveSlots[this.saveIdx][MULTIPLAYER_SECONDS] = value[2]
   }
 }
