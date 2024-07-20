@@ -1,3 +1,4 @@
+import { useRef } from "react"
 import gameData from "../../game/data"
 
 import { ItemIcon } from "../atoms/Icon"
@@ -5,16 +6,17 @@ import "./ItemSelect.scss"
 
 export default props => {
   const selected = gameData.items[props.id]
+  const selectRef = useRef(null)
 
   return (
-    <div className="item-select">
+    <label className="item-select" onClick={e => selectRef.current.click()}>
       <ItemIcon
         icon={selected?.icon}
         style={{
           opacity: selected ? 1 : 0,
         }}
       />
-      <select defaultValue={props.id} onChange={props.onChange} disabled={props.disabled}>
+      <select ref={selectRef} value={props.id} onChange={props.onChange} disabled={props.disabled}>
         <option value={props.nothingValue || 0xffffff}>{props.nothingName}</option>
         {Array.isArray(props.items)
           ? props.items.map(item => (
@@ -32,6 +34,6 @@ export default props => {
               </optgroup>
             ))}
       </select>
-    </div>
+    </label>
   )
 }

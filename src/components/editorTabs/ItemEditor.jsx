@@ -66,7 +66,7 @@ export default props => {
 
   return (
     <div className="items-root">
-      <Card label="filter:" className="config" style={{ gridArea: "1 / 1 / 1 / 1" }}>
+      <Card label="filter:" className="config">
         <Input
           type="text"
           placeholder="filter"

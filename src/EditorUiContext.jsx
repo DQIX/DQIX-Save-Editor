@@ -13,13 +13,13 @@ const initialTheme =
 document.documentElement.setAttribute("data-theme", initialTheme)
 
 export const EditorUiContext = createContext({
-  tab: MISC_TAB,
+  tab: PARTY_TAB,
   theme: initialTheme,
 })
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: MISC_TAB,
+    tab: PARTY_TAB,
     theme: initialTheme,
   })
 

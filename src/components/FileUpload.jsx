@@ -16,8 +16,8 @@ export default props => {
       <h1>DQIX Editor</h1>
       <h2>To start, drag and drop your save file into the browser</h2>
       <p>
-        Please note this editor is still in pre-alpha, if you run into any bugs feel free to share
-        in the discord
+        Please note this editor is still in pre-alpha, if you run into any bugs feel free to open an
+        issue
       </p>
       <input
         type="file"

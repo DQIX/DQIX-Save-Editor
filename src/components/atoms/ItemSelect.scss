@@ -1,25 +1,30 @@
 .item-select {
   border-bottom: 2px solid rgba(0, 0, 0, 0);
   background-color: var(--surface-bg);
+  display: block;
   color: var(--font-color);
-  padding: 4px;
+  padding: 4px 4px 2px;
   border-radius: 4px;
   margin: 0.2em;
+  position: relative;
 
   .item-icon {
     margin-left: 8px;
   }
 
   select {
-    width: calc(100% - 32px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 2px);
     margin: 0;
 
     border: none;
     outline: none;
     background-color: transparent;
     color: var(--font-color);
-    padding: 0.2em;
-    border-radius: 4px;
+    padding: 0.2em 0.2em 0.2em 32px;
   }
 
   &:has(select:focus) {

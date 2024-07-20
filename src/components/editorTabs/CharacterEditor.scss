@@ -1,16 +1,74 @@
+$grid-size: 240px;
+
 .character-root {
-  padding: 1em 1em 3em;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 0.2fr 1fr;
-  grid-column-gap: 1em;
-  grid-row-gap: 1em;
+  padding: 1em 1em;
+  display: flex;
+
+  .character-list {
+    position: sticky;
+    top: calc(var(--navbar-height) + 1em);
+    height: calc(100vh - var(--navbar-height) - 2em);
+    width: $grid-size;
+    margin-right: 1em;
+    > p {
+      margin-bottom: 0;
+    }
+    > ul {
+      padding: 0;
+      list-style: none;
+      width: calc(100% + 2em);
+      position: relative;
+      left: -1em;
+
+      li {
+        padding: 0.2em 1.4em;
+        cursor: pointer;
+        transition: 0.1s ease-in-out background-color;
+        border-left: 2px solid transparent;
+        position: relative;
+        > span {
+          float: right;
+        }
+        &:hover {
+          background-color: var(--accent-fade);
+        }
+
+        &.active {
+          border-left: 2px solid var(--accent-color);
+          // &::after {
+          //   content: "";
+          //   width: 32px;
+          //   height: 30px;
+          //   display: block;
+          //   position: absolute;
+          //   top: calc(50% - 32px / 2);
+          //   left: -0.7em;
+          //   background-image: url("/sword.gif");
+          //   background-size: cover;
+          // }
+        }
+      }
+    }
+  }
+
+  .character-editor {
+    flex-grow: 1;
+  }
+
+  .character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, $grid-size);
+    grid-template-rows: repeat(auto-fill, $grid-size);
+    grid-auto-flow: dense;
+    grid-auto-rows: $grid-size;
+    gap: 1em;
+  }
 
   .item-list {
-    padding: 0.6em 1em;
-    text-wrap: nowrap;
-    > p {
-      margin-top: 0;
+    grid-column: span 1;
+    grid-row: span 2;
+    > label {
+      margin: 0.5em 0;
     }
   }
 
@@ -22,5 +80,7 @@
   .character-header {
     display: flex;
     align-items: center;
+    margin-bottom: 1em;
+    padding: 1em;
   }
 }
