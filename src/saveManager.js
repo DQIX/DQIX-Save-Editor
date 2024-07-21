@@ -30,6 +30,18 @@ const NAME_LENGTH = 10
 /// offset of name equipments relative to beginning of character data
 const EQUIPMENT_OFFSET = 488
 
+/// offset of character gender/colors byte relative to beginning of character data
+// u8 laid out like: `eeeesssg`
+// where e is eye color, s is skin color, and g is gender
+const CHARACTER_GENDER_COLORS_OFFSET = 508
+
+const CHARACTER_FACE_OFFSET = 492
+const CHARACTER_HAIRSTYLE_OFFSET = 494
+/// offset of character hairstyle byte relative to beginning of character data
+// u8 laid out like: `xxxxcccc`
+// where x is unknown data, and c is the color index
+const CHARACTER_HAIR_COLOR_OFFSET = 509
+
 /// offset of current vocation index relative to beginning of character data
 const CURRENT_VOCATION_OFFSET = 216
 
@@ -238,6 +250,73 @@ export default class SaveManager {
     let b = writeStringToBuffer(name)
 
     b.copy(this.saveSlots[this.saveIdx], character_offset + NAME_OFFSET)
+  }
+
+  getCharacterGender(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET] & 1
+  }
+
+  getCharacterFace(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx][character_offset + CHARACTER_FACE_OFFSET]
+  }
+
+  setCharacterFace(n, value) {
+    const character_offset = CHARACTER_SIZE * n
+    this.saveSlots[this.saveIdx][character_offset + CHARACTER_FACE_OFFSET] = value
+  }
+
+  getCharacterHairstyle(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIRSTYLE_OFFSET]
+  }
+
+  setCharacterHairstyle(n, value) {
+    const character_offset = CHARACTER_SIZE * n
+    this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIRSTYLE_OFFSET] = value
+  }
+
+  getCharacterEyeColor(n) {
+    const character_offset = CHARACTER_SIZE * n
+
+    return (
+      (this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET] & 0xf0) >> 4
+    )
+  }
+
+  setCharacterEyeColor(n, color) {
+    const character_offset = CHARACTER_SIZE * n
+    const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET]
+    return (this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET] =
+      (prev & 0x0f) | (color << 4))
+  }
+
+  getCharacterSkinColor(n) {
+    const character_offset = CHARACTER_SIZE * n
+
+    return (
+      (this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET] & 0xe) >> 1
+    )
+  }
+
+  setCharacterSkinColor(n, color) {
+    const character_offset = CHARACTER_SIZE * n
+    const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET]
+    return (this.saveSlots[this.saveIdx][character_offset + CHARACTER_GENDER_COLORS_OFFSET] =
+      (prev & 0xf1) | (color << 1))
+  }
+
+  getCharacterHairColor(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIR_COLOR_OFFSET] & 0xf
+  }
+
+  setCharacterHairColor(n, value) {
+    const character_offset = CHARACTER_SIZE * n
+    const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIR_COLOR_OFFSET]
+    this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIR_COLOR_OFFSET] =
+      (prev & 0xf0) | (value & 0x0f)
   }
 
   /// returns the item id for the equipped item in the given slot, n is the character index

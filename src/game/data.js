@@ -1510,6 +1510,57 @@ const partyTricks = [
   "------",
 ]
 
+const APPEARANCE_KIND_FACE = 0
+const APPEARANCE_KIND_HAIRSTYLE = 2
+
+const defaultAppearanceKindOffsets = {
+  [APPEARANCE_KIND_FACE]: 60,
+  [APPEARANCE_KIND_HAIRSTYLE]: 40,
+}
+
+const skinColors = [
+  "#f7cea5",
+  "#efb584",
+  "#e69c6b",
+  "#d68c4a",
+  "#c57331",
+  "#a55a21",
+  "#845a42",
+  "#845229",
+]
+
+const eyeColors = [
+  "#292929",
+  "#632908",
+  "#ad2121",
+  "#c5a54a",
+  "#199c5a",
+  "#215ab5",
+  "#944aa5",
+  "#949494",
+  // not normally available
+  "#312020",
+  "#008600",
+  "#9ece96",
+  "#f74131",
+  "#410820",
+  "#d761f7",
+  "#000000",
+  "#5c5c56",
+]
+const hairColors = [
+  "#3a2919",
+  "#632908",
+  "#ad2121",
+  "#d65a73",
+  "#bdad42",
+  "#199c5a",
+  "#215ab5",
+  "#944aa5",
+  "#5ab5bd",
+  "#949494",
+]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -1578,4 +1629,12 @@ export default {
   partyTricks,
 
   locationNames,
+
+  APPEARANCE_KIND_FACE,
+  APPEARANCE_KIND_HAIRSTYLE,
+  defaultAppearanceKindOffsets,
+
+  skinColors,
+  eyeColors,
+  hairColors,
 }
