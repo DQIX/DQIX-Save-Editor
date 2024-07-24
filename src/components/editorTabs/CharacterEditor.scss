@@ -153,4 +153,21 @@ $grid-size: 232px;
       }
     }
   }
+
+  .body-type-editor {
+    .presets {
+      display: flex;
+      justify-content: space-between;
+      input {
+        margin: 0;
+        appearance: none;
+        + div {
+          background-color: var(--blue);
+        }
+        &:checked + div {
+          background-color: var(--accent-color);
+        }
+      }
+    }
+  }
 }

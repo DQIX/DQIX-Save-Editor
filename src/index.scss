@@ -31,7 +31,8 @@
   --accent-color: #ea76cb;
   --accent-fade: rgba(234, 118, 203, 0.2);
   --on-accent-color: var(--bg-color);
-  --slime-blue: #1e66f5;
+  --blue: #1e66f5;
+  --slime-blue: var(--blue);
   --slime-red: #d20f39;
   --slime-grey: #6c6f85;
   --github-icon-url: url("/github-mark.svg");
@@ -46,7 +47,8 @@
   --accent-color: #cba6f7;
   --accent-fade: rgba(203, 166, 247, 0.2);
   --on-accent-color: var(--bg-color);
-  --slime-blue: #89b4fa;
+  --blue: #89b4fa;
+  --slime-blue: var(--blue);
   --slime-red: #f38ba8;
   --slime-grey: #a6adc8;
   --github-icon-url: url("/github-mark-white.svg");

@@ -9,7 +9,7 @@ import { SaveManagerContext } from "../../SaveManagerContext.jsx"
 import gameData from "../../game/data.js"
 import ItemSelect from "../atoms/ItemSelect.jsx"
 import Card from "../atoms/Card.jsx"
-import bodyTypePortraits from "../../assets/default-bodytypes.png"
+import bodyTypePortraits from "../../assets/default-bodytypes-transparent.png"
 
 const AppearanceRadio = props => {
   return (
@@ -294,30 +294,64 @@ export default props => {
               }}
             />
           </Card>
-          <Card label="body type:">
-            {gameData.bodyTypes[save.getCharacterGender(character)].map((preset, i) => {
-              const scale = 0.5
-              const width = scale * 60
-              const height = scale * 140
-              return (
-                <div
-                  style={{
-                    backgroundImage: `url(${bodyTypePortraits})`,
-                    width: width + "px",
-                    height: height + "px",
-                    backgroundPosition: `-${preset.icon * width}px 0`,
-                    backgroundSize: `${600 * scale}px ${140 * scale}px`,
-                    display: "inline-block",
-                    margin: "4px",
-                  }}
-                ></div>
-              )
-            })}
-            {/* <pre>
-              width:{"  "}
-              {save.getCharacterBodyTypeW(character)} <br />
-              height: {save.getCharacterBodyTypeH(character)}
-            </pre> */}
+          <Card label="body type:" className="body-type-editor">
+            <div className="presets">
+              {gameData.bodyTypes[save.getCharacterGender(character)].map((preset, i) => {
+                const scale = 0.5
+                const width = scale * 60
+                const height = scale * 140
+                return (
+                  <label>
+                    <input
+                      type="radio"
+                      name="body-type-preset"
+                      onChange={e => {
+                        save.setCharacterBodyTypeW(character, preset.width)
+                        save.setCharacterBodyTypeH(character, preset.height)
+                        setSave(new SaveManager(save.buffer))
+                      }}
+                      checked={
+                        save.getCharacterBodyTypeW(character) == preset.width &&
+                        save.getCharacterBodyTypeH(character) == preset.height
+                      }
+                    />
+                    <div
+                      style={{
+                        backgroundImage: `url(${bodyTypePortraits})`,
+                        width: width + "px",
+                        height: height + "px",
+                        backgroundPosition: `-${preset.icon * width}px 0`,
+                        backgroundSize: `${600 * scale}px ${140 * scale}px`,
+                        display: "inline-block",
+                        borderRadius: "var(--border-radius)",
+                      }}
+                    ></div>
+                  </label>
+                )
+              })}
+            </div>
+            <label>
+              width:
+              <Input
+                type="number"
+                value={save.getCharacterBodyTypeW(character)}
+                onChange={e => {
+                  save.setCharacterBodyTypeW(character, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <label>
+              height:
+              <Input
+                type="number"
+                value={save.getCharacterBodyTypeH(character)}
+                onChange={e => {
+                  save.setCharacterBodyTypeH(character, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
           </Card>
         </div>
       </div>

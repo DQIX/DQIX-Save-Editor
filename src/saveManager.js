@@ -332,6 +332,22 @@ export default class SaveManager {
     return this.saveSlots[this.saveIdx].readUInt16LE(character_offset + CHARACTER_BODY_TYPE_H)
   }
 
+  setCharacterBodyTypeW(n, value) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx].writeUInt16LE(
+      value,
+      character_offset + CHARACTER_BODY_TYPE_W
+    )
+  }
+
+  setCharacterBodyTypeH(n, value) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx].writeUInt16LE(
+      value,
+      character_offset + CHARACTER_BODY_TYPE_H
+    )
+  }
+
   /// returns the item id for the equipped item in the given slot, n is the character index
   /// type is the item type, `ITEM_TYPE_COMMON` and `ITEM_TYPE_IMPORTANT` are not valid
   getCharacterEquipment(n, type) {
