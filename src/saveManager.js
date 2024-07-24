@@ -42,6 +42,9 @@ const CHARACTER_HAIRSTYLE_OFFSET = 494
 // where x is unknown data, and c is the color index
 const CHARACTER_HAIR_COLOR_OFFSET = 509
 
+const CHARACTER_BODY_TYPE_W = 512
+const CHARACTER_BODY_TYPE_H = 514
+
 /// offset of current vocation index relative to beginning of character data
 const CURRENT_VOCATION_OFFSET = 216
 
@@ -317,6 +320,16 @@ export default class SaveManager {
     const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIR_COLOR_OFFSET]
     this.saveSlots[this.saveIdx][character_offset + CHARACTER_HAIR_COLOR_OFFSET] =
       (prev & 0xf0) | (value & 0x0f)
+  }
+
+  getCharacterBodyTypeW(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx].readUInt16LE(character_offset + CHARACTER_BODY_TYPE_W)
+  }
+
+  getCharacterBodyTypeH(n) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx].readUInt16LE(character_offset + CHARACTER_BODY_TYPE_H)
   }
 
   /// returns the item id for the equipped item in the given slot, n is the character index

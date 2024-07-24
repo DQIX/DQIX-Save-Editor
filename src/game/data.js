@@ -1548,6 +1548,7 @@ const eyeColors = [
   "#000000",
   "#5c5c56",
 ]
+
 const hairColors = [
   "#3a2919",
   "#632908",
@@ -1560,6 +1561,23 @@ const hairColors = [
   "#5ab5bd",
   "#949494",
 ]
+
+const bodyTypes = {
+  [0]: [
+    { width: 3768, height: 4255, icon: 0 },
+    { width: 3637, height: 4136, icon: 1 },
+    { width: 3850, height: 4014, icon: 2 },
+    { width: 4132, height: 3891, icon: 3 },
+    { width: 3870, height: 3764, icon: 4 },
+  ],
+  [1]: [
+    { width: 3768, height: 4177, icon: 5 },
+    { width: 3641, height: 4091, icon: 6 },
+    { width: 3809, height: 3973, icon: 7 },
+    { width: 4132, height: 3891, icon: 8 },
+    { width: 3768, height: 3764, icon: 9 },
+  ],
+}
 
 export default {
   ITEM_TYPE_COMMON,
@@ -1637,4 +1655,6 @@ export default {
   skinColors,
   eyeColors,
   hairColors,
+
+  bodyTypes,
 }

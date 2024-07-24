@@ -9,6 +9,7 @@ import { SaveManagerContext } from "../../SaveManagerContext.jsx"
 import gameData from "../../game/data.js"
 import ItemSelect from "../atoms/ItemSelect.jsx"
 import Card from "../atoms/Card.jsx"
+import bodyTypePortraits from "../../assets/default-bodytypes.png"
 
 const AppearanceRadio = props => {
   return (
@@ -272,7 +273,7 @@ export default props => {
               }}
             />
           </Card>
-          <Card label="skin/hair colours:" className="color-picker ">
+          <Card label="skin & hair colours:" className="color-picker ">
             <small>skin:</small>
             <ColorRadio
               colors={gameData.skinColors}
@@ -292,6 +293,31 @@ export default props => {
                 setSave(new SaveManager(save.buffer))
               }}
             />
+          </Card>
+          <Card label="body type:">
+            {gameData.bodyTypes[save.getCharacterGender(character)].map((preset, i) => {
+              const scale = 0.5
+              const width = scale * 60
+              const height = scale * 140
+              return (
+                <div
+                  style={{
+                    backgroundImage: `url(${bodyTypePortraits})`,
+                    width: width + "px",
+                    height: height + "px",
+                    backgroundPosition: `-${preset.icon * width}px 0`,
+                    backgroundSize: `${600 * scale}px ${140 * scale}px`,
+                    display: "inline-block",
+                    margin: "4px",
+                  }}
+                ></div>
+              )
+            })}
+            {/* <pre>
+              width:{"  "}
+              {save.getCharacterBodyTypeW(character)} <br />
+              height: {save.getCharacterBodyTypeH(character)}
+            </pre> */}
           </Card>
         </div>
       </div>

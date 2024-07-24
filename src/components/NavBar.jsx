@@ -7,6 +7,7 @@ import {
   EditorUiContext,
   ITEMS_TAB,
   MISC_TAB,
+  HEX_TAB,
   DARK_THEME_NAME,
   LIGHT_THEME_NAME,
 } from "../EditorUiContext"
@@ -34,6 +35,9 @@ export default props => {
         <li className={state.tab == MISC_TAB ? "active" : ""} onClick={e => setTab(MISC_TAB)}>
           misc
         </li>
+        {/* <li className={state.tab == HEX_TAB ? "active" : ""} onClick={e => setTab(HEX_TAB)}>
+          hex
+        </li> */}
       </ul>
 
       <div>

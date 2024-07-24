@@ -6,6 +6,7 @@ export const LIGHT_THEME_NAME = "light"
 export const PARTY_TAB = 1
 export const ITEMS_TAB = 2
 export const MISC_TAB = 3
+export const HEX_TAB = 4
 
 const initialTheme =
   localStorage.getItem("theme") ||

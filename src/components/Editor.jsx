@@ -2,11 +2,11 @@ import { useContext } from "react"
 
 import "./Editor.scss"
 
-import { EditorUiContext } from "../EditorUiContext"
 import CharacterEditor from "./editorTabs/CharacterEditor"
 import ItemEditor from "./editorTabs/ItemEditor"
 import MiscEditor from "./editorTabs/MiscEditor"
-import { PARTY_TAB, ITEMS_TAB, MISC_TAB } from "../EditorUiContext"
+import HexEditor from "./editorTabs/HexEditor"
+import { EditorUiContext, PARTY_TAB, ITEMS_TAB, MISC_TAB, HEX_TAB } from "../EditorUiContext"
 
 export default props => {
   let { state } = useContext(EditorUiContext)
@@ -23,6 +23,9 @@ export default props => {
           }
           case MISC_TAB: {
             return <MiscEditor />
+          }
+          case HEX_TAB: {
+            return <HexEditor />
           }
         }
       })()}

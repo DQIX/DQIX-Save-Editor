@@ -1,0 +1,32 @@
+.hex-root {
+  padding: 1em 1em 1em;
+}
+
+.hex-editor {
+  display: flex;
+  padding: 1em;
+}
+
+.hex,
+.ascii {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  grid-gap: 0px;
+  margin: 0 1em;
+
+  > input,
+  span {
+    padding: 0;
+    background-color: transparent;
+    font-family: "Fira Code", "Courier New", Courier, monospace;
+  }
+
+  input {
+    width: 2ch;
+    margin: 0 0.2em;
+  }
+  span {
+    width: 1ch;
+    margin: 0;
+  }
+}
