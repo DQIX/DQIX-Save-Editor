@@ -51,6 +51,12 @@ const CURRENT_VOCATION_OFFSET = 216
 /// offset of character's held items, relative to the beginning of the save
 const HELD_ITEM_OFFSET = 7578
 
+/// offset of character's skill allocation array, relative to beginning of character data
+const CHARACTER_SKILL_ALLOCATIONS_OFFSET = 383
+
+const CHARACTER_ZOOM_OFFSET = 416
+const CHARACTER_EGG_ON_OFFSET = 453
+
 /// items are stored in 2 contiguous arrays, one of the ids which are u16s and one of the counts which are u8s
 // prettier-ignore
 const itemOffsets = {
@@ -346,6 +352,47 @@ export default class SaveManager {
       value,
       character_offset + CHARACTER_BODY_TYPE_H
     )
+  }
+
+  getCharacterSkillAllocation(n, skill) {
+    const character_offset = CHARACTER_SIZE * n
+    return this.saveSlots[this.saveIdx][
+      character_offset + CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill
+    ]
+  }
+
+  setCharacterSkillAllocation(n, skill, value) {
+    const character_offset = CHARACTER_SIZE * n
+    this.saveSlots[this.saveIdx][character_offset + CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill] =
+      value
+  }
+
+  knowsZoom(n) {
+    const character_offset = CHARACTER_SIZE * n
+
+    return !!(this.saveSlots[this.saveIdx][character_offset + CHARACTER_ZOOM_OFFSET] & 0x10)
+  }
+
+  knowsEggOn(n) {
+    const character_offset = CHARACTER_SIZE * n
+
+    return !!(this.saveSlots[this.saveIdx][character_offset + CHARACTER_EGG_ON_OFFSET] & 0x40)
+  }
+
+  setKnowsZoom(n, knows) {
+    const character_offset = CHARACTER_SIZE * n
+
+    knows = knows ? 0x10 : 0
+    const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_ZOOM_OFFSET] & 0x10
+    this.saveSlots[this.saveIdx][character_offset + CHARACTER_ZOOM_OFFSET] = (prev & 0xef) | knows
+  }
+
+  setKnowsEggOn(n, knows) {
+    const character_offset = CHARACTER_SIZE * n
+
+    knows = knows ? 0x40 : 0
+    const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_EGG_ON_OFFSET] & 0x40
+    this.saveSlots[this.saveIdx][character_offset + CHARACTER_EGG_ON_OFFSET] = (prev & 0xbf) | knows
   }
 
   /// returns the item id for the equipped item in the given slot, n is the character index

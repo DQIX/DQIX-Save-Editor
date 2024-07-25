@@ -55,6 +55,13 @@ $grid-size: 232px;
     flex-grow: 1;
   }
 
+  .character-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    padding: 1em;
+  }
+
   .character-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, $grid-size);
@@ -62,6 +69,19 @@ $grid-size: 232px;
     grid-auto-flow: dense;
     grid-auto-rows: $grid-size;
     gap: 1em;
+  }
+
+  .skills-editor {
+    grid-column: span 2;
+    grid-row: span 2;
+
+    .proficiencies {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      > span {
+        display: inline-block;
+      }
+    }
   }
 
   .item-list {
@@ -75,13 +95,6 @@ $grid-size: 232px;
   .disabled {
     opacity: 0.6;
     pointer-events: none;
-  }
-
-  .character-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1em;
-    padding: 1em;
   }
 
   .appearance-editor {

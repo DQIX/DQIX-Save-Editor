@@ -1443,34 +1443,401 @@ for (const v of vocations) {
 }
 
 const NUM_SKILLS = 26
+// prettier-ignore
 const skills = [
-  { name: "Sword Skill" },
-  { name: "Spear Skill" },
-  { name: "Knife Skill" },
-  { name: "Wand Skill" },
-  { name: "Whip Skill" },
-  { name: "Staff Skill" },
-  { name: "Claw Skill" },
-  { name: "Fan Skill" },
-  { name: "Axe Skill" },
-  { name: "Hammer Skill" },
-  { name: "Boomerang Skill" },
-  { name: "Bow Skill" },
-  { name: "Shield Skill" },
-  { name: "Fisticuffs Skill" },
-  { name: "Courage" },
-  { name: "Faith" },
-  { name: "Spellcraft" },
-  { name: "Focus" },
-  { name: "Acquisitiveness" },
-  { name: "Litheness" },
-  { name: "Guts" },
-  { name: "Fource" },
-  { name: "Virtue" },
-  { name: "Enlightenment" },
-  { name: "Je Ne Sais Quoi" },
-  { name: "Ruggedness" },
+  {
+    name: "Sword Skill",
+    proficiencies: [
+      { name: "Dragon Slash",                     id: 0,    ability: true,   points: 3,   },
+      { name: "Attack +10 with Sword",            id: 1,    ability: false,  points: 7,   },
+      { name: "Metal Slash",                      id: 2,    ability: true,   points: 13,  },
+      { name: "Critical Up",                      id: 3,    ability: false,  points: 22,  },
+      { name: "Miracle Slash",                    id: 4,    ability: true,   points: 35,  },
+      { name: "Attack +20 with Sword",            id: 5,    ability: false,  points: 42,  },
+      { name: "Falcon Slash",                     id: 6,    ability: true,   points: 58,  },
+      { name: "Attack +30 with Sword",            id: 7,    ability: false,  points: 76,  },
+      { name: "Gigaslash",                        id: 8,    ability: true,   points: 88,  },
+      { name: "Omnivocational Swordmaster",       id: 9,    ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Spear Skill",
+    proficiencies: [
+      { name: "Mercurial Thrust",                 id: 20,   ability: true,   points: 3,   },
+      { name: "Attack +10 with Spear",            id: 21,   ability: false,  points: 7,   },
+      { name: "Cattle Prod",                      id: 22,   ability: true,   points: 13,  },
+      { name: "Pressure Pointer",                 id: 23,   ability: false,  points: 22,  },
+      { name: "Critical Hit Rate Up with Spear",  id: 24,   ability: true,   points: 35,  },
+      { name: "Attack +20 with Spear",            id: 25,   ability: false,  points: 42,  },
+      { name: "Thunder Thrust",                   id: 26,   ability: true,   points: 58,  },
+      { name: "Attack +30 with Spear",            id: 27,   ability: false,  points: 76,  },
+      { name: "Multithrust",                      id: 28,   ability: true,   points: 88,  },
+      { name: "Omnivocational Spearmaster",       id: 29,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Knife Skill",
+    proficiencies: [
+      { name: "Toxic Dagger",                     id: 40,   ability: false,  points: 3,   },
+      { name: "Attack +10 with Knife",            id: 41,   ability: true,   points: 7,   },
+      { name: "Fly Swat",                         id: 42,   ability: false,  points: 13,  },
+      { name: "Critical Hit Rate Up with Knife",  id: 43,   ability: true,   points: 22,  },
+      { name: "Victimiser",                       id: 44,   ability: false,  points: 35,  },
+      { name: "Attack +20 with Knife",            id: 45,   ability: true,   points: 42,  },
+      { name: "Assassins Stab",                   id: 46,   ability: false,  points: 58,  },
+      { name: "Attack +30 with Knife",            id: 47,   ability: false,  points: 76,  },
+      { name: "Hp Hoover",                        id: 48,   ability: false,  points: 88,  },
+      { name: "Omnivocational Knifemaster",       id: 49,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Wand Skill",
+    proficiencies: [
+      { name: "Max Mp +10 with Wand",             id: 50,   ability: false,  points: 3,   },
+      { name: "Antimagic",                        id: 51,   ability: true,   points: 7,   },
+      { name: "Mp. Absorption +2% with Wand",     id: 52,   ability: false,  points: 13,  },
+      { name: "Beelfreeze",                       id: 53,   ability: true,   points: 21,  },
+      { name: "Max Mp +30 with Wand",             id: 54,   ability: false,  points: 31,  },
+      { name: "Caduceus",                         id: 55,   ability: true,   points: 44,  },
+      { name: "Mp Absorption +4% with Wand",      id: 56,   ability: false,  points: 57,  },
+      { name: "Max Mp +60 with Wand",             id: 57,   ability: true,   points: 70,  },
+      { name: "Auto Mp Recovery with Wand",       id: 58,   ability: false,  points: 84,  },
+      { name: "Omnivocational Wandmaster",        id: 59,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Whip Skill",
+    proficiencies: [
+      { name: "Hypnowhip",                        id: 94,   ability: false,  points: 3,   },
+      { name: "Lashings Of Love",                 id: 95,   ability: true,   points: 7,   },
+      { name: "Attack +10 with Whip",             id: 96,   ability: false,  points: 13,  },
+      { name: "Trammel Lash",                     id: 97,   ability: true,   points: 22,  },
+      { name: "Attack +20 with Whip",             id: 98,   ability: false,  points: 35,  },
+      { name: "Hit The Hay",                      id: 99,   ability: true,   points: 42,  },
+      { name: "Attack +30 with Whip",             id: 100,  ability: false,  points: 58,  },
+      { name: "Schadenfreude",                    id: 101,  ability: true,   points: 76,  },
+      { name: "Twin Dragon Lash",                 id: 102,  ability: true,   points: 88,  },
+      { name: "Omnivocational Whipmaster",        id: 103,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Staff Skill",
+    proficiencies: [
+      { name: "Attack +10 with Staff",            id: 159,  ability: false,  points: 3,   },
+      { name: "Trip Of A Deathtime",              id: 160,  ability: true,   points: 7,   },
+      { name: "Critical Rate Up with Staff",      id: 161,  ability: false,  points: 13,  },
+      { name: "Deliverance",                      id: 162,  ability: true,   points: 22,  },
+      { name: "Attack +20 with Staff",            id: 163,  ability: false,  points: 35,  },
+      { name: "Party Pooper",                     id: 164,  ability: true,   points: 42,  },
+      { name: "Evasion Chance +4% with Staff",    id: 165,  ability: false,  points: 58,  },
+      { name: "Crushed Ice",                      id: 166,  ability: true,   points: 76,  },
+      { name: "Attack +30 with Staff",            id: 167,  ability: true,   points: 88,  },
+      { name: "Omnivocational Staffmaster",       id: 168,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Claw Skill",
+    proficiencies: [
+      { name: "Propeller Blade",                  id: 146,  ability: true,   points: 3,   },
+      { name: "Attack +10 with Claw",             id: 145,  ability: false,  points: 7,   },
+      { name: "Can Opener",                       id: 148,  ability: true,   points: 13,  },
+      { name: "Critical Hit Rate Up with Claw",   id: 149,  ability: false,  points: 22,  },
+      { name: "Flailing Nails",                   id: 144,  ability: true,   points: 35,  },
+      { name: "Attack +20 with Claw",             id: 147,  ability: false,  points: 42,  },
+      { name: "Hardclaw",                         id: 150,  ability: true,   points: 58,  },
+      { name: "Attack +30 with Claw",             id: 151,  ability: false,  points: 76,  },
+      { name: "Rake �N' Break",                   id: 152,  ability: true,   points: 88,  },
+      { name: "Omnivocational Clawmaster",        id: 153,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Fan Skill",
+    proficiencies: [
+      { name: "Flower Power",                     id: 84,   ability: true,   points: 3,   },
+      { name: "Attack +10 with Fan",              id: 85,   ability: false,  points: 7,   },
+      { name: "Reverse Cycle",                    id: 86,   ability: true,   points: 13,  },
+      { name: "Critical Hit Rate Up with Fan",    id: 87,   ability: false,  points: 22,  },
+      { name: "Water Slaughterer",                id: 88,   ability: true,   points: 35,  },
+      { name: "Attack +20 with Fan",              id: 89,   ability: false,  points: 42,  },
+      { name: "Schizofanic",                      id: 90,   ability: true,   points: 58,  },
+      { name: "Attack +30 with Fan",              id: 91,   ability: false,  points: 76,  },
+      { name: "Fan Dango",                        id: 92,   ability: true,   points: 88,  },
+      { name: "Omnivocational Fanmaster",         id: 93,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Axe Skill",
+    proficiencies: [
+      { name: "Poplar Toppler",                   id: 104,  ability: false,  points: 3,   },
+      { name: "Attack +10 with Axe",              id: 105,  ability: true,   points: 7,   },
+      { name: "Parallax",                         id: 106,  ability: false,  points: 13,  },
+      { name: "Critical Hit Rate Up with Axe",    id: 107,  ability: true,   points: 22,  },
+      { name: "Helm Splitter",                    id: 108,  ability: false,  points: 35,  },
+      { name: "Attack +20 with Axe",              id: 109,  ability: true,   points: 42,  },
+      { name: "Hatchet Man",                      id: 110,  ability: false,  points: 58,  },
+      { name: "Attack +30 with Axe",              id: 111,  ability: true,   points: 76,  },
+      { name: "Axes Of Evil",                     id: 112,  ability: true,   points: 88,  },
+      { name: "Omnivocational Axe Master",        id: 113,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Hammer Skill",
+    proficiencies: [
+      { name: "Heart Breaker",                    id: 189,  ability: true,   points: 3,   },
+      { name: "Attack +10 with Hammer",           id: 190,  ability: false,  points: 7,   },
+      { name: "Penny Pincher",                    id: 191,  ability: true,   points: 13,  },
+      { name: "Critical Hit Rate Up with Hammer", id: 192,  ability: false,  points: 22,  },
+      { name: "Bagsy Last",                       id: 193,  ability: true,   points: 35,  },
+      { name: "Attack +20 with Hammer",           id: 194,  ability: false,  points: 42,  },
+      { name: "Monster Masher",                   id: 195,  ability: true,   points: 58,  },
+      { name: "Attack +30 with Hammer",           id: 196,  ability: true,   points: 76,  },
+      { name: "Crackerwhack",                     id: 197,  ability: true,   points: 88,  },
+      { name: "Omnivocational Hammermaster",      id: 198,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Boomerang Skill",
+    proficiencies: [
+      { name: "Crosscutter Throw",                id: 30,   ability: true,   points: 3,   },
+      { name: "Power Throw",                      id: 31,   ability: false,  points: 7,   },
+      { name: "Attack +10 with Boomerang",        id: 32,   ability: true,   points: 13,  },
+      { name: "Ooze Bruiser",                     id: 33,   ability: false,  points: 22,  },
+      { name: "Attack +20 with Boomerang",        id: 34,   ability: true,   points: 35,  },
+      { name: "Starburst Throw",                  id: 35,   ability: false,  points: 42,  },
+      { name: "Firebird Throw",                   id: 36,   ability: true,   points: 58,  },
+      { name: "Attack +30 with Boomerang",        id: 40,   ability: true,   points: 76,  },
+      { name: "Metalicker",                       id: 38,   ability: true,   points: 88,  },
+      { name: "Omnivocational Rangmaster",        id: 39,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Bow Skill",
+    proficiencies: [
+      { name: "Conjury Conductor",                id: 70,   ability: true,   points: 3,   },
+      { name: "Attack +10 with Bow",              id: 71,   ability: false,  points: 7,   },
+      { name: "Flutter Disaster",                 id: 72,   ability: true,   points: 13,  },
+      { name: "Critical Hit Rate Up with Bow",    id: 73,   ability: false,  points: 22,  },
+      { name: "Needle Shot",                      id: 76,   ability: true,   points: 35,  },
+      { name: "Attack +20 with Bow",              id: 75,   ability: false,  points: 42,  },
+      { name: "Rain Of Pain",                     id: 74,   ability: true,   points: 58,  },
+      { name: "Attack +30 with Bow",              id: 77,   ability: true,   points: 76,  },
+      { name: "Hallowed Arrow",                   id: 78,   ability: true,   points: 88,  },
+      { name: "Omnivocational Bowmaster",         id: 79,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Shield Skill",
+    proficiencies: [
+      { name: "Blockenspiel",                     id: 10,   ability: false,  points: 6,   },
+      { name: "Block Chance +2%",                 id: 11,   ability: true,   points: 12,  },
+      { name: "Defending Champion",               id: 12,   ability: false,  points: 18,  },
+      { name: "Block Chance +2%",                 id: 13,   ability: true,   points: 25,  },
+      { name: "Immense Defence",                  id: 14,   ability: false,  points: 32,  },
+      { name: "Magic Mirror",                     id: 15,   ability: true,   points: 40,  },
+      { name: "Block Chance +2%",                 id: 16,   ability: false,  points: 52,  },
+      { name: "Holy Impregnable",                 id: 17,   ability: true,   points: 66,  },
+      { name: "Back Atcha",                       id: 18,   ability: true,   points: 82,  },
+      { name: "Omnivocational Shieldmaster",      id: 19,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Fisticuffs Skill",
+    proficiencies: [
+      { name: "Stone's Throw",                    id: 144,  ability: false,  points: 3,   },
+      { name: "Attack +10 with Fist",             id: 145,  ability: true,   points: 7,   },
+      { name: "Wind Sickles",                     id: 146,  ability: false,  points: 12,  },
+      { name: "Critical Hit Rate Up with Fist",   id: 147,  ability: true,   points: 18,  },
+      { name: "Knuckle Sandwich",                 id: 148,  ability: false,  points: 25,  },
+      { name: "Evasion Chance +4% with Fist",     id: 149,  ability: true,   points: 30,  },
+      { name: "Multifists",                       id: 150,  ability: false,  points: 42,  },
+      { name: "Attack +30 with Fist",             id: 151,  ability: true,   points: 60,  },
+      { name: "Boulder Toss",                     id: 152,  ability: true,   points: 77,  },
+      { name: "Attack +60 with Fist",             id: 153,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Courage",
+    proficiencies: [
+      { name: "Whipping Boy",                     id: 60,   ability: true,   points: 8,   },
+      { name: "Natural Strength +10",             id: 61,   ability: false,  points: 16,  },
+      { name: "Whistle",                          id: 62,   ability: true,   points: 28,  },
+      { name: "Natural Resilience +20",           id: 63,   ability: false,  points: 40,  },
+      { name: "Body Slam",                        id: 64,   ability: true,   points: 48,  },
+      { name: "Natural Strength +30",             id: 65,   ability: false,  points: 56,  },
+      { name: "Morale Masher",                    id: 66,   ability: true,   points: 70,  },
+      { name: "Natural Resilience +40",           id: 67,   ability: false,  points: 80,  },
+      { name: "Natural Max Hp +60",               id: 68,   ability: true,   points: 90,  },
+      { name: "Attack Attacker",                  id: 69,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Faith",
+    proficiencies: [
+      { name: "Divination",                       id: 124,  ability: false,  points: 8,   },
+      { name: "Natural Magical Mending +20",      id: 125,  ability: true,   points: 16,  },
+      { name: "Benediction",                      id: 126,  ability: false,  points: 28,  },
+      { name: "Natural Max. Mp +10",              id: 127,  ability: true,   points: 40,  },
+      { name: "Rotstopper",                       id: 128,  ability: false,  points: 48,  },
+      { name: "Natural Magical Mending +60",      id: 129,  ability: true,   points: 56,  },
+      { name: "Alma Mater",                       id: 130,  ability: false,  points: 70,  },
+      { name: "Natural Max Mp +20",               id: 131,  ability: true,   points: 80,  },
+      { name: "Care Prayer",                      id: 132,  ability: false,  points: 90,  },
+      { name: "Natural Magical Mending +100",     id: 133,  ability: true,   points: 100, },
+    ]
+  },
+  {
+    name: "Spellcraft",
+    proficiencies: [
+      { name: "Wizard Ward",                      id: 114,  ability: true,   points: 8,   },
+      { name: "Natural Magical Might +20",        id: 115,  ability: false,  points: 18,  },
+      { name: "Spooky Aura",                      id: 116,  ability: true,   points: 26,  },
+      { name: "Natural Max. Mp +10",              id: 117,  ability: false,  points: 38,  },
+      { name: "Focus Pocus",                      id: 118,  ability: true,   points: 46,  },
+      { name: "Critical Spell Rate Up",           id: 119,  ability: false,  points: 54,  },
+      { name: "Channel Anger",                    id: 120,  ability: true,   points: 68,  },
+      { name: "Natural Magical Might +60",        id: 121,  ability: false,  points: 78,  },
+      { name: "Natural Max Mp +20",               id: 122,  ability: true,   points: 88,  },
+      { name: "Natural Magical Might +100",       id: 123,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Focus",
+    proficiencies: [
+      { name: "War Cry",                          id: 134,  ability: true,   points: 4,   },
+      { name: "Natural Agility +10",              id: 135,  ability: false,  points: 10,  },
+      { name: "Psyche Up",                        id: 136,  ability: true,   points: 16,  },
+      { name: "Natural Strength +10",             id: 137,  ability: false,  points: 22,  },
+      { name: "Mens Sana",                        id: 138,  ability: true,   points: 32,  },
+      { name: "Natural Max. Hp +30",              id: 139,  ability: false,  points: 42,  },
+      { name: "Mind Over Matter",                 id: 140,  ability: true,   points: 55,  },
+      { name: "Natural Agility +30",              id: 141,  ability: false,  points: 68,  },
+      { name: "Meditation",                       id: 142,  ability: true,   points: 82,  },
+      { name: "Natural Agility +60",              id: 143,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Acquisitiveness",
+    proficiencies: [
+      { name: "Natural Deftness +20",             id: 74,   ability: false,  points: 4,   },
+      { name: "Half-Inch",                        id: 75,   ability: true,   points: 10,  },
+      { name: "Natural Agility +20",              id: 76,   ability: false,  points: 16,  },
+      { name: "Pitfall",                          id: 77,   ability: true,   points: 22,  },
+      { name: "Natural Max. Hp +20",              id: 78,   ability: false,  points: 32,  },
+      { name: "Nose For Treasure",                id: 79,   ability: true,   points: 42,  },
+      { name: "Natural Deftness +40",             id: 80,   ability: false,  points: 55,  },
+      { name: "Eye For Trouble",                  id: 81,   ability: true,   points: 68,  },
+      { name: "Natural Agility +40",              id: 82,   ability: false,  points: 82,  },
+      { name: "Treasure Eye Land",                id: 83,   ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Litheness",
+    proficiencies: [
+      { name: "Hot Lick",                         id: 30,   ability: true,   points: 4,   },
+      { name: "Spry In Crisis",                   id: 31,   ability: false,  points: 10,  },
+      { name: "Pratfall",                         id: 32,   ability: true,   points: 16,  },
+      { name: "Natural Charm +30",                id: 33,   ability: false,  points: 22,  },
+      { name: "Sobering Slap",                    id: 34,   ability: true,   points: 32,  },
+      { name: "Natural Magical Might +30",        id: 35,   ability: false,  points: 42,  },
+      { name: "Tap Dance",                        id: 36,   ability: true,   points: 55,  },
+      { name: "Natural Magical Mending +30",      id: 37,   ability: false,  points: 68,  },
+      { name: "Have A Ball",                      id: 38,   ability: false,  points: 82,  },
+      { name: "Natural Deftness +50",             id: 39,   ability: true,   points: 100, },
+    ]
+  },
+  {
+    name: "Guts",
+    proficiencies: [
+      { name: "Natural Max. Hp +10",              id: 169,  ability: true,   points: 4,   },
+      { name: "Clap Trap",                        id: 170,  ability: false,  points: 10,  },
+      { name: "Natural Strength +10",             id: 171,  ability: true,   points: 16,  },
+      { name: "Double Up",                        id: 172,  ability: false,  points: 22,  },
+      { name: "Natural Max. Hp +20",              id: 173,  ability: true,   points: 32,  },
+      { name: "Double Edged Slash",               id: 174,  ability: false,  points: 42,  },
+      { name: "Natural Strength +30",             id: 175,  ability: true,   points: 55,  },
+      { name: "Blind Man's Biff",                 id: 176,  ability: false,  points: 68,  },
+      { name: "Natural Max. Hp +30",              id: 177,  ability: true,   points: 82,  },
+      { name: "Feel The Burn",                    id: 178,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Fource",
+    proficiencies: [
+      { name: "Fire Fource",                      id: 154,  ability: false,  points: 4,   },
+      { name: "Natural Strength +10",             id: 155,  ability: true,   points: 10,  },
+      { name: "Frost Fource",                     id: 156,  ability: false,  points: 16,  },
+      { name: "Natural Resilience +20",           id: 157,  ability: true,   points: 22,  },
+      { name: "Gale Fource",                      id: 158,  ability: false,  points: 32,  },
+      { name: "Natural Charm+10",                 id: 161,  ability: true,   points: 42,  },
+      { name: "Funeral Fource",                   id: 160,  ability: false,  points: 55,  },
+      { name: "Natural Magical Might +30",        id: 159,  ability: true,   points: 68,  },
+      { name: "Life Fource",                      id: 162,  ability: false,  points: 82,  },
+      { name: "Natural Max. Hp +30",              id: 163,  ability: true,   points: 100, },
+    ]
+  },
+  {
+    name: "Virtue",
+    proficiencies: [
+      { name: "Pincushion",                       id: 179,  ability: true,   points: 4,   },
+      { name: "Natural Resilience +10",           id: 180,  ability: false,  points: 10,  },
+      { name: "H-Pathy",                          id: 181,  ability: true,   points: 16,  },
+      { name: "Natural Magical Mending+30",       id: 182,  ability: false,  points: 22,  },
+      { name: "M-Pathy",                          id: 183,  ability: true,   points: 32,  },
+      { name: "Natural Resilience +20",           id: 184,  ability: false,  points: 42,  },
+      { name: "Selflessness",                     id: 185,  ability: true,   points: 55,  },
+      { name: "Natural Resilience +20",           id: 186,  ability: false,  points: 68,  },
+      { name: "Forbearance",                      id: 187,  ability: true,   points: 82,  },
+      { name: "Maximum Hp +80",                   id: 188,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Enlightenment",
+    proficiencies: [
+      { name: "Natural Magical Mending + 20",     id: 199,  ability: false,  points: 4,   },
+      { name: "Jack's Knack",                     id: 200,  ability: true,   points: 10,  },
+      { name: "Natural Magical Might + 20",       id: 201,  ability: false,  points: 16,  },
+      { name: "Right As Rain",                    id: 202,  ability: true,   points: 22,  },
+      { name: "Natural Magical Mending + 40",     id: 203,  ability: false,  points: 32,  },
+      { name: "Disruptive Wave",                  id: 204,  ability: true,   points: 42,  },
+      { name: "Natural Magical Might +40",        id: 205,  ability: false,  points: 55,  },
+      { name: "Caster Sugar",                     id: 206,  ability: true,   points: 68,  },
+      { name: "Natural Max. Mp +60",              id: 207,  ability: false,  points: 82,  },
+      { name: "Mp Consumption -25%",              id: 208,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Je Ne Sais Quoi",
+    proficiencies: [
+      { name: "Charm +10",                        id: 221,  ability: true,   points: 4,   },
+      { name: "Autograph",                        id: 220,  ability: false,  points: 10,  },
+      { name: "Agility +20",                      id: 219,  ability: true,   points: 16,  },
+      { name: "Scandal Eyes",                     id: 222,  ability: false,  points: 22,  },
+      { name: "HP +20",                           id: 223,  ability: true,   points: 32,  },
+      { name: "Extreme Makeover",                 id: 224,  ability: false,  points: 42,  },
+      { name: "Charm +20",                        id: 225,  ability: true,   points: 55,  },
+      { name: "Eyes on Me",                       id: 226,  ability: false,  points: 68,  },
+      { name: "Charm +30",                        id: 227,  ability: true,   points: 82,  },
+      { name: "Disco Stew",                       id: 228,  ability: false,  points: 100, },
+    ]
+  },
+  {
+    name: "Ruggedness",
+    proficiencies: [
+      { name: "Soothe Sayer",                     id: 209,  ability: false,  points: 4,   },
+      { name: "Natural Deftness +10",             id: 210,  ability: true,   points: 10,  },
+      { name: "Mercy",                            id: 211,  ability: false,  points: 16,  },
+      { name: "Natural Agility +20",              id: 212,  ability: true,   points: 22,  },
+      { name: "Vanish",                           id: 213,  ability: false,  points: 32,  },
+      { name: "Natural Resilience +20",           id: 214,  ability: true,   points: 42,  },
+      { name: "Mist Me",                          id: 215,  ability: false,  points: 55,  },
+      { name: "Natural Deftness +20",             id: 216,  ability: true,   points: 68,  },
+      { name: "Wolf Whistle",                     id: 217,  ability: false,  points: 82,  },
+      { name: "Natural Deftness +60",             id: 218,  ability: true,   points: 100, },
+    ]
+  },
 ]
+
+window.skills = skills
 
 const LEARNABLE_PARTY_TRICK_START = 16
 const LEARNABLE_PARTY_TRICK_END = 31

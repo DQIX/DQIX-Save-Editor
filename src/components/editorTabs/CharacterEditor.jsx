@@ -52,6 +52,7 @@ const ColorRadio = props => {
 export default props => {
   let { save, setSave } = useContext(SaveManagerContext)
   let [character, setCharacter] = useState(save.getStandbyCount())
+  let [selectedSkill, setSelectedSkill] = useState(0)
 
   return (
     <div className="character-root">
@@ -200,6 +201,78 @@ export default props => {
             ))}
           </Card>
 
+          <Card label="skills:" className="skills-editor">
+            <div>
+              {/* <label>
+                unallocated skill points:
+                <Input type="number" />
+              </label> */}
+            </div>
+            <div>
+              <label>
+                zoom:
+                <Input
+                  type="checkbox"
+                  checked={save.knowsZoom(character)}
+                  onChange={e => {
+                    save.setKnowsZoom(character, e.target.checked)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                />
+              </label>
+
+              <label>
+                egg on:
+                <Input
+                  type="checkbox"
+                  checked={save.knowsEggOn(character)}
+                  onChange={e => {
+                    save.setKnowsEggOn(character, e.target.checked)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                />
+              </label>
+            </div>
+            <select
+              name="selected-skill"
+              value={selectedSkill}
+              onChange={e => setSelectedSkill(parseInt(e.target.value))}
+            >
+              {gameData.skills.map((skill, i) => (
+                <option value={i} key={i}>
+                  {skill.name}
+                </option>
+              ))}
+            </select>
+            <label>
+              allocated points:
+              <Input
+                type="number"
+                value={save.getCharacterSkillAllocation(character, selectedSkill)}
+                onChange={e => {
+                  save.setCharacterSkillAllocation(character, selectedSkill, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <div className="proficiencies">
+              {gameData.skills[selectedSkill].proficiencies.map(p => (
+                <
+                  // key={p.id}
+                  // style={{
+                  //   fontWeight:
+                  //     p.points <= save.getCharacterSkillAllocation(character, selectedSkill)
+                  //       ? "bold"
+                  //       : "normal",
+                  // }}
+                >
+                  <span>{p.points}</span>
+                  <span>{p.name}</span>
+                </>
+              ))}
+            </div>
+          </Card>
+
           <Card label="face:" className="appearance-editor face">
             <AppearanceRadio
               gender={save.getCharacterGender(character)}
@@ -273,6 +346,7 @@ export default props => {
               }}
             />
           </Card>
+
           <Card label="skin & hair colours:" className="color-picker ">
             <small>skin:</small>
             <ColorRadio
@@ -294,6 +368,7 @@ export default props => {
               }}
             />
           </Card>
+
           <Card label="body type:" className="body-type-editor">
             <div className="presets">
               {gameData.bodyTypes[save.getCharacterGender(character)].map((preset, i) => {
@@ -301,7 +376,7 @@ export default props => {
                 const width = scale * 60
                 const height = scale * 140
                 return (
-                  <label>
+                  <label key={i}>
                     <input
                       type="radio"
                       name="body-type-preset"
