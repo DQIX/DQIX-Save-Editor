@@ -212,6 +212,9 @@ export default props => {
                     save.setUnallocatedSkillPoints(character, e.target.value)
                     setSave(new SaveManager(save.buffer))
                   }}
+                  min={0}
+                  max={9999}
+                  size={6}
                 />
               </label>
             </div>
@@ -258,7 +261,7 @@ export default props => {
                   value={save.getCharacterSkillAllocation(character, selectedSkill)}
                   min={0}
                   max={100}
-                  size={3}
+                  size={4}
                   onChange={e => {
                     save.setCharacterSkillAllocation(character, selectedSkill, e.target.value)
                     setSave(new SaveManager(save.buffer))
@@ -314,6 +317,9 @@ export default props => {
                   save.setCharacterFace(character, e.target.value)
                   setSave(new SaveManager(save.buffer))
                 }}
+                min={0}
+                max={255}
+                size={4}
               />
             </label>
             <p>
@@ -340,6 +346,9 @@ export default props => {
                   save.setCharacterHairstyle(character, e.target.value)
                   setSave(new SaveManager(save.buffer))
                 }}
+                min={0}
+                max={255}
+                size={4}
               />
             </label>
             <p>
@@ -436,8 +445,12 @@ export default props => {
                   save.setCharacterBodyTypeW(character, e.target.value)
                   setSave(new SaveManager(save.buffer))
                 }}
+                min={0}
+                max={65535}
+                size={8}
               />
             </label>
+            <br />
             <label>
               height:
               <Input
@@ -447,6 +460,9 @@ export default props => {
                   save.setCharacterBodyTypeH(character, e.target.value)
                   setSave(new SaveManager(save.buffer))
                 }}
+                min={0}
+                max={65535}
+                size={8}
               />
             </label>
           </Card>

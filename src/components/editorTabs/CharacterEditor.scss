@@ -155,7 +155,7 @@ $grid-size: 232px;
     }
 
     label {
-      input {
+      input[type="radio"] {
         appearance: none;
         position: absolute;
       }
