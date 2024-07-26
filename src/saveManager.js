@@ -54,6 +54,12 @@ const HELD_ITEM_OFFSET = 7578
 /// offset of character's skill allocation array, relative to beginning of character data
 const CHARACTER_SKILL_ALLOCATIONS_OFFSET = 383
 
+/// offset of character's proficiency bitflags, relative to beginning of character data
+const CHARACTER_PROFICIENCY_OFFSET = 418
+
+/// offset of character's unallocated skill points, relative to beginning of character data
+const CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET = 380
+
 const CHARACTER_ZOOM_OFFSET = 416
 const CHARACTER_EGG_ON_OFFSET = 453
 
@@ -236,6 +242,10 @@ export default class SaveManager {
     return n >= this.getStandbyCount()
   }
 
+  isHero(n) {
+    return n == this.getStandbyCount()
+  }
+
   /// returns the utf8 encoded name, any unknown characters will be returned as ?
   getCharacterName(n) {
     const character_offset = CHARACTER_SIZE * n
@@ -361,10 +371,43 @@ export default class SaveManager {
     ]
   }
 
-  setCharacterSkillAllocation(n, skill, value) {
+  setCharacterSkillAllocationRaw(n, skill, value) {
     const character_offset = CHARACTER_SIZE * n
     this.saveSlots[this.saveIdx][character_offset + CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill] =
       value
+  }
+
+  setCharacterSkillAllocation(n, skill, value) {
+    value = Math.max(0, Math.min(100, value))
+    this.setCharacterSkillAllocationRaw(n, skill, value)
+
+    for (const p of gameData.skills[skill].proficiencies) {
+      this.setCharacterProficiency(n, p.id, p.points <= value)
+    }
+  }
+
+  getCharacterProficiency(n, id) {
+    const character_offset = CHARACTER_SIZE * n
+    return !!(
+      this.saveSlots[this.saveIdx][
+        character_offset + CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)
+      ] &
+      (1 << id % 8)
+    )
+  }
+
+  setCharacterProficiency(n, id, value) {
+    const character_offset = CHARACTER_SIZE * n
+    const mask = 1 << id % 8
+
+    this.saveSlots[this.saveIdx][
+      character_offset + CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)
+    ] =
+      (this.saveSlots[this.saveIdx][
+        character_offset + CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)
+      ] &
+        ~mask) |
+      (value ? mask : 0)
   }
 
   knowsZoom(n) {
@@ -393,6 +436,25 @@ export default class SaveManager {
     knows = knows ? 0x40 : 0
     const prev = this.saveSlots[this.saveIdx][character_offset + CHARACTER_EGG_ON_OFFSET] & 0x40
     this.saveSlots[this.saveIdx][character_offset + CHARACTER_EGG_ON_OFFSET] = (prev & 0xbf) | knows
+  }
+
+  getUnallocatedSkillPoints(n) {
+    const character_offset = CHARACTER_SIZE * n
+
+    return this.saveSlots[this.saveIdx].readUInt16LE(
+      character_offset + CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET
+    )
+  }
+
+  setUnallocatedSkillPoints(n, pts) {
+    const character_offset = CHARACTER_SIZE * n
+
+    pts = Math.max(0, Math.min(9999, pts))
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      pts,
+      character_offset + CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET
+    )
   }
 
   /// returns the item id for the equipped item in the given slot, n is the character index

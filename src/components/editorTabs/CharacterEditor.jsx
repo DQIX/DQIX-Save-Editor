@@ -203,12 +203,19 @@ export default props => {
 
           <Card label="skills:" className="skills-editor">
             <div>
-              {/* <label>
+              <label>
                 unallocated skill points:
-                <Input type="number" />
-              </label> */}
+                <Input
+                  type="number"
+                  value={save.getUnallocatedSkillPoints(character)}
+                  onChange={e => {
+                    save.setUnallocatedSkillPoints(character, e.target.value)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                />
+              </label>
             </div>
-            <div>
+            <div className="specialty-skills">
               <label>
                 zoom:
                 <Input
@@ -220,7 +227,6 @@ export default props => {
                   }}
                 />
               </label>
-
               <label>
                 egg on:
                 <Input
@@ -233,44 +239,60 @@ export default props => {
                 />
               </label>
             </div>
-            <select
-              name="selected-skill"
-              value={selectedSkill}
-              onChange={e => setSelectedSkill(parseInt(e.target.value))}
-            >
-              {gameData.skills.map((skill, i) => (
-                <option value={i} key={i}>
-                  {skill.name}
-                </option>
-              ))}
-            </select>
-            <label>
-              allocated points:
-              <Input
-                type="number"
-                value={save.getCharacterSkillAllocation(character, selectedSkill)}
-                onChange={e => {
-                  save.setCharacterSkillAllocation(character, selectedSkill, e.target.value)
-                  setSave(new SaveManager(save.buffer))
-                }}
-              />
-            </label>
+            <div>
+              <select
+                name="selected-skill"
+                value={selectedSkill}
+                onChange={e => setSelectedSkill(parseInt(e.target.value))}
+              >
+                {gameData.skills.map((skill, i) => (
+                  <option value={i} key={i}>
+                    {skill.name}
+                  </option>
+                ))}
+              </select>
+              <label>
+                allocated points:
+                <Input
+                  type="number"
+                  value={save.getCharacterSkillAllocation(character, selectedSkill)}
+                  min={0}
+                  max={100}
+                  size={3}
+                  onChange={e => {
+                    save.setCharacterSkillAllocation(character, selectedSkill, e.target.value)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                />
+              </label>
+            </div>
             <div className="proficiencies">
-              {gameData.skills[selectedSkill].proficiencies.map(p => (
-                <
-                  // key={p.id}
-                  // style={{
-                  //   fontWeight:
-                  //     p.points <= save.getCharacterSkillAllocation(character, selectedSkill)
-                  //       ? "bold"
-                  //       : "normal",
-                  // }}
-                >
+              {gameData.skills[selectedSkill].proficiencies.map((p, i) => (
+                <label key={i}>
+                  <Input
+                    type="checkbox"
+                    checked={save.getCharacterProficiency(character, p.id)}
+                    onChange={e => {
+                      // save.setCharacterProficiency(character, p.id, e.target.checked)
+
+                      const points = e.target.checked
+                        ? p.points
+                        : i && gameData.skills[selectedSkill].proficiencies[i - 1].points
+
+                      save.setCharacterSkillAllocation(character, selectedSkill, points)
+                      setSave(new SaveManager(save.buffer))
+                    }}
+                  />
                   <span>{p.points}</span>
                   <span>{p.name}</span>
-                </>
+                </label>
               ))}
             </div>
+            {save.isHero(character) && (
+              <p>
+                <small>editing here does not give hero skill accolades</small>
+              </p>
+            )}
           </Card>
 
           <Card label="face:" className="appearance-editor face">

@@ -75,11 +75,54 @@ $grid-size: 232px;
     grid-column: span 2;
     grid-row: span 2;
 
+    > div {
+      margin-bottom: 0.8em;
+      label {
+        input {
+          margin: 0 0.5em;
+        }
+      }
+    }
+
+    .specialty-skills {
+      input {
+        margin-right: 1em;
+      }
+    }
+
+    select {
+      margin: 0.2em 2em 0.2em 0;
+    }
+
     .proficiencies {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      > span {
-        display: inline-block;
+      position: relative;
+      // &::after {
+      //   content: "";
+      //   position: absolute;
+      //   height: calc(100% - 16px);
+      //   top: 8px;
+      //   width: 2px;
+      //   background-color: var(--font-color);
+      //   border-radius: 2px;
+      //   left: calc(4px + 0.575em - 2px);
+      // }
+      > label {
+        display: block;
+
+        input {
+          margin-right: 1em;
+          background-color: var(--card-bg-color);
+          z-index: 1;
+        }
+
+        span {
+          display: inline-block;
+          &:first-of-type {
+            text-align: right;
+            width: 2em;
+            margin-right: 1em;
+          }
+        }
       }
     }
   }
