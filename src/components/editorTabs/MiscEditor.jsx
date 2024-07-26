@@ -141,7 +141,7 @@ export default props => {
             return gameData.partyTricks
               .slice(gameData.LEARNABLE_PARTY_TRICK_START, gameData.LEARNABLE_PARTY_TRICK_END)
               .map((name, i) => (
-                <div key={i}>
+                <label key={i}>
                   <Input
                     type="checkbox"
                     defaultChecked={save.getPartyTrickLearned(i)}
@@ -151,7 +151,7 @@ export default props => {
                     }}
                   />
                   <span>{name}</span>
-                </div>
+                </label>
               ))
           })()}
         </div>
@@ -197,7 +197,7 @@ export default props => {
       <Card label="visited locations:" className="visited-locations">
         <div>
           {gameData.locationNames.map((name, i) => (
-            <label>
+            <label key={i}>
               <Input
                 type="checkbox"
                 checked={save.visitedLocation(i)}
@@ -205,6 +205,7 @@ export default props => {
                   save.setVisitedLocation(i, e.target.checked)
                   setSave(new SaveManager(save.buffer))
                 }}
+                key={i}
               />
               {name}
             </label>

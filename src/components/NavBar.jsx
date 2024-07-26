@@ -2,15 +2,7 @@ import { useContext } from "react"
 
 import "./NavBar.scss"
 
-import {
-  PARTY_TAB,
-  EditorUiContext,
-  ITEMS_TAB,
-  MISC_TAB,
-  HEX_TAB,
-  DARK_THEME_NAME,
-  LIGHT_THEME_NAME,
-} from "../EditorUiContext"
+import { EditorUiContext, tabs, DARK_THEME_NAME, LIGHT_THEME_NAME } from "../EditorUiContext"
 import { SaveManagerContext } from "../SaveManagerContext"
 import { STATE_LOADED } from "../saveManager"
 
@@ -26,18 +18,13 @@ export default props => {
           pointerEvents: save.state == STATE_LOADED ? "auto" : "none",
         }}
       >
-        <li className={state.tab == PARTY_TAB ? "active" : ""} onClick={e => setTab(PARTY_TAB)}>
-          party
-        </li>
-        <li className={state.tab == ITEMS_TAB ? "active" : ""} onClick={e => setTab(ITEMS_TAB)}>
-          items
-        </li>
-        <li className={state.tab == MISC_TAB ? "active" : ""} onClick={e => setTab(MISC_TAB)}>
-          misc
-        </li>
-        {/* <li className={state.tab == HEX_TAB ? "active" : ""} onClick={e => setTab(HEX_TAB)}>
-          hex
-        </li> */}
+        {tabs
+          .filter(tab => !tab.disabled)
+          .map((tab, i) => (
+            <li key={i} className={state.tab == i ? "active" : ""} onClick={e => setTab(i)}>
+              {tab.name}
+            </li>
+          ))}
       </ul>
 
       <div>

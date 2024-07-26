@@ -1,12 +1,20 @@
 import { useState, createContext } from "react"
+import ItemEditor from "./components/editorTabs/ItemEditor"
+import CharacterEditor from "./components/editorTabs/CharacterEditor"
+import InnEditor from "./components/editorTabs/InnEditor"
+import MiscEditor from "./components/editorTabs/MiscEditor"
+import HexEditor from "./components/editorTabs/HexEditor"
 
 export const DARK_THEME_NAME = "dark"
 export const LIGHT_THEME_NAME = "light"
 
-export const PARTY_TAB = 1
-export const ITEMS_TAB = 2
-export const MISC_TAB = 3
-export const HEX_TAB = 4
+export const tabs = [
+  { name: "party", component: CharacterEditor },
+  { name: "items", component: ItemEditor },
+  { name: "inn", component: InnEditor },
+  { name: "misc", component: MiscEditor },
+  { name: "hex", component: HexEditor, disabled: true },
+]
 
 const initialTheme =
   localStorage.getItem("theme") ||
@@ -14,13 +22,13 @@ const initialTheme =
 document.documentElement.setAttribute("data-theme", initialTheme)
 
 export const EditorUiContext = createContext({
-  tab: PARTY_TAB,
+  tab: 2,
   theme: initialTheme,
 })
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: PARTY_TAB,
+    tab: 2,
     theme: initialTheme,
   })
 
