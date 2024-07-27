@@ -1,0 +1,9 @@
+button {
+  background-color: var(--accent-color);
+  border: none;
+  outline: none;
+  padding: 0.5em 1em;
+  border-radius: var(--border-radius);
+  color: var(--on-accent-color);
+  cursor: pointer;
+}

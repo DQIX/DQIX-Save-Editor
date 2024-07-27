@@ -32,7 +32,7 @@ export default props => {
           ))}
         </div>
       </Card>
-      <Card label="dqvc:" className="dqvc">
+      <Card label="dqvc store:" className="dqvc">
         <table>
           <thead>
             <tr>
@@ -113,7 +113,33 @@ export default props => {
         </select>
         {gameData.dqvcListings[listing] && (
           <>
-            <button>⚄</button>
+            <button
+              className="randomize"
+              onClick={e => {
+                const l = gameData.dqvcListings[listing]
+                let idxs = new Set()
+                while (idxs.size != 6) {
+                  idxs.add(Math.floor(Math.random() * l.items.length))
+                }
+
+                idxs = [...idxs]
+
+                for (let i = 0; i < 6; i++) {
+                  const idx = idxs[i]
+                  save.setDqvcItem(i, l.items[idx].itemId)
+                  save.setDqvcPrice(i, l.items[idx].price)
+                  save.setDqvcStock(i, 1)
+                }
+
+                setSave(new SaveManager(save.buffer))
+              }}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
             <a href={gameData.dqvcListings[listing].link} target="_blank">
               yab's list
             </a>

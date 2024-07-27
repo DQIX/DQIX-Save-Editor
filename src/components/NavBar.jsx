@@ -5,6 +5,7 @@ import "./NavBar.scss"
 import { EditorUiContext, tabs, DARK_THEME_NAME, LIGHT_THEME_NAME } from "../EditorUiContext"
 import { SaveManagerContext } from "../SaveManagerContext"
 import { STATE_LOADED } from "../saveManager"
+import Button from "./atoms/Button"
 
 export default props => {
   let { save } = useContext(SaveManagerContext)
@@ -30,7 +31,7 @@ export default props => {
       </ul>
 
       <div>
-        <button
+        <Button
           className="export"
           style={{
             opacity: save.state == STATE_LOADED ? 1 : 0,
@@ -39,7 +40,8 @@ export default props => {
           onClick={e => save.download()}
         >
           export
-        </button>
+        </Button>
+
         <a href="https://github.com/dqix/editor" target="_blank" className="github-link"></a>
         <a
           className="theme-toggle"

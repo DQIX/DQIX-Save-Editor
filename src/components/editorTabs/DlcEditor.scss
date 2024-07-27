@@ -56,6 +56,50 @@ $grid-size: 184px;
     > p:not(:first-child) {
       margin: 0;
     }
+
+    .randomize {
+      width: 2em;
+      height: 2em;
+      padding: 0;
+      vertical-align: middle;
+      line-height: 1;
+      position: relative;
+
+      $pad: 12%;
+      $size: 22%;
+      span {
+        color: inherit;
+        position: absolute;
+        width: $size;
+        height: $size;
+        display: block;
+        border-radius: 50%;
+        background-color: var(--on-accent-color);
+
+        &:nth-child(1) {
+          top: $pad;
+          left: $pad;
+        }
+        &:nth-child(2) {
+          top: $pad;
+          left: 100% - $pad - $size;
+        }
+        &:nth-child(3) {
+          top: 100% - $pad - $size;
+          left: 100% - $pad - $size;
+        }
+
+        &:nth-child(4) {
+          top: 100% - $pad - $size;
+          left: $pad;
+        }
+
+        &:nth-child(5) {
+          top: 50% - $size * 0.5;
+          left: 50% - $size * 0.5;
+        }
+      }
+    }
   }
 
   .unlock {
