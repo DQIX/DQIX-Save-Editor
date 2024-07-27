@@ -1,0 +1,35 @@
+$grid-size: 184px;
+
+.dlc-root {
+  display: grid;
+  grid-auto-flow: dense;
+  gap: 1em;
+  padding: 1em 1em 1em;
+  grid-template-columns: repeat(auto-fit, $grid-size);
+  grid-template-rows: repeat(auto-fit, $grid-size);
+
+  justify-content: center;
+  max-width: 1080px;
+  margin: 0 auto;
+
+  .special-guests {
+    grid-row: span 2;
+    grid-column: span 2;
+    height: $grid-size * 2;
+    > div {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .dqvc {
+    grid-row: span 2;
+    grid-column: span 3;
+    height: $grid-size * 2;
+  }
+
+  .unlock {
+    grid-row: span 1;
+    aspect-ratio: 1;
+  }
+}

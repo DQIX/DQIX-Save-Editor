@@ -19,12 +19,14 @@ export default props => {
         }}
       >
         {tabs
-          .filter(tab => !tab.disabled)
-          .map((tab, i) => (
-            <li key={i} className={state.tab == i ? "active" : ""} onClick={e => setTab(i)}>
-              {tab.name}
-            </li>
-          ))}
+          .map((tab, i) =>
+            tab.disabled ? null : (
+              <li key={i} className={state.tab == i ? "active" : ""} onClick={e => setTab(i)}>
+                {tab.name}
+              </li>
+            )
+          )
+          .filter(tab => tab)}
       </ul>
 
       <div>

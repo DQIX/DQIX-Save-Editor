@@ -23,12 +23,12 @@ const CHECKSUM_B_DATA_END = 28644
 const CHARACTER_SIZE = 572
 
 /// offset of name relative to beginning of character data
-const NAME_OFFSET = 456
+const CHARACTER_NAME_OFFSET = 456
 /// max length of name in bytes
 const NAME_LENGTH = 10
 
 /// offset of name equipments relative to beginning of character data
-const EQUIPMENT_OFFSET = 488
+const CHARACTER_EQUIPMENT_OFFSET = 488
 
 /// offset of character gender/colors byte relative to beginning of character data
 // u8 laid out like: `eeeesssg`
@@ -96,6 +96,18 @@ const MULTIPLAYER_SECONDS = 16031
 const UNLOCKABLE_VOCATION_OFFSET = 12276
 
 const VISITED_LOCATIONS_OFFSET = 11788
+
+/// offset of canvased guest array
+const CANVASED_GUEST_OFFSET = 16200
+
+/// size of canvased guest structure
+const CANVASED_GUEST_SIZE = 232
+
+/// offset of name relative to beginning of guest data
+const GUEST_NAME_OFFSET = 0
+
+/// offset of special guest bitflags
+const SPECIAL_GUEST_OFFSET = 11528
 
 export default class SaveManager {
   constructor(buffer) {
@@ -252,8 +264,8 @@ export default class SaveManager {
 
     return readStringFromBuffer(
       this.saveSlots[this.saveIdx].subarray(
-        character_offset + NAME_OFFSET,
-        character_offset + NAME_OFFSET + NAME_LENGTH
+        character_offset + CHARACTER_NAME_OFFSET,
+        character_offset + CHARACTER_NAME_OFFSET + NAME_LENGTH
       )
     )
   }
@@ -268,7 +280,7 @@ export default class SaveManager {
 
     let b = writeStringToBuffer(name)
 
-    b.copy(this.saveSlots[this.saveIdx], character_offset + NAME_OFFSET)
+    b.copy(this.saveSlots[this.saveIdx], character_offset + CHARACTER_NAME_OFFSET)
   }
 
   getCharacterGender(n) {
@@ -467,7 +479,7 @@ export default class SaveManager {
     const character_offset = CHARACTER_SIZE * n
 
     return this.saveSlots[this.saveIdx].readUInt16LE(
-      character_offset + EQUIPMENT_OFFSET + (type - 1) * 2
+      character_offset + CHARACTER_EQUIPMENT_OFFSET + (type - 1) * 2
     )
   }
 
@@ -481,7 +493,7 @@ export default class SaveManager {
 
     return this.saveSlots[this.saveIdx].writeUInt16LE(
       id,
-      character_offset + EQUIPMENT_OFFSET + (type - 1) * 2
+      character_offset + CHARACTER_EQUIPMENT_OFFSET + (type - 1) * 2
     )
   }
 
@@ -705,6 +717,32 @@ export default class SaveManager {
     this.saveSlots[this.saveIdx].writeInt32LE(
       (prev & ~(1 << i)) | (visited << i),
       VISITED_LOCATIONS_OFFSET
+    )
+  }
+
+  // getCanvasedGuestCount() {}
+
+  getCanvasedGuestName(n) {
+    const offset = CANVASED_GUEST_OFFSET + n * CANVASED_GUEST_SIZE
+
+    return readStringFromBuffer(
+      this.saveSlots[this.saveIdx].subarray(
+        offset + GUEST_NAME_OFFSET,
+        offset + GUEST_NAME_OFFSET + NAME_LENGTH
+      )
+    )
+  }
+
+  isSpecialGuestVisiting(i) {
+    return !!(this.saveSlots[this.saveIdx].readInt32LE(SPECIAL_GUEST_OFFSET) & (1 << (i + 1)))
+  }
+
+  setSpecialGuestVisiting(i, visiting) {
+    const prev = this.saveSlots[this.saveIdx].readInt32LE(SPECIAL_GUEST_OFFSET)
+    const mask = 1 << (i + 1)
+    this.saveSlots[this.saveIdx].writeInt32LE(
+      (prev & ~mask) | (visiting ? mask : 0),
+      SPECIAL_GUEST_OFFSET
     )
   }
 }

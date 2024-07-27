@@ -3,6 +3,7 @@ import ItemEditor from "./components/editorTabs/ItemEditor"
 import CharacterEditor from "./components/editorTabs/CharacterEditor"
 import InnEditor from "./components/editorTabs/InnEditor"
 import MiscEditor from "./components/editorTabs/MiscEditor"
+import DlcEditor from "./components/editorTabs/DlcEditor"
 import HexEditor from "./components/editorTabs/HexEditor"
 
 export const DARK_THEME_NAME = "dark"
@@ -11,7 +12,8 @@ export const LIGHT_THEME_NAME = "light"
 export const tabs = [
   { name: "party", component: CharacterEditor },
   { name: "items", component: ItemEditor },
-  { name: "inn", component: InnEditor },
+  { name: "inn", component: InnEditor, disabled: true },
+  { name: "dic", component: DlcEditor },
   { name: "misc", component: MiscEditor },
   { name: "hex", component: HexEditor, disabled: true },
 ]
@@ -22,13 +24,13 @@ const initialTheme =
 document.documentElement.setAttribute("data-theme", initialTheme)
 
 export const EditorUiContext = createContext({
-  tab: 2,
+  tab: 3,
   theme: initialTheme,
 })
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: 2,
+    tab: 3,
     theme: initialTheme,
   })
 

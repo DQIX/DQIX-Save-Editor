@@ -1944,6 +1944,32 @@ const bodyTypes = {
   ],
 }
 
+const specialGuests = [
+  "Princeton",
+  "Princessa",
+  "Alena",
+  "Kiryl",
+  "Borya",
+  "Meena",
+  "Maya",
+  "Torneko",
+  "Ragnar",
+  "Bianca",
+  "Nera",
+  "Debora",
+  "Milly",
+  "Carver",
+  "Ashlynn",
+  "Kiefer",
+  "Maribel",
+  "Jessica",
+  "Angelo",
+  "Yangus",
+  "Trode",
+  "Morrie",
+  "Fleurette",
+]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -2022,4 +2048,6 @@ export default {
   hairColors,
 
   bodyTypes,
+
+  specialGuests,
 }

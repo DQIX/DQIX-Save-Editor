@@ -88,3 +88,14 @@ small {
   color: var(--alt-text-color);
   line-height: 1.2;
 }
+
+p {
+  margin: 1em 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: calc(var(--navbar-height) + 1em);
+  height: calc(100vh - var(--navbar-height) - 2em);
+  margin-right: 1em;
+}

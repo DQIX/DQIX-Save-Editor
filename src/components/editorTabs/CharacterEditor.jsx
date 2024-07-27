@@ -56,7 +56,7 @@ export default props => {
 
   return (
     <div className="character-root">
-      <Card label="characters:" className="character-list">
+      <Card label="characters:" className="character-list sidebar">
         <p>
           <small>in party:</small>
         </p>

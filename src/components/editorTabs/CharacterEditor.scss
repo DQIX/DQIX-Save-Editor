@@ -5,11 +5,8 @@ $grid-size: 232px;
   display: flex;
 
   .character-list {
-    position: sticky;
-    top: calc(var(--navbar-height) + 1em);
-    height: calc(100vh - var(--navbar-height) - 2em);
     width: $grid-size;
-    margin-right: 1em;
+
     > p {
       margin-bottom: 0;
     }
