@@ -15,6 +15,7 @@ export const ItemIcon = props => (
       }px`,
       ...props.style,
     }}
+    className="item-icon"
   ></div>
 )
 

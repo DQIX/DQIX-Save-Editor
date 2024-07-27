@@ -1,7 +1,8 @@
 .item-select {
   border-bottom: 2px solid transparent;
   background-color: var(--surface-bg);
-  display: block;
+  display: inline-block;
+  width: 100%;
   color: var(--font-color);
   padding: 4px 4px 2px;
   border-radius: var(--border-radius);
@@ -9,13 +10,10 @@
   position: relative;
 
   .item-icon {
-    margin-left: 8px;
+    position: absolute;
   }
 
   select {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: calc(100% + 2px);
     margin: 0;
@@ -24,7 +22,7 @@
     outline: none;
     background-color: transparent;
     color: var(--font-color);
-    padding: 0.2em 0.2em 0.2em 32px;
+    padding: 0.2em 0.2em 0.2em 28px;
   }
 
   &:has(select:focus) {
@@ -32,7 +30,7 @@
   }
 }
 
-select {
+:not(.item-select) > select {
   border: none;
   border-bottom: 2px solid transparent;
   background-color: var(--surface-bg);

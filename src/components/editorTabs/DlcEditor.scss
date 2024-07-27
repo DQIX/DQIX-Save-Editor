@@ -26,6 +26,36 @@ $grid-size: 184px;
     grid-row: span 2;
     grid-column: span 3;
     height: $grid-size * 2;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    tr,
+    thead {
+      border-bottom: 3px solid transparent;
+    }
+    th {
+      font-weight: normal;
+      color: var(--alt-text-color);
+    }
+    th,
+    td {
+      text-align: left;
+      padding: 0 1em 0 0;
+      .item-select {
+        margin: 0;
+      }
+    }
+
+    > select,
+    > button {
+      margin-right: 1em;
+    }
+
+    > p:not(:first-child) {
+      margin: 0;
+    }
   }
 
   .unlock {

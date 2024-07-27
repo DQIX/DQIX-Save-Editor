@@ -109,6 +109,12 @@ const GUEST_NAME_OFFSET = 0
 /// offset of special guest bitflags
 const SPECIAL_GUEST_OFFSET = 11528
 
+const DQVC_ITEMS_OFFSET = 27844
+const DQVC_ITEMS_ITEM_OFFSET = 0
+const DQVC_ITEMS_PRICE_STOCK_OFFSET = 4
+
+const DQVC_ITEM_SIZE = 40
+
 export default class SaveManager {
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
@@ -744,5 +750,58 @@ export default class SaveManager {
       (prev & ~mask) | (visiting ? mask : 0),
       SPECIAL_GUEST_OFFSET
     )
+  }
+
+  getDqvcItem(n) {
+    return this.saveSlots[this.saveIdx].readUInt16LE(
+      DQVC_ITEMS_OFFSET + DQVC_ITEMS_ITEM_OFFSET + DQVC_ITEM_SIZE * n
+    )
+  }
+
+  setDqvcItem(n, item) {
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      item,
+      DQVC_ITEMS_OFFSET + DQVC_ITEMS_ITEM_OFFSET + DQVC_ITEM_SIZE * n
+    )
+  }
+
+  getDqvcPrice(n) {
+    return (
+      (this.saveSlots[this.saveIdx].readUInt32LE(
+        DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
+      ) &
+        0xffffff80) >>
+      7
+    )
+  }
+
+  setDqvcPrice(n, price) {
+    const prev = this.saveSlots[this.saveIdx].readUInt32LE(
+      DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt32LE(
+      (prev & 0x7f) | ((price << 7) & 0xffffff80),
+      DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
+    )
+  }
+
+  getDqvcStock(n) {
+    return (
+      this.saveSlots[this.saveIdx][
+        DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
+      ] & 0x7f
+    )
+  }
+
+  setDqvcStock(n, stock) {
+    const prev =
+      this.saveSlots[this.saveIdx][
+        DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
+      ] & 0x7f
+
+    this.saveSlots[this.saveIdx][
+      DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
+    ] = (prev & ~0x7f) | stock
   }
 }
