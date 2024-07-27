@@ -2,7 +2,12 @@ import { Buffer } from "buffer"
 import crc32 from "crc-32"
 
 import gameData from "./game/data"
-import { readStringFromBuffer, writeStringToBuffer } from "./game/string"
+import {
+  readAsciiStringFromBuffer,
+  writeAsciiStringToBuffer,
+  readDqixStringFromBuffer,
+  writeDqixStringToBuffer,
+} from "./game/string"
 
 export const STATE_NULL = 0
 export const STATE_LOADING = 1
@@ -114,6 +119,11 @@ const DQVC_ITEMS_ITEM_OFFSET = 0
 const DQVC_ITEMS_PRICE_STOCK_OFFSET = 4
 
 const DQVC_ITEM_SIZE = 40
+
+const DQVC_MESSAGE_OFFSET = 23176
+export const DQVC_MESSAGE_LENGTH = 510
+
+const DQVC_MESSAGE_EXPIRY_TIME_OFFSET = 28096
 
 export default class SaveManager {
   constructor(buffer) {
@@ -268,7 +278,7 @@ export default class SaveManager {
   getCharacterName(n) {
     const character_offset = CHARACTER_SIZE * n
 
-    return readStringFromBuffer(
+    return readDqixStringFromBuffer(
       this.saveSlots[this.saveIdx].subarray(
         character_offset + CHARACTER_NAME_OFFSET,
         character_offset + CHARACTER_NAME_OFFSET + NAME_LENGTH
@@ -284,7 +294,7 @@ export default class SaveManager {
     name = name.substr(0, NAME_LENGTH).padEnd(NAME_LENGTH, "\0")
     console.log(name)
 
-    let b = writeStringToBuffer(name)
+    let b = writeDqixStringToBuffer(name)
 
     b.copy(this.saveSlots[this.saveIdx], character_offset + CHARACTER_NAME_OFFSET)
   }
@@ -731,7 +741,7 @@ export default class SaveManager {
   getCanvasedGuestName(n) {
     const offset = CANVASED_GUEST_OFFSET + n * CANVASED_GUEST_SIZE
 
-    return readStringFromBuffer(
+    return readDqixStringFromBuffer(
       this.saveSlots[this.saveIdx].subarray(
         offset + GUEST_NAME_OFFSET,
         offset + GUEST_NAME_OFFSET + NAME_LENGTH
@@ -803,5 +813,28 @@ export default class SaveManager {
     this.saveSlots[this.saveIdx][
       DQVC_ITEMS_OFFSET + DQVC_ITEMS_PRICE_STOCK_OFFSET + DQVC_ITEM_SIZE * n
     ] = (prev & ~0x7f) | stock
+  }
+
+  getDqvcMessage() {
+    return readAsciiStringFromBuffer(
+      this.saveSlots[this.saveIdx].subarray(
+        DQVC_MESSAGE_OFFSET,
+        DQVC_MESSAGE_OFFSET + DQVC_MESSAGE_LENGTH
+      )
+    )
+  }
+
+  setDqvcMessage(str) {
+    str = str.substring(0, DQVC_MESSAGE_LENGTH).padEnd(DQVC_MESSAGE_LENGTH, "\0")
+
+    writeAsciiStringToBuffer(str).copy(this.saveSlots[this.saveIdx], DQVC_MESSAGE_OFFSET)
+  }
+
+  getDqvcMessageExpiryTime() {
+    return this.saveSlots[this.saveIdx].readUInt32LE(DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
+  }
+
+  setDqvcMessageExpiryTime(time) {
+    return this.saveSlots[this.saveIdx].writeUInt32LE(time, DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
   }
 }

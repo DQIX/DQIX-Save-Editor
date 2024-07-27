@@ -41,6 +41,7 @@
       cursor: pointer;
       border-radius: var(--border-radius);
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      color: var(--accent-color);
       &:hover {
         background-color: var(--accent-fade);
       }

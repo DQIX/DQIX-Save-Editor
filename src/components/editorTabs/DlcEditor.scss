@@ -102,6 +102,11 @@ $grid-size: 184px;
     }
   }
 
+  .dqvc-msg {
+    grid-column: span 2;
+    height: $grid-size;
+  }
+
   .unlock {
     grid-row: span 1;
     aspect-ratio: 1;

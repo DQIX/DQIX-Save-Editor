@@ -6,8 +6,10 @@ import gameData from "../../game/data"
 import Card from "../atoms/Card"
 import ItemSelect from "../atoms/ItemSelect"
 import Input from "../atoms/Input"
-import SaveManager from "../../saveManager"
+import TimeInput from "../atoms/TimeInput"
+import SaveManager, { DQVC_MESSAGE_LENGTH } from "../../saveManager"
 import { SaveManagerContext } from "../../SaveManagerContext"
+import Textarea from "../atoms/Textarea"
 
 export default props => {
   const { save, setSave } = useContext(SaveManagerContext)
@@ -145,6 +147,25 @@ export default props => {
             </a>
           </>
         )}
+      </Card>
+      <Card label="dqvc message:" className="dqvc-msg">
+        <Textarea
+          type="text"
+          value={save.getDqvcMessage()}
+          maxLength={DQVC_MESSAGE_LENGTH}
+          onChange={e => {
+            save.setDqvcMessage(e.target.value)
+            setSave(new SaveManager(save.buffer))
+          }}
+        />
+        <TimeInput
+          label="expires:"
+          value={save.getDqvcMessageExpiryTime()}
+          onChange={time => {
+            save.setDqvcMessageExpiryTime(time)
+            setSave(new SaveManager(save.buffer))
+          }}
+        />
       </Card>
 
       {/* TODO: */}

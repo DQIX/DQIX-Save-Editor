@@ -1,0 +1,17 @@
+textarea {
+  width: 100%;
+  height: 6em;
+  padding: 0.5em 1em;
+  background-color: var(--surface-bg);
+  border-radius: var(--border-radius);
+  border: none;
+  resize: none;
+  outline: none;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.1s ease-in-out;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  &:focus {
+    border-bottom: 2px solid var(--accent-color);
+  }
+}

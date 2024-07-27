@@ -41,13 +41,24 @@ function prepare_string_tables() {
 
 prepare_string_tables()
 
-export function readStringFromBuffer(buffer) {
+export function readDqixStringFromBuffer(buffer) {
   return Array.from(buffer)
     .map(b => b != 0 && (string_tables.encode[b] || "?"))
     .filter(x => x)
     .join("")
 }
 
-export function writeStringToBuffer(str) {
+export function writeDqixStringToBuffer(str) {
   return Buffer.from([...str].map(c => string_tables.decode[c]))
+}
+
+export function readAsciiStringFromBuffer(buffer) {
+  return Array.from(buffer)
+    .map(b => b != 0 && String.fromCharCode(b))
+    .filter(x => x)
+    .join("")
+}
+window.Bufffer = Buffer
+export function writeAsciiStringToBuffer(str) {
+  return Buffer.from(str)
 }
