@@ -1,10 +1,14 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
+import { VList } from "virtua"
+
 import { SaveManagerContext } from "../../SaveManagerContext"
+import gameData from "../../game/data"
 
 import "./HexEditor.scss"
 
 import Card from "../atoms/Card"
 import Input from "../atoms/Input"
+import { ItemIcon } from "../atoms/Icon"
 
 function toHexChar(b) {
   if (
@@ -22,34 +26,156 @@ function toHexChar(b) {
   }
 }
 
+const Row = props => {
+  return (
+    <div className="row">
+      <div className="offset">
+        <span>{props.i.toString(16).padStart(8, 0)}</span>
+      </div>
+      <div className="hex">
+        {Array.from({ length: props.length }, (_, i) => {
+          const b = props.buffer[props.i + i]
+          return (
+            <Input
+              key={i}
+              type="text"
+              value={b.toString(16).padStart(2, "0")}
+              onChange={e => {}}
+              onFocus={e => {
+                props.select && props.select(props.i + i)
+              }}
+              size={2}
+              maxLength={2}
+              className={props.i + i === props.selected ? "selected" : ""}
+            />
+          )
+        })}
+      </div>
+      <div className="ascii">
+        {Array.from({ length: props.length }, (_, i) => {
+          const b = props.buffer[props.i + i]
+          return <span key={i}>{toHexChar(b) || "."}</span>
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default props => {
   let { save, setSave } = useContext(SaveManagerContext)
-  console.log(save.buffer.map)
 
-  //   const subLength = save.buffer.length
-  const subLength = 800
+  let [selected, setSelected] = useState(null)
+
+  const rowLen = 16
 
   return (
     <div className="hex-root">
       <Card className="hex-editor">
-        <div className="hex">
-          {Array.from({ length: subLength }, (_, i) => {
-            const b = save.buffer[i]
-
+        <div className="row header">
+          <div className="offset" style={{ opacity: 0 }}>
+            <span>00000000</span>
+          </div>
+          <div className="hex">
+            {Array.from({ length: rowLen }, (_, i) => {
+              return <Input key={i} type="text" value={i.toString(16).padStart(2, "0")} disabled />
+            })}
+          </div>
+          <div className="ascii">
+            <p
+              style={{
+                position: "absolute",
+                top: 0,
+                margin: 0,
+              }}
+            >
+              decoded:
+            </p>
+            <span
+              style={{
+                opacity: 0,
+                pointerEvents: "none",
+                marginLeft: "2em",
+              }}
+            >
+              DRAGON QUEST IX.
+            </span>
+          </div>
+        </div>
+        <VList>
+          {Array.from({ length: save.buffer.length / rowLen }, (_, i) => {
             return (
-              <Input type="text" value={b.toString(16).padStart(2, "0")} size={2} maxlength={2} />
+              <Row
+                buffer={save.buffer}
+                length={rowLen}
+                i={i * rowLen}
+                select={i => setSelected(i)}
+                selected={selected}
+              />
             )
           })}
-        </div>
-        <div className="ascii">
-          {Array.from({ length: subLength }, (_, i) => {
-            const b = save.buffer[i]
-
-            return <span>{toHexChar(b) || "."}</span>
-          })}
-        </div>
+        </VList>
+      </Card>
+      <Card label="inspector: " className="info">
+        {typeof selected == "number" && (
+          <table>
+            <tr>
+              <td>byte offset: </td>
+              <td>
+                0x{selected.toString(16).padStart(8, "0")} ({selected})
+              </td>
+            </tr>
+            <tr>
+              <td>binary: </td>
+              <td>{save.buffer[selected].toString(2).padStart(8, "0")}</td>
+            </tr>
+            <tr>
+              <td>octal: </td>
+              <td>{save.buffer[selected].toString(8).padStart(3, "0")}</td>
+            </tr>
+            <tr>
+              <td>hex: </td>
+              <td>{save.buffer[selected].toString(16).padStart(2, "0")}</td>
+            </tr>
+            <tr>
+              <td>u8: </td>
+              <td>{save.buffer.readUInt8(selected)}</td>
+            </tr>
+            <tr>
+              <td>i8: </td>
+              <td>{save.buffer.readInt8(selected)}</td>
+            </tr>
+            <tr>
+              <td>u16: </td>
+              <td>{save.buffer.readUInt16LE(selected)}</td>
+            </tr>
+            <tr>
+              <td>i16: </td>
+              <td>{save.buffer.readInt16LE(selected)}</td>
+            </tr>
+            <tr>
+              <td>u32: </td>
+              <td>{save.buffer.readUInt32LE(selected)}</td>
+            </tr>
+            <tr>
+              <td>i32: </td>
+              <td>{save.buffer.readInt32LE(selected)}</td>
+            </tr>
+            <tr>
+              <td>item: </td>
+              <td>
+                {gameData.items[save.buffer.readUInt16LE(selected)] ? (
+                  <>
+                    <ItemIcon icon={gameData.items[save.buffer.readUInt16LE(selected)].icon} />
+                    {gameData.items[save.buffer.readUInt16LE(selected)].name}
+                  </>
+                ) : (
+                  "unknown"
+                )}
+              </td>
+            </tr>
+          </table>
+        )}
       </Card>
     </div>
   )
 }
-// b.toString(16).padStart(2, "0")

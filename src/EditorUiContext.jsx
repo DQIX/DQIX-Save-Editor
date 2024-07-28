@@ -15,7 +15,7 @@ export const tabs = [
   { name: "inn", component: InnEditor, disabled: true },
   { name: "dic", component: DlcEditor },
   { name: "misc", component: MiscEditor },
-  { name: "hex", component: HexEditor, disabled: true },
+  { name: "hex", component: HexEditor },
 ]
 
 const initialTheme =
@@ -24,13 +24,13 @@ const initialTheme =
 document.documentElement.setAttribute("data-theme", initialTheme)
 
 export const EditorUiContext = createContext({
-  tab: 3,
+  tab: 5,
   theme: initialTheme,
 })
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: 3,
+    tab: 5,
     theme: initialTheme,
   })
 

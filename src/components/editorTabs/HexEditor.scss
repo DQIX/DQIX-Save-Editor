@@ -1,32 +1,99 @@
+$row-height: 1.8em;
+
 .hex-root {
   padding: 1em 1em 1em;
+  display: flex;
+}
+
+.info {
+  margin-left: 1em;
+  flex-grow: 1;
+  min-width: fit-content;
 }
 
 .hex-editor {
+  padding: 1em 0 1em 1em;
+  height: calc(100vh - 2em - var(--navbar-height));
+  scrollbar-color: var(--accent-color) var(--surface-bg);
+  scrollbar-width: thin;
   display: flex;
-  padding: 1em;
+  flex-direction: column;
+  width: fit-content;
+
+  > div {
+    top: $row-height;
+  }
+
+  .header {
+    position: sticky;
+    background-color: var(--card-bg-color);
+    z-index: 1;
+    margin: 0 0 0 -1em;
+    padding: 0 0 0.5em 1em;
+    color: var(--alt-text-color);
+    font-weight: bold;
+    border-bottom: 1px solid var(--surface-bg);
+    width: calc(100% + 2em);
+  }
+
+  .row {
+    width: max-content;
+    height: $row-height;
+  }
+
+  .header,
+  .offset {
+    input,
+    span {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+  }
+
+  .hex,
+  .ascii,
+  .offset {
+    display: inline-block;
+    margin-right: 1em;
+
+    input,
+    span {
+      padding: 0;
+      background-color: transparent;
+      font-family: "Fira Code", "Courier New", Courier, monospace;
+      font-size: 1.1em;
+    }
+
+    input {
+      width: calc(2ch + 6px);
+      padding: 1px;
+      border: 2px solid transparent;
+      &:focus,
+      &.selected {
+        border: 2px solid var(--accent-color);
+      }
+    }
+    span {
+      width: 1ch;
+      margin: 0;
+    }
+  }
 }
 
-.hex,
-.ascii {
-  display: grid;
-  grid-template-columns: repeat(16, minmax(0, 1fr));
-  grid-gap: 0px;
-  margin: 0 1em;
+.info {
+  td {
+    padding: 0.1em 1em 0.1em 0;
+    &:first-child {
+      text-align: right;
+      font-weight: bold;
+    }
 
-  > input,
-  span {
-    padding: 0;
-    background-color: transparent;
-    font-family: "Fira Code", "Courier New", Courier, monospace;
-  }
+    &:last-child {
+      font-family: "Fira Code", "Courier New", Courier, monospace;
+    }
 
-  input {
-    width: 2ch;
-    margin: 0 0.2em;
-  }
-  span {
-    width: 1ch;
-    margin: 0;
+    div {
+      margin-right: 0.4em;
+    }
   }
 }
