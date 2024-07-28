@@ -74,7 +74,7 @@ export default props => (
         props.onChange && props.onChange(timeFromDateObject(new Date()))
       }}
     >
-      today
+      now
     </Button>
   </div>
 )

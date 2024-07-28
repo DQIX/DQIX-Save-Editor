@@ -1,3 +1,5 @@
+@import "@fontsource/atkinson-hyperlegible";
+
 :root {
   --game-orange: #ff9635;
   --game-yellow: #ffdf00;
@@ -55,7 +57,7 @@
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Atkinson Hyperlegible", sans-serif;
   line-height: 1.6;
   font-weight: 400;
 
