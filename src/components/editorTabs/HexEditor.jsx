@@ -1,4 +1,4 @@
-import { forwardRef, useContext, useState } from "react"
+import { forwardRef, useContext, useMemo, useState } from "react"
 
 import { SaveManagerContext } from "../../SaveManagerContext"
 import gameData from "../../game/data"
@@ -71,46 +71,13 @@ const Row = props => {
   )
 }
 
-// CURSED: here `props.children` is not the children values
-// instead its an object containing extra props that can't be sent. this is a
-// bit of an abuse of what is meant but in this case its fine . probably
-const Item = forwardRef((props, ref) => {
-  if (props.children.row) {
-    return (
-      <Row
-        vRef={ref}
-        style={{ ...props.style }}
-        buffer={props.children.buffer}
-        length={props.children.rowLen}
-        i={props.children.i * props.children.rowLen}
-        select={i => props.children.setSelected(i)}
-        selected={props.children.selected}
-      />
-    )
-  } else if (props.children.annotation) {
-    return (
-      <div
-        ref={ref}
-        style={{
-          ...props.style,
-          position: "absolute",
-          top: 28 * props.children.annotation.begin + "px",
-          height: 28 + "px",
-          width: 28 * props.children.annotation.length + "px",
-          backgroundColor: "var(--accent-color)",
-        }}
-      ></div>
-    )
-  }
-})
-
 export default props => {
   let { save, setSave } = useContext(SaveManagerContext)
 
   let [selected, setSelected] = useState(null)
 
   const rowLen = 16
-  console.log(save.buffer.length)
+
   return (
     <div className="hex-root">
       <Card className="hex-editor">
@@ -143,7 +110,7 @@ export default props => {
             </span>
           </div>
         </div>
-        <Virtualizer overscan={200}>
+        <Virtualizer overscan={200} height={(save.buffer.length / rowLen) * 30}>
           {Array.from({
             length: save.buffer.length / rowLen,
           }).map((_, i) => (
@@ -161,53 +128,7 @@ export default props => {
               selected={selected}
             />
           ))}
-
-          {/* {Array.from({ length: 100000 }, (_, i) => {
-            function splitmix32(a) {
-              return function () {
-                a |= 0
-                a = (a + 0x9e3779b9) | 0
-                let t = a ^ (a >>> 16)
-                t = Math.imul(t, 0x21f0aaad)
-                t = t ^ (t >>> 15)
-                t = Math.imul(t, 0x735a2d97)
-                return ((t = t ^ (t >>> 15)) >>> 0) / 4294967296
-              }
-            }
-            const rand = splitmix32(i)
-            return (
-              <div
-                style={{
-                  position: "absolute",
-                  width: rand() * 200 + 10,
-                  height: rand() * 200 + 10,
-                  top: rand() * 100000,
-                  left: rand() * 400,
-                  opacity: 0.2,
-                  backgroundColor: "var(--accent-fade)",
-                }}
-              ></div>
-            )
-          })} */}
         </Virtualizer>
-        {/* <Virtualizer as="div" item={Item}>
-          {Array.from({
-            length: 800 / rowLen,
-          }).map((_, i) => ({
-            i,
-            rowLen,
-            buffer: save.buffer,
-            selected,
-            setSelected,
-            row: true,
-          }))}
-
-          {annotations.map((annotation, i) => ({
-            i: save.buffer.length / rowLen + i,
-            rowLen,
-            annotation,
-          }))}
-        </Virtualizer> */}
       </Card>
       <Card label="inspector: " className="info">
         {typeof selected == "number" && (

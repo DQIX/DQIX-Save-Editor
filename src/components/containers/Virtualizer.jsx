@@ -4,7 +4,7 @@
 
 // this whole thing is cursed tbh and should probably be rewritten
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 function throttle(fn, t) {
   let now = Date.now()
@@ -20,23 +20,29 @@ function throttle(fn, t) {
 }
 
 export default props => {
-  console.log(props)
-  const height = props.children.reduce(
-    (a, c) => Math.max(a, c.props.style.top + c.props.style.height),
-    0
-  )
-  const [scrollPos, setScrollPos] = useState(0)
+  const height =
+    props.height ||
+    props.children.reduce((a, c) => Math.max(a, c.props.style.top + c.props.style.height), 0)
+
+  const [scrollPos, setScrollPos] = useState(-(props.overscan || 0))
   const [viewPort, setViewPort] = useState(0)
+
+  const scroller = useRef(null)
+
+  useEffect(() => {
+    setViewPort(scroller.current.offsetHeight + (props.overscan || 0) * 2)
+  })
 
   return (
     <div
+      ref={scroller}
       style={{
         overflowY: "scroll",
       }}
       onScroll={throttle(e => {
         setScrollPos(e.target.scrollTop - (props.overscan || 0))
         setViewPort(e.target.offsetHeight + (props.overscan || 0) * 2)
-      }, 20)}
+      }, 0)}
     >
       <div
         style={{
