@@ -29,7 +29,7 @@ nav {
       line-height: var(--navbar-height);
       cursor: pointer;
       border-bottom: 2px solid transparent;
-      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
       &:hover {
         background-color: var(--accent-fade);
       }

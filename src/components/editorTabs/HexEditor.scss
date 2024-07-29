@@ -1,4 +1,4 @@
-$row-height: 1.8em;
+$row-height: 30px;
 
 .hex-root {
   padding: 1em 1em 1em;
@@ -12,33 +12,38 @@ $row-height: 1.8em;
 }
 
 .hex-editor {
-  padding: 1em 0 1em 1em;
+  padding: 0 0 0 1em;
   height: calc(100vh - 2em - var(--navbar-height));
-  scrollbar-color: var(--accent-color) var(--surface-bg);
-  scrollbar-width: thin;
-  display: flex;
-  flex-direction: column;
   width: fit-content;
 
-  > div {
-    top: $row-height;
-  }
+  display: flex;
+  flex-direction: column;
 
-  .header {
-    position: sticky;
-    background-color: var(--card-bg-color);
-    z-index: 1;
-    margin: 0 0 0 -1em;
-    padding: 0 0 0.5em 1em;
-    color: var(--alt-text-color);
-    font-weight: bold;
-    border-bottom: 1px solid var(--surface-bg);
-    width: calc(100% + 2em);
+  > div:not(:first-child) {
+    scrollbar-color: var(--accent-color) var(--surface-bg);
+    scrollbar-width: thin;
+    overflow-y: scroll;
+    padding-bottom: 1em;
+    width: 100%;
   }
 
   .row {
     width: max-content;
     height: $row-height;
+    text-wrap: nowrap;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    background-color: var(--card-bg-color);
+    z-index: 1;
+    margin: 0 0 0 -1em;
+    padding: 0.4em 1em 0.5em;
+    color: var(--alt-text-color);
+    font-weight: bold;
+    border-bottom: 1px solid var(--surface-bg);
+    height: auto;
   }
 
   .header,
@@ -54,7 +59,7 @@ $row-height: 1.8em;
   .ascii,
   .offset {
     display: inline-block;
-    margin-right: 1em;
+    margin-right: 0.5em;
 
     input,
     span {
