@@ -11,6 +11,17 @@ const ITEM_TYPE_ACCESSORY = 10
 const ITEM_TYPE_COMMON = 11
 const ITEM_TYPE_IMPORTANT = 12
 
+const equipmentTypes = [
+  ITEM_TYPE_WEAPON,
+  ITEM_TYPE_SHIELD,
+  ITEM_TYPE_HEAD,
+  ITEM_TYPE_TORSO,
+  ITEM_TYPE_ARM,
+  ITEM_TYPE_LEGS,
+  ITEM_TYPE_FEET,
+  ITEM_TYPE_ACCESSORY,
+]
+
 const itemTypes = [
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -1447,6 +1458,7 @@ const NUM_SKILLS = 26
 const skills = [
   {
     name: "Sword Skill",
+    id: 0,
     proficiencies: [
       { name: "Dragon Slash",                     id: 0,    ability: true,   points: 3,   },
       { name: "Attack +10 with Sword",            id: 1,    ability: false,  points: 7,   },
@@ -1462,6 +1474,7 @@ const skills = [
   },
   {
     name: "Spear Skill",
+    id: 1,
     proficiencies: [
       { name: "Mercurial Thrust",                 id: 12,   ability: true,   points: 3,   },
       { name: "Attack +10 with Spear",            id: 11,   ability: false,  points: 7,   },
@@ -1477,6 +1490,7 @@ const skills = [
   },
   {
     name: "Knife Skill",
+    id: 2,
     proficiencies: [
       { name: "Toxic Dagger",                     id: 22,   ability: true,   points: 3,   },
       { name: "Attack +10 with Knife",            id: 23,   ability: false,  points: 7,   },
@@ -1492,6 +1506,7 @@ const skills = [
   },
   {
     name: "Wand Skill",
+    id: 3,
     proficiencies: [
       { name: "Max Mp +10 with Wand",             id: 55,   ability: false,  points: 3,   },
       { name: "Antimagic",                        id: 56,   ability: true,   points: 7,   },
@@ -1507,6 +1522,7 @@ const skills = [
   },
   {
     name: "Whip Skill",
+    id: 4,
     proficiencies: [
       { name: "Hypnowhip",                        id: 88,   ability: true,   points: 3,   },
       { name: "Lashings Of Love",                 id: 90,   ability: true,   points: 7,   },
@@ -1522,6 +1538,7 @@ const skills = [
   },
   {
     name: "Staff Skill",
+    id: 5,
     proficiencies: [
       { name: "Attack +10 with Staff",            id: 66,   ability: false,  points: 3,   },
       { name: "Trip Of A Deathtime",              id: 67,   ability: true,   points: 7,   },
@@ -1537,6 +1554,7 @@ const skills = [
   },
   {
     name: "Claw Skill",
+    id: 6,
     proficiencies: [
       { name: "Propeller Blade",                  id: 110,  ability: true,   points: 3,   },
       { name: "Attack +10 with Claw",             id: 111,  ability: false,  points: 7,   },
@@ -1552,6 +1570,7 @@ const skills = [
   },
   {
     name: "Fan Skill",
+    id: 7,
     proficiencies: [
       { name: "Flower Power",                     id: 122,  ability: true,   points: 3,   },
       { name: "Attack +10 with Fan",              id: 121,  ability: false,  points: 7,   },
@@ -1567,6 +1586,7 @@ const skills = [
   },
   {
     name: "Axe Skill",
+    id: 8,
     proficiencies: [
       { name: "Poplar Toppler",                   id: 178,  ability: true,   points: 3,   },
       { name: "Attack +10 with Axe",              id: 177,  ability: false,  points: 7,   },
@@ -1582,6 +1602,7 @@ const skills = [
   },
   {
     name: "Hammer Skill",
+    id: 9,
     proficiencies: [
       { name: "Heart Breaker",                    id: 188,  ability: true,   points: 3,   },
       { name: "Attack +10 with Hammer",           id: 187,  ability: false,  points: 7,   },
@@ -1597,6 +1618,7 @@ const skills = [
   },
   {
     name: "Boomerang Skill",
+    id: 10,
     proficiencies: [
       { name: "Crosscutter Throw",                id: 242,  ability: true,   points: 3,   },
       { name: "Power Throw",                      id: 244,  ability: true,   points: 7,   },
@@ -1612,6 +1634,7 @@ const skills = [
   },
   {
     name: "Bow Skill",
+    id: 11,
     proficiencies: [
       { name: "Conjury Conductor",                id: 210,  ability: true,   points: 3,   },
       { name: "Attack +10 with Bow",              id: 209,  ability: false,  points: 7,   },
@@ -1627,6 +1650,7 @@ const skills = [
   },
   {
     name: "Shield Skill",
+    id: 12,
     proficiencies: [
       { name: "Blockenspiel",                     id: 33,   ability: true,   points: 6,   },
       { name: "Block Chance +2%",                 id: 34,   ability: false,  points: 12,  },
@@ -1642,6 +1666,7 @@ const skills = [
   },
   {
     name: "Fisticuffs Skill",
+    id: 13,
     proficiencies: [
       { name: "Stone's Throw",                    id: 133,  ability: true,   points: 3,   },
       { name: "Attack +10 with Fist",             id: 132,  ability: false,  points: 7,   },
@@ -1657,6 +1682,7 @@ const skills = [
   },
   {
     name: "Courage",
+    id: 14,
     proficiencies: [
       { name: "Whipping Boy",                     id: 44,   ability: true,   points: 8,   },
       { name: "Natural Strength +10",             id: 45,   ability: false,  points: 16,  },
@@ -1672,6 +1698,7 @@ const skills = [
   },
   {
     name: "Faith",
+    id: 15,
     proficiencies: [
       { name: "Divination",                       id: 77,   ability: true,   points: 8,   },
       { name: "Natural Magical Mending +20",      id: 78,   ability: false,  points: 16,  },
@@ -1687,6 +1714,7 @@ const skills = [
   },
   {
     name: "Spellcraft",
+    id: 16,
     proficiencies: [
       { name: "Wizard Ward",                      id: 100,  ability: true,   points: 8,   },
       { name: "Natural Magical Might +20",        id: 99,   ability: false,  points: 18,  },
@@ -1702,6 +1730,7 @@ const skills = [
   },
   {
     name: "Focus",
+    id: 17,
     proficiencies: [
       { name: "War Cry",                          id: 143,  ability: true,   points: 4,   },
       { name: "Natural Agility +10",              id: 144,  ability: false,  points: 10,  },
@@ -1717,6 +1746,7 @@ const skills = [
   },
   {
     name: "Acquisitiveness",
+    id: 18,
     proficiencies: [
       { name: "Natural Deftness +20",             id: 154,  ability: false,  points: 4,   },
       { name: "Half-Inch",                        id: 155,  ability: true,   points: 10,  },
@@ -1732,6 +1762,7 @@ const skills = [
   },
   {
     name: "Litheness",
+    id: 19,
     proficiencies: [
       { name: "Hot Lick",                         id: 165,  ability: true,   points: 4,   },
       { name: "Spry In Crisis",                   id: 166,  ability: false,  points: 10,  },
@@ -1747,6 +1778,7 @@ const skills = [
   },
   {
     name: "Guts",
+    id: 20,
     proficiencies: [
       { name: "Natural Max. Hp +10",              id: 198,  ability: false,  points: 4,   },
       { name: "Clap Trap",                        id: 199,  ability: true,   points: 10,  },
@@ -1762,6 +1794,7 @@ const skills = [
   },
   {
     name: "Fource",
+    id: 21,
     proficiencies: [
       { name: "Fire Fource",                      id: 220,  ability: true,   points: 4,   },
       { name: "Natural Strength +10",             id: 221,  ability: false,  points: 10,  },
@@ -1777,6 +1810,7 @@ const skills = [
   },
   {
     name: "Virtue",
+    id: 22,
     proficiencies: [
       { name: "Pincushion",                       id: 231,  ability: true,   points: 4,   },
       { name: "Natural Resilience +10",           id: 232,  ability: false,  points: 10,  },
@@ -1792,6 +1826,7 @@ const skills = [
   },
   {
     name: "Enlightenment",
+    id: 23,
     proficiencies: [
       { name: "Natural Magical Mending +20",      id: 253,  ability: false,  points: 4,   },
       { name: "Jack's Knack",                     id: 254,  ability: true,   points: 10,  },
@@ -1807,6 +1842,7 @@ const skills = [
   },
   {
     name: "Je Ne Sais Quoi",
+    id: 24,
     proficiencies: [
       { name: "Natural Charm +10",                id: 264,  ability: false,  points: 4,   },
       { name: "Autograph",                        id: 265,  ability: true,   points: 10,  },
@@ -1822,6 +1858,7 @@ const skills = [
   },
   {
     name: "Ruggedness",
+    id: 25,
     proficiencies: [
       { name: "Soothe Sayer",                     id: 277,  ability: true,   points: 4,   },
       { name: "Natural Deftness +10",             id: 276,  ability: false,  points: 10,  },
@@ -3651,6 +3688,7 @@ export default {
   ITEM_TYPE_FEET,
   ITEM_TYPE_ACCESSORY,
 
+  equipmentTypes,
   itemTypes,
   itemTypeNames,
 

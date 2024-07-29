@@ -7,9 +7,10 @@ import Card from "../atoms/Card"
 import ItemSelect from "../atoms/ItemSelect"
 import Input from "../atoms/Input"
 import TimeInput from "../atoms/TimeInput"
-import SaveManager, { DQVC_MESSAGE_LENGTH } from "../../saveManager"
+import SaveManager from "../../saveManager"
 import { SaveManagerContext } from "../../SaveManagerContext"
 import Textarea from "../atoms/Textarea"
+import { DQVC_MESSAGE_LENGTH } from "../../game/layout"
 
 export default props => {
   const { save, setSave } = useContext(SaveManagerContext)

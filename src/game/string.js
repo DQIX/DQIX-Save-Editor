@@ -1,21 +1,21 @@
 import { Buffer } from "buffer"
 
-const string_tables = {}
+export const stringTables = {}
 
-function prepare_string_tables() {
-  string_tables.encode = {}
-  string_tables.decode = {}
+function prepareStringTables() {
+  stringTables.encode = {}
+  stringTables.decode = {}
 
   for (let i = 0; i < 26; i++) {
     // uppercase a-z
-    string_tables.decode[String.fromCharCode(65 + i)] = i + 18
+    stringTables.decode[String.fromCharCode(65 + i)] = i + 18
     // lowercase a-z
-    string_tables.decode[String.fromCharCode(97 + i)] = i + 44
+    stringTables.decode[String.fromCharCode(97 + i)] = i + 44
   }
 
   for (let i = 0; i < 10; i++) {
     // 0-9
-    string_tables.decode[String.fromCharCode(48 + i)] = i + 8
+    stringTables.decode[String.fromCharCode(48 + i)] = i + 8
   }
 
   const bytes = [
@@ -30,26 +30,26 @@ function prepare_string_tables() {
     "'{|}€,„Œœ¡£«»¿!\"#$%&’()+-./;=?[]_ÀÁÂÄÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜßàáâäæçèéêëìíîïñòóôõöùúûü~☻*@¢ªº←↑→↓– "
 
   for (let i = 0; i < bytes.length; i++) {
-    string_tables.decode[chars[i]] = bytes[i]
+    stringTables.decode[chars[i]] = bytes[i]
   }
 
-  const entries = Object.entries(string_tables.decode)
+  const entries = Object.entries(stringTables.decode)
   for (let i = 0; i < entries.length; i++) {
-    string_tables.encode[entries[i][1]] = entries[i][0]
+    stringTables.encode[entries[i][1]] = entries[i][0]
   }
 }
 
-prepare_string_tables()
+prepareStringTables()
 
 export function readDqixStringFromBuffer(buffer) {
   return Array.from(buffer)
-    .map(b => b != 0 && (string_tables.encode[b] || "?"))
+    .map(b => b != 0 && (stringTables.encode[b] || "?"))
     .filter(x => x)
     .join("")
 }
 
 export function writeDqixStringToBuffer(str) {
-  return Buffer.from([...str].map(c => string_tables.decode[c]))
+  return Buffer.from([...str].map(c => stringTables.decode[c]))
 }
 
 export function readAsciiStringFromBuffer(buffer) {
@@ -58,7 +58,7 @@ export function readAsciiStringFromBuffer(buffer) {
     .filter(x => x)
     .join("")
 }
-window.Bufffer = Buffer
+
 export function writeAsciiStringToBuffer(str) {
   return Buffer.from(str)
 }

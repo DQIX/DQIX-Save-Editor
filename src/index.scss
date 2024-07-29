@@ -30,11 +30,25 @@
   --card-bg-color: #dce0e8;
   --accent-color: #ea76cb;
   --accent-fade: rgba(234, 118, 203, 0.2);
+  --grey: #bcc0cc;
+  --fade-grey: rgb(188, 192, 204, 0.2);
+
   --on-accent-color: var(--bg-color);
+  --rosewater: #dc8a78;
+  --flamingo: #dd7878;
+  --pink: #ea76cb;
+  --mauve: #8839ef;
+  --red: #d20f39;
+  --maroon: #e64553;
+  --peach: #fe640b;
+  --yellow: #df8e1d;
+  --green: #40a02b;
+  --teal: #179299;
+  --sky: #04a5e5;
+  --sapphire: #209fb5;
   --blue: #1e66f5;
-  --slime-blue: var(--blue);
-  --slime-red: #d20f39;
-  --slime-grey: #6c6f85;
+  --lavender: #7287fd;
+
   --github-icon-url: url("/github-mark.svg");
 }
 
@@ -47,11 +61,31 @@
   --accent-color: #cba6f7;
   --accent-fade: rgba(203, 166, 247, 0.2);
   --on-accent-color: var(--bg-color);
+  --grey: #45475a;
+  --fade-grey: rgb(69, 71, 90, 0.2);
+
+  --rosewater: #f5e0dc;
+  --flamingo: #f2cdcd;
+  --pink: #f5c2e7;
+  --mauve: #cba6f7;
+  --red: #f38ba8;
+  --maroon: #eba0ac;
+  --peach: #fab387;
+  --yellow: #f9e2af;
+  --green: #a6e3a1;
+  --teal: #94e2d5;
+  --sky: #89dceb;
+  --sapphire: #74c7ec;
   --blue: #89b4fa;
-  --slime-blue: var(--blue);
-  --slime-red: #f38ba8;
-  --slime-grey: #a6adc8;
+  --lavender: #b4befe;
+
   --github-icon-url: url("/github-mark-white.svg");
+}
+
+:root {
+  --slime-blue: var(--blue);
+  --slime-red: var(--red);
+  --slime-grey: var(--grey);
 }
 
 :root {

@@ -31,6 +31,7 @@ $row-height: 30px;
     width: max-content;
     height: $row-height;
     text-wrap: nowrap;
+    pointer-events: none;
   }
 
   .header {
@@ -55,6 +56,10 @@ $row-height: 30px;
     }
   }
 
+  .offset {
+    width: 100px;
+  }
+
   .hex,
   .ascii,
   .offset {
@@ -67,10 +72,13 @@ $row-height: 30px;
       background-color: transparent;
       font-family: "Fira Code", "Courier New", Courier, monospace;
       font-size: 1.1em;
+      pointer-events: auto;
     }
 
     input {
-      width: calc(2ch + 6px);
+      width: 30px;
+      height: 30px;
+      // width: calc(2ch + 6px);
       padding: 1px;
       border: 2px solid transparent;
       &:focus,
@@ -81,6 +89,15 @@ $row-height: 30px;
     span {
       width: 1ch;
       margin: 0;
+    }
+  }
+
+  .annotation {
+    margin-left: calc(100px + 0.5em);
+    pointer-events: none;
+    opacity: 0.25;
+    &.selected {
+      opacity: 0.35;
     }
   }
 }
