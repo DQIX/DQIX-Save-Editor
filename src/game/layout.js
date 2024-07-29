@@ -440,11 +440,10 @@ for (let i = 0; i < 2; i++) {
     })
   }
 }
+
 annotations.push({
   name: "magic number",
   begin: 0,
   length: 15,
   color: "var(--blue)",
 })
-
-console.log(annotations)

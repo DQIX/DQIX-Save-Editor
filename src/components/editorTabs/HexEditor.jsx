@@ -258,7 +258,7 @@ export default props => {
               <div>
                 <p>annotation:</p>
                 {annotation.map((a, i) => (
-                  <>
+                  <span key={i}>
                     <span
                       style={{
                         borderBottom: `2px solid ${a.color}`,
@@ -268,7 +268,7 @@ export default props => {
                       {a.name}
                     </span>
                     {i != annotation.length - 1 && ">"}
-                  </>
+                  </span>
                 ))}
               </div>
             )}
