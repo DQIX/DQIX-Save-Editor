@@ -78,6 +78,44 @@ export default props => {
               setSave(new SaveManager(save.buffer))
             }}
           />
+          <Card label="profile:" className="profile">
+            <div>
+              <label>
+                title:
+                <select
+                  value={save.getCanvasedGuestTitle(guest)}
+                  onChange={e => {
+                    save.setCanvasedGuestTitle(guest, e.target.value)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                >
+                  {Object.entries(gameData.titles)
+                    .filter(([_, title]) => title[save.getGuestGender(guest)])
+                    .map(([id, title]) => (
+                      <option value={id} key={id}>
+                        {title[save.getGuestGender(guest)]}
+                      </option>
+                    ))}
+                </select>
+              </label>
+              <label>
+                location:
+                <select
+                  value={save.getCanvasedGuestOrigin(guest)}
+                  onChange={e => {
+                    save.setCanvasedGuestOrigin(guest, e.target.value)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                >
+                  {Object.entries(gameData.guestOrigins).map(([id, origin]) => (
+                    <option value={id} key={id}>
+                      {origin}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </Card>
 
           <AppearanceCards
             gender={save.getGuestGender(guest)}

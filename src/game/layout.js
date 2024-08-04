@@ -133,6 +133,8 @@ export const GUEST_HAIR_COLOR_OFFSET = 47
 export const GUEST_BODY_TYPE_W = 50
 export const GUEST_BODY_TYPE_H = 52
 
+export const GUEST_TITLE_ORIGIN_OFFSET = 113
+
 /// offset of the inn level (only 0x7)
 export const INN_LEVEL_OFFSET = 23172
 

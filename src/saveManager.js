@@ -664,6 +664,53 @@ export default class SaveManager {
     )
   }
 
+  getCanvasedGuestTitle(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    let title =
+      ((this.saveSlots[this.saveIdx].readUInt32LE(offset + layout.GUEST_TITLE_ORIGIN_OFFSET) >> 8) &
+        0x3ff8) >>
+      3
+
+    //NOTE: not totally sure if this should be done this way but i can't figure out any reason for it being different
+    if (700 < title && title < 800) title = 700
+    if (900 <= title && title < 1000) title -= 100
+
+    return title
+  }
+
+  setCanvasedGuestTitle(n, title) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt32LE(
+      offset + layout.GUEST_TITLE_ORIGIN_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt32LE(
+      (prev & 0xffc007ff) | (((title << 3) & 0x3ff8) << 8),
+      offset + layout.GUEST_TITLE_ORIGIN_OFFSET
+    )
+  }
+
+  getCanvasedGuestOrigin(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return (
+      (this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_TITLE_ORIGIN_OFFSET) &
+        0x7fe) >>
+      1
+    )
+  }
+
+  setCanvasedGuestOrigin(n, origin) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(
+      offset + layout.GUEST_TITLE_ORIGIN_OFFSET
+    )
+    this.saveSlots[this.saveIdx].writeUint16LE(
+      (prev & 0xf801) | ((origin << 1) & 0x7fe),
+      offset + layout.GUEST_TITLE_ORIGIN_OFFSET
+    )
+  }
+
   setCanvasedGuestName(n, name) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
 

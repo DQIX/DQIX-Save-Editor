@@ -84,4 +84,12 @@ $grid-size: 232px;
     grid-auto-rows: $grid-size;
     gap: 1em;
   }
+
+  .profile {
+    grid-row: span 2;
+    grid-column: span 2;
+    label {
+      display: block;
+    }
+  }
 }
