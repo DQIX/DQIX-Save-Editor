@@ -36,11 +36,20 @@ export default props => {
         </Card>
         <Card label="canvased guests:" className="guest-list canvased-guests">
           <ul>
-            {Array.from({ length: 30 }, (_, i) => (
-              <li key={i} className={i == guest ? "active" : ""} onClick={_ => setGuest(i)}>
-                {save.getCanvasedGuestName(i) || "\u00A0"}
-              </li>
-            ))}
+            {Array.from({ length: 30 }, (_, i) => ({
+              idx: save.getCanvasedGuestIndex(i),
+              guest: i,
+            }))
+              .filter(guest => guest.idx != 0)
+              .map((x, i) => (
+                <li
+                  key={i}
+                  className={x.guest == guest ? "active" : ""}
+                  onClick={_ => setGuest(x.guest)}
+                >
+                  {save.getCanvasedGuestName(x.guest) || "\u00A0"}
+                </li>
+              ))}
           </ul>
         </Card>
       </div>

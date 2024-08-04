@@ -102,6 +102,9 @@ export const UNLOCKABLE_VOCATION_OFFSET = 12276
 
 export const VISITED_LOCATIONS_OFFSET = 11788
 
+export const CURRENT_GUESTS_CANVASED_OFFSET = 23160
+export const TOTAL_GUESTS_CANVASED_OFFSET = 23164
+
 /// offset of canvased guest array
 export const CANVASED_GUEST_OFFSET = 16200
 
@@ -113,6 +116,9 @@ export const GUEST_NAME_OFFSET = 0
 
 /// offset of vocation and location in inn relative to beginning of guest data
 export const GUEST_VOCATION_AND_LOCATION_OFFSET = 12
+
+/// offset of the index of the guest (0 if invalid), pretty sure this is the order of guests canvased
+export const GUEST_INDEX_OFFSET = 16
 
 export const GUEST_EQUIPMENT_OFFSET = 26
 

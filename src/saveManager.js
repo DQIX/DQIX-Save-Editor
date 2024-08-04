@@ -643,7 +643,15 @@ export default class SaveManager {
     )
   }
 
-  // getCanvasedGuestCount() {}
+  getCanvasedGuestCount() {
+    return this.saveSlots[this.saveIdx][layout.CURRENT_GUESTS_CANVASED_OFFSET]
+  }
+
+  getCanvasedGuestIndex(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (this.saveSlots[this.saveIdx][offset + layout.GUEST_INDEX_OFFSET] & 0xfffffffc) >> 2
+  }
 
   getCanvasedGuestName(n) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE

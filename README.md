@@ -45,6 +45,7 @@ A save editor for dragon quest ix
   - [ ] map
   - [ ] level/revocations
   - [ ] profile
+  - [ ] gender
 - [x] inn rank
 
 ### quests:
