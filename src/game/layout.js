@@ -30,6 +30,7 @@ export const CHARACTER_GENDER_COLORS_OFFSET = 508
 
 export const CHARACTER_FACE_OFFSET = 492
 export const CHARACTER_HAIRSTYLE_OFFSET = 494
+
 /// offset of character hairstyle byte relative to beginning of character data
 // u8 laid out like: `xxxxcccc`
 // where x is unknown data, and c is the color index
@@ -109,6 +110,25 @@ export const CANVASED_GUEST_SIZE = 232
 
 /// offset of name relative to beginning of guest data
 export const GUEST_NAME_OFFSET = 0
+
+/// offset of vocation and location in inn relative to beginning of guest data
+export const GUEST_VOCATION_AND_LOCATION_OFFSET = 12
+
+export const GUEST_EQUIPMENT_OFFSET = 26
+
+export const GUEST_FACE_OFFSET = 30
+
+export const GUEST_HAIRSTYLE_OFFSET = 32
+
+export const GUEST_GENDER_COLORS_OFFSET = 46
+
+export const GUEST_HAIR_COLOR_OFFSET = 47
+
+export const GUEST_BODY_TYPE_W = 50
+export const GUEST_BODY_TYPE_H = 52
+
+/// offset of the inn level (only 0x7)
+export const INN_LEVEL_OFFSET = 23172
 
 /// offset of special guest bitflags
 export const SPECIAL_GUEST_OFFSET = 11528

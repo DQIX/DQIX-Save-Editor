@@ -12,11 +12,13 @@ export const LIGHT_THEME_NAME = "light"
 export const tabs = [
   { name: "party", component: CharacterEditor },
   { name: "items", component: ItemEditor },
-  { name: "inn", component: InnEditor, disabled: true },
-  { name: "dic", component: DlcEditor },
+  { name: "inn", component: InnEditor },
+  { name: "dlc", component: DlcEditor },
   { name: "misc", component: MiscEditor },
-  { name: "hex", component: HexEditor },
+  { name: "hex", component: HexEditor, disabled: true },
 ]
+
+const initialTab = 2
 
 const initialTheme =
   localStorage.getItem("theme") ||
@@ -24,13 +26,13 @@ const initialTheme =
 document.documentElement.setAttribute("data-theme", initialTheme)
 
 export const EditorUiContext = createContext({
-  tab: 5,
+  tab: initialTab,
   theme: initialTheme,
 })
 
 export const useEditorUiContext = () => {
   const [state, setState] = useState({
-    tab: 5,
+    tab: initialTab,
     theme: initialTheme,
   })
 

@@ -656,6 +656,149 @@ export default class SaveManager {
     )
   }
 
+  setCanvasedGuestName(n, name) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
+
+    let b = writeDqixStringToBuffer(name)
+
+    b.copy(this.saveSlots[this.saveIdx], offset + layout.GUEST_NAME_OFFSET)
+  }
+
+  getGuestVocation(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return this.saveSlots[this.saveIdx][offset + layout.GUEST_VOCATION_AND_LOCATION_OFFSET] & 0xf
+  }
+
+  getGuestEquipment(n, type) {
+    if (type <= 0 || type > gameData.ITEM_TYPE_ACCESSORY) {
+      return null
+    }
+
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return this.saveSlots[this.saveIdx].readUInt16LE(
+      offset + layout.GUEST_EQUIPMENT_OFFSET + (type - 1) * 2
+    )
+  }
+
+  /// Sets the equipped item in the given slot for the given guest
+  setGuestEquipment(n, type, id) {
+    if (type <= 0 || type > gameData.ITEM_TYPE_ACCESSORY) {
+      return null
+    }
+
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return this.saveSlots[this.saveIdx].writeUInt16LE(
+      id,
+      offset + layout.GUEST_EQUIPMENT_OFFSET + (type - 1) * 2
+    )
+  }
+
+  getGuestGender(n) {
+    //TODO: there are like 3 different gender values? which one..?
+
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET] & 0x1
+  }
+
+  getGuestEyeColor(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET] & 0xf0) >> 4
+  }
+
+  setGuestEyeColor(n, color) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    const prev = this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET]
+    return (this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET] =
+      (prev & 0x0f) | (color << 4))
+  }
+
+  getGuestSkinColor(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET] & 0xe) >> 1
+  }
+
+  setGuestSkinColor(n, color) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    const prev = this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET]
+    return (this.saveSlots[this.saveIdx][offset + layout.GUEST_GENDER_COLORS_OFFSET] =
+      (prev & 0xf1) | (color << 1))
+  }
+
+  getGuestFace(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx][offset + layout.GUEST_FACE_OFFSET]
+  }
+
+  setGuestFace(n, value) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    this.saveSlots[this.saveIdx][offset + layout.GUEST_FACE_OFFSET] = value
+  }
+
+  getGuestHairstyle(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx][offset + layout.GUEST_HAIRSTYLE_OFFSET]
+  }
+
+  setGuestHairstyle(n, value) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    this.saveSlots[this.saveIdx][offset + layout.GUEST_HAIRSTYLE_OFFSET] = value
+  }
+
+  getGuestHairColor(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx][offset + layout.GUEST_HAIR_COLOR_OFFSET] & 0xf
+  }
+
+  setGuestHairColor(n, value) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    const prev = this.saveSlots[this.saveIdx][offset + layout.GUEST_HAIR_COLOR_OFFSET]
+    this.saveSlots[this.saveIdx][offset + layout.GUEST_HAIR_COLOR_OFFSET] =
+      (prev & 0xf0) | (value & 0x0f)
+  }
+
+  getGuestBodyTypeW(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_BODY_TYPE_W)
+  }
+
+  getGuestBodyTypeH(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_BODY_TYPE_H)
+  }
+
+  setGuestBodyTypeW(n, value) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx].writeUInt16LE(value, offset + layout.GUEST_BODY_TYPE_W)
+  }
+
+  setGuestBodyTypeH(n, value) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    return this.saveSlots[this.saveIdx].writeUInt16LE(value, offset + layout.GUEST_BODY_TYPE_H)
+  }
+
+  getInnLevel() {
+    return Math.min(6, this.saveSlots[this.saveIdx][layout.INN_LEVEL_OFFSET] & 0x7)
+  }
+
+  setInnLevel(level) {
+    level = Math.max(0, Math.min(level, 6))
+
+    const prev = this.saveSlots[this.saveIdx][layout.INN_LEVEL_OFFSET]
+
+    this.saveSlots[this.saveIdx][layout.INN_LEVEL_OFFSET] = (prev & 0xf8) | level
+  }
+
   isSpecialGuestVisiting(i) {
     return !!(
       this.saveSlots[this.saveIdx].readInt32LE(layout.SPECIAL_GUEST_OFFSET) &

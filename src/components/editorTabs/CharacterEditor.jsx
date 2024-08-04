@@ -9,45 +9,8 @@ import { SaveManagerContext } from "../../SaveManagerContext.jsx"
 import gameData from "../../game/data.js"
 import ItemSelect from "../atoms/ItemSelect.jsx"
 import Card from "../atoms/Card.jsx"
-import bodyTypePortraits from "../../assets/default-bodytypes-transparent.png"
-
-const AppearanceRadio = props => {
-  return (
-    <div>
-      {Array.from({ length: 10 }, (_, i) => (
-        <label key={i}>
-          <input
-            type="radio"
-            name={props.name}
-            value={i + gameData.defaultAppearanceKindOffsets[props.kind]}
-            checked={i + gameData.defaultAppearanceKindOffsets[props.kind] == props.value}
-            onChange={props.onChange}
-          />
-          <AppearanceIcon gender={props.gender} kind={props.kind} icon={i} scale={0.5} />
-        </label>
-      ))}
-    </div>
-  )
-}
-
-const ColorRadio = props => {
-  const offset = props.offset || 0
-  return (
-    <div style={props.style}>
-      {props.colors.map((color, i) => (
-        <label key={i + offset} value>
-          <input
-            type="radio"
-            value={i + offset}
-            checked={i + offset == props.checked}
-            style={{ backgroundColor: color }}
-            onChange={props.onChange}
-          />
-        </label>
-      ))}
-    </div>
-  )
-}
+import EquipmentCard from "./inputs/EquipmentCard.jsx"
+import AppearanceCards from "./inputs/AppearanceCards.jsx"
 
 export default props => {
   let { save, setSave } = useContext(SaveManagerContext)
@@ -98,88 +61,16 @@ export default props => {
           />
         </Card>
         <div className="character-grid">
-          <Card label="equipment:" className="item-list">
-            <ItemSelect
-              items={gameData.weaponsTable}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_WEAPON)}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_WEAPON, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.shields}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_SHIELD)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_SHIELD, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.headEquipment}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_HEAD)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_HEAD, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.torsoEquipment}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_TORSO)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_TORSO, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.armEquipment}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_ARM)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_ARM, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.legEquipment}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_LEGS)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_LEGS, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.feetEquipment}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_FEET)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_FEET, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <ItemSelect
-              items={gameData.accessories}
-              id={save.getCharacterEquipment(character, gameData.ITEM_TYPE_ACCESSORY)}
-              nothingName={"Nothing Equipped"}
-              nothingValue={0xffff}
-              onChange={e => {
-                save.setCharacterEquipment(character, gameData.ITEM_TYPE_ACCESSORY, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-          </Card>
+          <EquipmentCard
+            i={character}
+            getter={(i, type) => {
+              return save.getCharacterEquipment(i, type)
+            }}
+            setter={(i, type, value) => {
+              save.setCharacterEquipment(i, type, value)
+              setSave(new SaveManager(save.buffer))
+            }}
+          />
 
           <Card
             label="held items:"
@@ -298,174 +189,58 @@ export default props => {
             )}
           </Card>
 
-          <Card label="face:" className="appearance-editor face">
-            <AppearanceRadio
-              gender={save.getCharacterGender(character)}
-              kind={gameData.APPEARANCE_KIND_FACE}
-              value={save.getCharacterFace(character)}
-              onChange={e => {
-                save.setCharacterFace(character, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <label>
-              value:
-              <Input
-                type="number"
-                value={save.getCharacterFace(character)}
-                onChange={e => {
-                  save.setCharacterFace(character, e.target.value)
-                  setSave(new SaveManager(save.buffer))
-                }}
-                min={0}
-                max={255}
-                size={4}
-              />
-            </label>
-            <p>
-              <small>values 70-73 are the dlc character faces</small>
-            </p>
-          </Card>
-
-          <Card label="hairstyle:" className="appearance-editor hairstyle">
-            <AppearanceRadio
-              gender={save.getCharacterGender(character)}
-              kind={gameData.APPEARANCE_KIND_HAIRSTYLE}
-              value={save.getCharacterHairstyle(character)}
-              onChange={e => {
-                save.setCharacterHairstyle(character, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <label>
-              value:
-              <Input
-                type="number"
-                value={save.getCharacterHairstyle(character)}
-                onChange={e => {
-                  save.setCharacterHairstyle(character, e.target.value)
-                  setSave(new SaveManager(save.buffer))
-                }}
-                min={0}
-                max={255}
-                size={4}
-              />
-            </label>
-            <p>
-              <small>values 50-53 are the dlc character hairstyles</small>
-            </p>
-          </Card>
-
-          <Card label="eye colour:" className="color-picker">
-            <small>normal:</small>
-            <ColorRadio
-              colors={gameData.eyeColors.slice(0, 8)}
-              checked={save.getCharacterEyeColor(character)}
-              onChange={e => {
-                save.setCharacterEyeColor(character, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <small>weird:</small>
-            <ColorRadio
-              offset={8}
-              colors={gameData.eyeColors.slice(8)}
-              checked={save.getCharacterEyeColor(character)}
-              onChange={e => {
-                save.setCharacterEyeColor(character, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-          </Card>
-
-          <Card label="skin & hair colours:" className="color-picker ">
-            <small>skin:</small>
-            <ColorRadio
-              colors={gameData.skinColors}
-              checked={save.getCharacterSkinColor(character)}
-              onChange={e => {
-                save.setCharacterSkinColor(character, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-            <small>hair:</small>
-            <ColorRadio
-              colors={gameData.hairColors}
-              checked={save.getCharacterHairColor(character)}
-              style={{ gridTemplateColumns: "repeat(5, 1fr)" }}
-              onChange={e => {
-                save.setCharacterHairColor(character, e.target.value)
-                setSave(new SaveManager(save.buffer))
-              }}
-            />
-          </Card>
-
-          <Card label="body type:" className="body-type-editor">
-            <div className="presets">
-              {gameData.bodyTypes[save.getCharacterGender(character)].map((preset, i) => {
-                const scale = 0.5
-                const width = scale * 60
-                const height = scale * 140
-                return (
-                  <label key={i}>
-                    <input
-                      type="radio"
-                      name="body-type-preset"
-                      onChange={e => {
-                        save.setCharacterBodyTypeW(character, preset.width)
-                        save.setCharacterBodyTypeH(character, preset.height)
-                        setSave(new SaveManager(save.buffer))
-                      }}
-                      checked={
-                        save.getCharacterBodyTypeW(character) == preset.width &&
-                        save.getCharacterBodyTypeH(character) == preset.height
-                      }
-                    />
-                    <div
-                      style={{
-                        backgroundImage: `url(${bodyTypePortraits})`,
-                        width: width + "px",
-                        height: height + "px",
-                        backgroundPosition: `-${preset.icon * width}px 0`,
-                        backgroundSize: `${600 * scale}px ${140 * scale}px`,
-                        display: "inline-block",
-                        borderRadius: "var(--border-radius)",
-                      }}
-                    ></div>
-                  </label>
-                )
-              })}
-            </div>
-            <label>
-              width:
-              <Input
-                type="number"
-                value={save.getCharacterBodyTypeW(character)}
-                onChange={e => {
-                  save.setCharacterBodyTypeW(character, e.target.value)
-                  setSave(new SaveManager(save.buffer))
-                }}
-                min={0}
-                max={65535}
-                size={8}
-              />
-            </label>
-            <br />
-            <label>
-              height:
-              <Input
-                type="number"
-                value={save.getCharacterBodyTypeH(character)}
-                onChange={e => {
-                  save.setCharacterBodyTypeH(character, e.target.value)
-                  setSave(new SaveManager(save.buffer))
-                }}
-                min={0}
-                max={65535}
-                size={8}
-              />
-            </label>
-          </Card>
+          <AppearanceCards
+            gender={save.getCharacterGender(character)}
+            getCharacterFace={() => {
+              return save.getCharacterFace(character)
+            }}
+            setCharacterFace={v => {
+              save.setCharacterFace(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+            getCharacterHairstyle={() => {
+              return save.getCharacterHairstyle(character)
+            }}
+            setCharacterHairstyle={v => {
+              save.setCharacterHairstyle(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+            getCharacterEyeColor={() => {
+              return save.getCharacterEyeColor(character)
+            }}
+            setCharacterEyeColor={v => {
+              save.setCharacterEyeColor(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+            getCharacterSkinColor={() => {
+              return save.getCharacterSkinColor(character)
+            }}
+            setCharacterSkinColor={v => {
+              save.setCharacterSkinColor(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+            getCharacterHairColor={() => {
+              return save.getCharacterHairColor(character)
+            }}
+            setCharacterHairColor={v => {
+              save.setCharacterHairColor(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+            getCharacterBodyTypeW={() => {
+              return save.getCharacterBodyTypeW(character)
+            }}
+            getCharacterBodyTypeH={() => {
+              return save.getCharacterBodyTypeH(character)
+            }}
+            setCharacterBodyTypeW={v => {
+              save.setCharacterBodyTypeW(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+            setCharacterBodyTypeH={v => {
+              save.setCharacterBodyTypeH(character, v)
+              setSave(new SaveManager(save.buffer))
+            }}
+          />
         </div>
       </div>
     </div>
