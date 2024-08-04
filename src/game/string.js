@@ -42,10 +42,9 @@ function prepareStringTables() {
 prepareStringTables()
 
 export function readDqixStringFromBuffer(buffer) {
-  return Array.from(buffer)
-    .map(b => b != 0 && (stringTables.encode[b] || "?"))
-    .filter(x => x)
-    .join("")
+  const arr = Array.from(buffer).map(b => b != 0 && (stringTables.encode[b] || "?"))
+  let idx = arr.indexOf(false)
+  return arr.slice(0, idx).join("")
 }
 
 export function writeDqixStringToBuffer(str) {

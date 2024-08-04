@@ -9,6 +9,7 @@ import "./InnEditor.scss"
 import Card from "../atoms/Card"
 import Input from "../atoms/Input"
 import TimeInput from "../atoms/TimeInput"
+import Textarea from "../atoms/Textarea"
 import { VocationIcon } from "../atoms/Icon"
 import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
@@ -82,7 +83,7 @@ export default props => {
           <Card label="profile:" className="profile">
             <div>
               <label>
-                location:{" "}
+                <span>location:</span>
                 <select
                   value={save.getCanvasedGuestOrigin(guest)}
                   onChange={e => {
@@ -98,7 +99,7 @@ export default props => {
                 </select>
               </label>
               <label>
-                birthday:{" "}
+                <span>birthday:</span>
                 <TimeInput
                   value={save.getGuestBirthday(guest)}
                   onChange={time => {
@@ -108,7 +109,7 @@ export default props => {
                   noHours
                 />
                 <label>
-                  secret:{" "}
+                  <span>secret:</span>
                   <Input
                     type="checkbox"
                     checked={save.isGuestAgeSecret(guest)}
@@ -120,7 +121,7 @@ export default props => {
                 </label>
               </label>
               <label>
-                title:{" "}
+                <span>title:</span>
                 <select
                   value={save.getCanvasedGuestTitle(guest)}
                   onChange={e => {
@@ -138,12 +139,11 @@ export default props => {
                 </select>
               </label>
               <label>
-                speech style:{" "}
+                <span>speech style:</span>
                 <select
                   value={save.getCanvasedGuestSpeechStyle(guest)}
                   onChange={e => {
                     save.setCanvasedGuestSpeechStyle(guest, e.target.value)
-
                     setSave(new SaveManager(save.buffer))
                   }}
                 >
@@ -154,6 +154,24 @@ export default props => {
                   ))}
                 </select>
               </label>
+              <label>
+                <span>message:</span>
+                <Input
+                  type="text"
+                  value={save.getGuestMessage(guest)}
+                  onChange={e => {
+                    save.setGuestMessage(guest, e.target.value)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                />
+              </label>
+              {/* <Textarea
+                value={save.getGuestMessage(guest)}
+                onChange={e => {
+                  save.setGuestMessage(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              /> */}
             </div>
           </Card>
 

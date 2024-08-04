@@ -141,6 +141,10 @@ export const GUEST_SECRET_AGE_OFFSET = 111
 
 export const GUEST_TITLE_ORIGIN_OFFSET = 113
 
+export const GUEST_MESSAGE_OFFSET = 116
+
+export const GUEST_MESSAGE_LENGTH = 57
+
 /// offset of the inn level (only 0x7)
 export const INN_LEVEL_OFFSET = 23172
 

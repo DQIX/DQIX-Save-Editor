@@ -770,6 +770,29 @@ export default class SaveManager {
     b.copy(this.saveSlots[this.saveIdx], offset + layout.GUEST_NAME_OFFSET)
   }
 
+  getGuestMessage(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return readDqixStringFromBuffer(
+      this.saveSlots[this.saveIdx].subarray(
+        offset + layout.GUEST_MESSAGE_OFFSET,
+        offset + layout.GUEST_MESSAGE_OFFSET + layout.GUEST_MESSAGE_LENGTH
+      )
+    )
+  }
+
+  setGuestMessage(n, message) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    message = message
+      .substr(0, layout.GUEST_MESSAGE_LENGTH)
+      .padEnd(layout.GUEST_MESSAGE_LENGTH, "\0")
+
+    let b = writeDqixStringToBuffer(message)
+
+    b.copy(this.saveSlots[this.saveIdx], offset + layout.GUEST_MESSAGE_OFFSET)
+  }
+
   getGuestVocation(n) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
 

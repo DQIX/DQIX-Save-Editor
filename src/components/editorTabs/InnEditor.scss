@@ -86,11 +86,25 @@ $grid-size: 232px;
   }
 
   .profile {
-    grid-row: span 2;
+    grid-row: span 1;
     grid-column: span 2;
 
-    > div > label {
-      display: block;
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      > label {
+        display: block;
+        margin-bottom: 6px;
+        > span {
+          display: inline-block;
+          width: 25%;
+        }
+        > input,
+        > select {
+          width: 75%;
+        }
+      }
     }
 
     .time-input {
