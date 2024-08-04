@@ -56,25 +56,29 @@ export default props => (
         size={5}
       />
     </label>
-    :
-    <label>
-      <Input
-        type="number"
-        value={getHourFromTime(props.value)}
-        onChange={e => {
-          props.onChange && props.onChange(updateHourFromTime(props.value, e.target.value))
-        }}
-        min={0}
-        max={23}
-        size={3}
-      />
-    </label>
-    <Button
+    {!props.noHours && (
+      <>
+        :
+        <label>
+          <Input
+            type="number"
+            value={getHourFromTime(props.value)}
+            onChange={e => {
+              props.onChange && props.onChange(updateHourFromTime(props.value, e.target.value))
+            }}
+            min={0}
+            max={23}
+            size={3}
+          />
+        </label>
+      </>
+    )}
+    {/* <Button
       onClick={e => {
         props.onChange && props.onChange(timeFromDateObject(new Date()))
       }}
     >
       now
-    </Button>
+    </Button> */}
   </div>
 )

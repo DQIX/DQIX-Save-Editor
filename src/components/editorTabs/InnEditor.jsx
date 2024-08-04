@@ -8,6 +8,7 @@ import "./InnEditor.scss"
 
 import Card from "../atoms/Card"
 import Input from "../atoms/Input"
+import TimeInput from "../atoms/TimeInput"
 import { VocationIcon } from "../atoms/Icon"
 import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
@@ -81,7 +82,45 @@ export default props => {
           <Card label="profile:" className="profile">
             <div>
               <label>
-                title:
+                location:{" "}
+                <select
+                  value={save.getCanvasedGuestOrigin(guest)}
+                  onChange={e => {
+                    save.setCanvasedGuestOrigin(guest, e.target.value)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                >
+                  {Object.entries(gameData.guestOrigins).map(([id, origin]) => (
+                    <option value={id} key={id}>
+                      {origin}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                birthday:{" "}
+                <TimeInput
+                  value={save.getGuestBirthday(guest)}
+                  onChange={time => {
+                    save.setGuestBirthday(guest, time)
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                  noHours
+                />
+                <label>
+                  secret:{" "}
+                  <Input
+                    type="checkbox"
+                    checked={save.isGuestAgeSecret(guest)}
+                    onChange={e => {
+                      save.setGuestAgeSecret(guest, e.target.checked)
+                      setSave(new SaveManager(save.buffer))
+                    }}
+                  />
+                </label>
+              </label>
+              <label>
+                title:{" "}
                 <select
                   value={save.getCanvasedGuestTitle(guest)}
                   onChange={e => {
@@ -96,22 +135,6 @@ export default props => {
                         {title[save.getGuestGender(guest)]}
                       </option>
                     ))}
-                </select>
-              </label>
-              <label>
-                location:
-                <select
-                  value={save.getCanvasedGuestOrigin(guest)}
-                  onChange={e => {
-                    save.setCanvasedGuestOrigin(guest, e.target.value)
-                    setSave(new SaveManager(save.buffer))
-                  }}
-                >
-                  {Object.entries(gameData.guestOrigins).map(([id, origin]) => (
-                    <option value={id} key={id}>
-                      {origin}
-                    </option>
-                  ))}
                 </select>
               </label>
             </div>

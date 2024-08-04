@@ -711,6 +711,32 @@ export default class SaveManager {
     )
   }
 
+  getGuestBirthday(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return this.saveSlots[this.saveIdx].readInt32LE(offset + layout.GUEST_BIRTHDAY_OFFSET)
+  }
+
+  setGuestBirthday(n, date) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    this.saveSlots[this.saveIdx].writeInt32LE(date, offset + layout.GUEST_BIRTHDAY_OFFSET)
+  }
+
+  isGuestAgeSecret(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (this.saveSlots[this.saveIdx][offset + layout.GUEST_SECRET_AGE_OFFSET] & 0x80) == 0
+  }
+
+  setGuestAgeSecret(n, secret) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx][offset + layout.GUEST_SECRET_AGE_OFFSET]
+
+    this.saveSlots[this.saveIdx][offset + layout.GUEST_SECRET_AGE_OFFSET] =
+      (prev & 0x7f) | (secret ? 0 : 0x80)
+  }
+
   setCanvasedGuestName(n, name) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
 

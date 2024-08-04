@@ -88,8 +88,17 @@ $grid-size: 232px;
   .profile {
     grid-row: span 2;
     grid-column: span 2;
-    label {
+
+    > div > label {
       display: block;
+    }
+
+    .time-input {
+      display: inline-block;
+    }
+
+    label > label {
+      margin-left: 0.4em;
     }
   }
 }
