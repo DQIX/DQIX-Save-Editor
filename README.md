@@ -10,6 +10,7 @@ A save editor for dragon quest ix
 - [x] appearance
   - [x] face
   - [x] hairstyle
+  - [x] skin color
   - [x] hair color
   - [x] eye color
   - [x] height
@@ -37,6 +38,7 @@ A save editor for dragon quest ix
     - [x] hairstyle
     - [x] hair color
     - [x] eye color
+    - [x] skin color
     - [x] height
     - [x] width
   - [ ] color
@@ -44,7 +46,12 @@ A save editor for dragon quest ix
   - [ ] battle records
   - [ ] map
   - [ ] level/revocations
-  - [ ] profile
+  - [x] profile
+    - [x] location
+    - [x] birthday
+    - [x] title
+    - [x] speech style
+    - [x] message
   - [ ] gender
 - [x] inn rank
 

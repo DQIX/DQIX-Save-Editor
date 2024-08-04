@@ -723,6 +723,29 @@ export default class SaveManager {
     this.saveSlots[this.saveIdx].writeInt32LE(date, offset + layout.GUEST_BIRTHDAY_OFFSET)
   }
 
+  getCanvasedGuestSpeechStyle(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_SPEECH_STYLE_OFFSET) &
+        0x1e0) >>
+      5
+    )
+  }
+
+  setCanvasedGuestSpeechStyle(n, style) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(
+      offset + layout.GUEST_SPEECH_STYLE_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      (prev & 0xfe1f) | ((style << 5) & 0x1e0),
+      offset + layout.GUEST_SPEECH_STYLE_OFFSET
+    )
+  }
+
   isGuestAgeSecret(n) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
 

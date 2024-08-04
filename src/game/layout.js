@@ -135,6 +135,8 @@ export const GUEST_BODY_TYPE_H = 52
 
 export const GUEST_BIRTHDAY_OFFSET = 108
 
+export const GUEST_SPEECH_STYLE_OFFSET = 110
+
 export const GUEST_SECRET_AGE_OFFSET = 111
 
 export const GUEST_TITLE_ORIGIN_OFFSET = 113

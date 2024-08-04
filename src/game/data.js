@@ -2673,6 +2673,25 @@ const guestOrigins = {
   [300]: "somewhere nice",
 }
 
+const speechStyles = [
+  "♂ Chirpy Boy",
+  "♀ Cute Girl",
+  "♂ Timid Boy",
+  "♀ Shy Girl",
+  "♂ Serious Man",
+  "♀ Prim Woman",
+  "♂ Macho Man",
+  "♀ Temptress",
+  "♂ Smarmy Guy",
+  "♀ Grumpy Woman",
+  "♂ Demon King",
+  "♀ Witch",
+  "♂ Nice Old Man",
+  "♀ Kind Old Woman",
+  "♂ Doddery Old Man",
+  "♀ Bored Teenager",
+]
+
 const specialGuests = [
   "Princeton",
   "Princessa",
@@ -4449,6 +4468,7 @@ export default {
   bodyTypes,
 
   titles,
+  speechStyles,
   guestOrigins,
 
   specialGuests,

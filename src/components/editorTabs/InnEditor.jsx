@@ -137,6 +137,23 @@ export default props => {
                     ))}
                 </select>
               </label>
+              <label>
+                speech style:{" "}
+                <select
+                  value={save.getCanvasedGuestSpeechStyle(guest)}
+                  onChange={e => {
+                    save.setCanvasedGuestSpeechStyle(guest, e.target.value)
+
+                    setSave(new SaveManager(save.buffer))
+                  }}
+                >
+                  {gameData.speechStyles.map((style, i) => (
+                    <option key={i} value={i}>
+                      {style}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
           </Card>
 
