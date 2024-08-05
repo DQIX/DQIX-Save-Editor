@@ -664,6 +664,132 @@ export default class SaveManager {
     )
   }
 
+  getGuestBattleVictories(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt32LE(offset + layout.GUEST_VICTORY_COUNT_OFFSET) &
+        0x7fffc0) >>
+      6
+    )
+  }
+
+  setGuestBattleVictories(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt32LE(
+      offset + layout.GUEST_VICTORY_COUNT_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt32LE(
+      (prev & 0xff80003f) | ((v << 6) & 0x7fffc0),
+      offset + layout.GUEST_VICTORY_COUNT_OFFSET
+    )
+  }
+
+  getGuestAlchemyCount(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_ALCHEMY_COUNT) & 0x3fffc0) >>
+      6
+    )
+  }
+
+  setGuestAlchemyCount(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_ALCHEMY_COUNT)
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      (prev & 0xffc0003f) | ((v << 6) & 0x3fffc0),
+      offset + layout.GUEST_ALCHEMY_COUNT
+    )
+  }
+
+  getGuestAccoladeCount(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_ACCOLADE_COUNT_OFFSET) & 0x3ff
+    )
+  }
+
+  setGuestAccoladeCount(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(
+      offset + layout.GUEST_ACCOLADE_COUNT_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      (prev & 0xfc00) | (v & 0x3ff),
+      offset + layout.GUEST_ACCOLADE_COUNT_OFFSET
+    )
+  }
+
+  getGuestQuestsCompleted(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      this.saveSlots[this.saveIdx].readUInt32LE(offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) &
+      0x1ff
+    )
+  }
+
+  setGuestQuestsCompleted(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt32LE(
+      offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt32LE(
+      (prev & 0xfffffe00) | (v & 0x1ff),
+      offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+  }
+
+  getGuestGrottosCompleted(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_GROTTO_COUNT_OFFSET) &
+        0xfffc) >>
+      2
+    )
+  }
+
+  setGuestGrottosCompleted(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(
+      offset + layout.GUEST_GROTTO_COUNT_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      (prev & 0x3) | (v << 2),
+      offset + layout.GUEST_GROTTO_COUNT_OFFSET
+    )
+  }
+
+  getGuestGuestsCanvased(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt32LE(offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) &
+        0x7ffe00) >>
+      9
+    )
+  }
+
+  setGuestGuestsCanvased(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt32LE(
+      offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt32LE(
+      (prev & 0xff8001ff) | ((v << 9) & 0x7ffe00),
+      offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+  }
+
   getCanvasedGuestTitle(n) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
     let title =

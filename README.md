@@ -43,7 +43,19 @@ A save editor for dragon quest ix
     - [x] width
   - [ ] color
   - [ ] vocation
-  - [ ] battle records
+  - [x] battle records
+    - [x] battle victories
+    - [x] times alchemy performed
+    - [x] accolades earnt
+    - [x] quests completed
+    - [x] grottos completed
+    - [x] guests canvased
+  - [ ] completion
+    - [ ] monster list
+    - [ ] wardrobe
+    - [ ] item list
+    - [ ] alchenomicon
+  - [ ] play time
   - [ ] map
   - [ ] level/revocations
   - [x] profile

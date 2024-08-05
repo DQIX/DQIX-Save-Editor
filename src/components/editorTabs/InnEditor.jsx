@@ -174,6 +174,74 @@ export default props => {
               /> */}
             </div>
           </Card>
+          <Card label="records:" className="records">
+            <label>
+              <span>battle victories:</span>
+              <Input
+                type="number"
+                value={save.getGuestBattleVictories(guest)}
+                onChange={e => {
+                  save.setGuestBattleVictories(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <label>
+              <span>times alchemy performed:</span>
+              <Input
+                type="number"
+                value={save.getGuestAlchemyCount(guest)}
+                onChange={e => {
+                  save.setGuestAlchemyCount(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <label>
+              <span>accolades earnt:</span>
+              <Input
+                type="number"
+                value={save.getGuestAccoladeCount(guest)}
+                onChange={e => {
+                  save.setGuestAccoladeCount(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <label>
+              <span>quests completed:</span>
+              <Input
+                type="number"
+                value={save.getGuestQuestsCompleted(guest)}
+                onChange={e => {
+                  save.setGuestQuestsCompleted(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <label>
+              <span>grottos completed:</span>
+              <Input
+                type="number"
+                value={save.getGuestGrottosCompleted(guest)}
+                onChange={e => {
+                  save.setGuestGrottosCompleted(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+            <label>
+              <span>guests canvased:</span>
+              <Input
+                type="number"
+                value={save.getGuestGuestsCanvased(guest)}
+                onChange={e => {
+                  save.setGuestGuestsCanvased(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+              />
+            </label>
+          </Card>
 
           <AppearanceCards
             gender={save.getGuestGender(guest)}
