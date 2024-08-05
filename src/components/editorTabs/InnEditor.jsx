@@ -56,20 +56,20 @@ export default props => {
         </Card>
       </div>
       <div className="guest-editor">
-        <Card className="guest-header">
-          <VocationIcon icon={gameData.vocationTable[save.getGuestVocation(guest)].icon} />
-          <Input
-            type="text"
-            value={save.getCanvasedGuestName(guest)}
-            placeholder="name"
-            onChange={e => {
-              save.setCanvasedGuestName(guest, e.target.value)
-              setSave(new SaveManager(save.buffer))
-            }}
-            style={{ display: "inline-block", marginLeft: "1em" }}
-          />
-        </Card>
         <div className="guest-grid">
+          <Card className="guest-header">
+            <VocationIcon icon={gameData.vocationTable[save.getGuestVocation(guest)].icon} />
+            <Input
+              type="text"
+              value={save.getCanvasedGuestName(guest)}
+              placeholder="name"
+              onChange={e => {
+                save.setCanvasedGuestName(guest, e.target.value)
+                setSave(new SaveManager(save.buffer))
+              }}
+              style={{ display: "inline-block", marginLeft: "1em" }}
+            />
+          </Card>
           <EquipmentCard
             i={guest}
             getter={(i, type) => {

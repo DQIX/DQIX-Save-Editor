@@ -47,20 +47,22 @@ export default props => {
       </Card>
 
       <div className="character-editor">
-        <Card className="character-header">
-          <VocationIcon icon={gameData.vocationTable[save.getCharacterVocation(character)].icon} />
-          <Input
-            type="text"
-            value={save.getCharacterName(character)}
-            placeholder="name"
-            onChange={e => {
-              save.writeCharacterName(character, e.target.value)
-              setSave(new SaveManager(save.buffer))
-            }}
-            style={{ display: "inline-block", marginLeft: "1em" }}
-          />
-        </Card>
         <div className="character-grid">
+          <Card className="character-header">
+            <VocationIcon
+              icon={gameData.vocationTable[save.getCharacterVocation(character)].icon}
+            />
+            <Input
+              type="text"
+              value={save.getCharacterName(character)}
+              placeholder="name"
+              onChange={e => {
+                save.writeCharacterName(character, e.target.value)
+                setSave(new SaveManager(save.buffer))
+              }}
+              style={{ display: "inline-block", marginLeft: "1em" }}
+            />
+          </Card>
           <EquipmentCard
             i={character}
             getter={(i, type) => {
@@ -71,7 +73,6 @@ export default props => {
               setSave(new SaveManager(save.buffer))
             }}
           />
-
           <Card
             label="held items:"
             className={`item-list ${save.inParty(character) ? "" : "disabled"}`}
@@ -91,7 +92,6 @@ export default props => {
               />
             ))}
           </Card>
-
           <Card label="skills:" className="skills-editor">
             <div>
               <label>
@@ -188,7 +188,6 @@ export default props => {
               </p>
             )}
           </Card>
-
           <AppearanceCards
             gender={save.getCharacterGender(character)}
             getCharacterFace={() => {

@@ -2,12 +2,12 @@ $grid-size: 232px;
 
 .inn-root {
   padding: 1em 1em;
-  display: flex;
 
   .sidebar {
     display: flex;
     flex-direction: column;
     gap: 1em;
+    width: $grid-size;
   }
 
   .guest-list {
@@ -69,20 +69,24 @@ $grid-size: 232px;
   }
 
   .guest-editor {
-    flex-grow: 1;
+    margin-left: calc(1em + $grid-size);
   }
 
   .guest-header {
-    margin-bottom: 1em;
+    display: flex;
+    align-items: center;
+    padding: 1em;
+    grid-column: 1/-1;
   }
 
   .guest-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, $grid-size);
-    grid-template-rows: repeat(auto-fill, $grid-size);
+    grid-template-rows: $grid-size * 0.3 repeat(auto-fill, $grid-size);
     grid-auto-flow: dense;
     grid-auto-rows: $grid-size;
     gap: 1em;
+    justify-content: center;
   }
 
   .profile {

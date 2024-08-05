@@ -20,7 +20,11 @@ const ItemCard = props => {
   )
 
   return items.length ? (
-    <Card label={props.label} style={{ gridColumnStart: 2, gridColumnEnd: 5 }}>
+    <Card
+      label={props.label}
+      style={{ gridColumnStart: 2, gridColumnEnd: 5 }}
+      className="item-card"
+    >
       <div className="item-grid">
         {items.map(item => (
           <div key={item.id}>
@@ -66,10 +70,10 @@ export default props => {
 
   return (
     <div className="items-root">
-      <Card label="filter:" className="config">
+      <Card label="filter:" className="config sidebar">
         <Input
           type="text"
-          placeholder="filter"
+          placeholder="search"
           value={filter.name}
           onChange={e => setFilter({ ...filter, name: e.target.value })}
         />

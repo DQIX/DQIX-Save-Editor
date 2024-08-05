@@ -10,11 +10,11 @@
   }
 
   .config {
-    position: sticky;
     align-self: start;
     top: calc(var(--navbar-height) + 1em);
     height: calc(100vh - var(--navbar-height) - 2em);
     margin-right: 1em;
+    width: 232px;
     input[type="text"] {
       margin-bottom: 1em;
     }
@@ -24,6 +24,10 @@
     label {
       display: block;
     }
+  }
+
+  .item-card {
+    margin-left: calc(232px + 1em);
   }
 
   .item-grid {
