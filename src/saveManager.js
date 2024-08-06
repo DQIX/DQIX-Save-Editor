@@ -7,14 +7,9 @@ import { Buffer } from "buffer"
 import crc32 from "crc-32"
 
 import gameData from "./game/data"
-import {
-  readAsciiStringFromBuffer,
-  writeAsciiStringToBuffer,
-  readDqixStringFromBuffer,
-  writeDqixStringToBuffer,
-} from "./game/string"
 
 import * as layout from "./game/layout"
+import HistoryBuffer from "./historyBuffer"
 
 export const STATE_NULL = 0
 export const STATE_LOADING = 1
@@ -26,7 +21,7 @@ export default class SaveManager {
    *************************************************************************************************/
   constructor(buffer) {
     this.state = buffer == null ? STATE_NULL : STATE_LOADED
-    this.buffer = buffer
+    this.buffer = buffer && new HistoryBuffer(buffer)
 
     this.saveIdx = 0
     this.saveSlots = []
@@ -55,7 +50,7 @@ export default class SaveManager {
       0x44, 0x52, 0x41, 0x47, 0x4f, 0x4e, 0x20, 0x51, 0x55, 0x45, 0x53, 0x54, 0x20, 0x49, 0x58,
     ])
 
-    if (!MAGIC_NUMBER.compare(this.buffer.subarray(0, 0 + MAGIC_NUMBER.length)) == 0) {
+    if (!MAGIC_NUMBER.compare(this.buffer.subarray(0, 0 + MAGIC_NUMBER.length).buffer) == 0) {
       return false
     }
 
@@ -72,8 +67,8 @@ export default class SaveManager {
       )
 
       // NOTE: crc-32 returns an int instead of a uint
-      const srcA = this.saveSlots[i].readInt32LE(layout.CHECKSUM_A_OFFSET)
-      const srcB = this.saveSlots[i].readInt32LE(layout.CHECKSUM_B_OFFSET)
+      const srcA = this.saveSlots[i].readI32LE(layout.CHECKSUM_A_OFFSET)
+      const srcB = this.saveSlots[i].readI32LE(layout.CHECKSUM_B_OFFSET)
 
       if (a != srcA || b != srcB) {
         return false
@@ -99,12 +94,12 @@ export default class SaveManager {
   download() {
     for (let i = 0; i < 2; i++) {
       let newChecksums = this.makeChecksums(i)
-      this.saveSlots[i].writeInt32LE(newChecksums[0], layout.CHECKSUM_A_OFFSET)
-      this.saveSlots[i].writeInt32LE(newChecksums[1], layout.CHECKSUM_B_OFFSET)
+      this.saveSlots[i].writeI32LE(newChecksums[0], layout.CHECKSUM_A_OFFSET)
+      this.saveSlots[i].writeI32LE(newChecksums[1], layout.CHECKSUM_B_OFFSET)
     }
 
     const el = document.createElement("a")
-    const blob = new Blob([this.buffer], { type: "octet/stream" })
+    const blob = new Blob([this.buffer.buffer], { type: "octet/stream" })
     const url = window.URL.createObjectURL(blob)
     el.href = url
     el.download = "edited.sav"
@@ -116,11 +111,17 @@ export default class SaveManager {
   makeChecksums(slot) {
     return [
       crc32.buf(
-        this.saveSlots[slot].subarray(layout.CHECKSUM_A_DATA_OFFSET, layout.CHECKSUM_A_DATA_END),
+        this.saveSlots[slot].buffer.subarray(
+          layout.CHECKSUM_A_DATA_OFFSET,
+          layout.CHECKSUM_A_DATA_END
+        ),
         0
       ),
       crc32.buf(
-        this.saveSlots[slot].subarray(layout.CHECKSUM_B_DATA_OFFSET, layout.CHECKSUM_B_DATA_END),
+        this.saveSlots[slot].buffer.subarray(
+          layout.CHECKSUM_B_DATA_OFFSET,
+          layout.CHECKSUM_B_DATA_END
+        ),
         0
       ),
     ]
@@ -129,8 +130,8 @@ export default class SaveManager {
   /// returns the current checksums in the save buffer
   getChecksums(slot) {
     return [
-      this.saveSlots[slot].readInt32LE(layout.CHECKSUM_A_OFFSET),
-      this.saveSlots[slot].readInt32LE(layout.CHECKSUM_B_OFFSET),
+      this.saveSlots[slot].readI32LE(layout.CHECKSUM_A_OFFSET),
+      this.saveSlots[slot].readI32LE(layout.CHECKSUM_B_OFFSET),
     ]
   }
 
@@ -148,7 +149,7 @@ export default class SaveManager {
     const order = []
     const partyCount = this.getPartyCount()
     for (let i = 0; i < partyCount; i++) {
-      order.push(this.getSaveLogBuffer()[layout.PARTY_ORDER_OFFSET + i])
+      order.push(this.getSaveLogBuffer().readByte(layout.PARTY_ORDER_OFFSET + i))
     }
 
     return order
@@ -156,12 +157,12 @@ export default class SaveManager {
 
   /// returns the number of characters waiting in the wings
   getStandbyCount() {
-    return this.getSaveLogBuffer()[layout.STANDBY_COUNT_OFFSET]
+    return this.getSaveLogBuffer().readByte(layout.STANDBY_COUNT_OFFSET)
   }
 
   /// returns the number of characters in the party
   getPartyCount() {
-    return this.getSaveLogBuffer()[layout.PARTY_COUNT_OFFSET]
+    return this.getSaveLogBuffer().readByte(layout.PARTY_COUNT_OFFSET)
   }
 
   /// returns the total number of characters
@@ -190,11 +191,9 @@ export default class SaveManager {
 
   /// returns the utf8 encoded name, any unknown characters will be returned as ?
   getCharacterName(n) {
-    return readDqixStringFromBuffer(
-      this.getCharacterBuffer(n).subarray(
-        layout.CHARACTER_NAME_OFFSET,
-        layout.CHARACTER_NAME_OFFSET + layout.NAME_LENGTH
-      )
+    return this.getCharacterBuffer(n).readDqixString(
+      layout.CHARACTER_NAME_OFFSET,
+      layout.NAME_LENGTH
     )
   }
 
@@ -203,82 +202,87 @@ export default class SaveManager {
   writeCharacterName(n, name) {
     name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
 
-    let b = writeDqixStringToBuffer(name)
-
-    b.copy(this.getCharacterBuffer(n), layout.CHARACTER_NAME_OFFSET)
+    this.getCharacterBuffer(n).writeDqixString(name, layout.CHARACTER_NAME_OFFSET)
   }
 
   getCharacterGender(n) {
-    return this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET] & 1
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET) & 1
   }
 
   getCharacterFace(n) {
-    return this.getCharacterBuffer(n)[layout.CHARACTER_FACE_OFFSET]
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_FACE_OFFSET)
   }
 
   setCharacterFace(n, value) {
-    this.getCharacterBuffer(n)[layout.CHARACTER_FACE_OFFSET] = value
+    this.getCharacterBuffer(n).writeByte(value, layout.CHARACTER_FACE_OFFSET)
   }
 
   getCharacterHairstyle(n) {
-    return this.getCharacterBuffer(n)[layout.CHARACTER_HAIRSTYLE_OFFSET]
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_HAIRSTYLE_OFFSET)
   }
 
   setCharacterHairstyle(n, value) {
-    this.getCharacterBuffer(n)[layout.CHARACTER_HAIRSTYLE_OFFSET] = value
+    this.getCharacterBuffer(n).writeByte(value, layout.CHARACTER_HAIRSTYLE_OFFSET)
   }
 
   getCharacterEyeColor(n) {
-    return (this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET] & 0xf0) >> 4
+    return (this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET) & 0xf0) >> 4
   }
 
   setCharacterEyeColor(n, color) {
-    const prev = this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET]
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET)
 
-    this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET] = (prev & 0x0f) | (color << 4)
+    this.getCharacterBuffer(n).writeByte(
+      (prev & 0x0f) | (color << 4),
+      layout.CHARACTER_GENDER_COLORS_OFFSET
+    )
   }
 
   getCharacterSkinColor(n) {
-    return (this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET] & 0xe) >> 1
+    return (this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET) & 0xe) >> 1
   }
 
   setCharacterSkinColor(n, color) {
-    const prev = this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET]
-    return (this.getCharacterBuffer(n)[layout.CHARACTER_GENDER_COLORS_OFFSET] =
-      (prev & 0xf1) | (color << 1))
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET)
+
+    this.getCharacterBuffer(n).writeByte((prev & 0xf1) | (color << 1)),
+      layout.CHARACTER_GENDER_COLORS_OFFSET
   }
 
   getCharacterHairColor(n) {
-    return this.getCharacterBuffer(n)[layout.CHARACTER_HAIR_COLOR_OFFSET] & 0xf
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_HAIR_COLOR_OFFSET) & 0xf
   }
 
   setCharacterHairColor(n, value) {
-    const prev = this.getCharacterBuffer(n)[layout.CHARACTER_HAIR_COLOR_OFFSET]
-    this.getCharacterBuffer(n)[layout.CHARACTER_HAIR_COLOR_OFFSET] = (prev & 0xf0) | (value & 0x0f)
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_HAIR_COLOR_OFFSET)
+    this.getCharacterBuffer(n).writeByte(
+      (prev & 0xf0) | (value & 0x0f),
+      layout.CHARACTER_HAIR_COLOR_OFFSET
+    )
   }
 
   getCharacterBodyTypeW(n) {
-    return this.getCharacterBuffer(n).readUInt16LE(layout.CHARACTER_BODY_TYPE_W)
+    return this.getCharacterBuffer(n).readU16LE(layout.CHARACTER_BODY_TYPE_W)
   }
 
   getCharacterBodyTypeH(n) {
-    return this.getCharacterBuffer(n).readUInt16LE(layout.CHARACTER_BODY_TYPE_H)
+    return this.getCharacterBuffer(n).readU16LE(layout.CHARACTER_BODY_TYPE_H)
   }
 
   setCharacterBodyTypeW(n, value) {
-    return this.getCharacterBuffer(n).writeUInt16LE(value, layout.CHARACTER_BODY_TYPE_W)
+    return this.getCharacterBuffer(n).writeU16LE(value, layout.CHARACTER_BODY_TYPE_W)
   }
 
   setCharacterBodyTypeH(n, value) {
-    return this.getCharacterBuffer(n).writeUInt16LE(value, layout.CHARACTER_BODY_TYPE_H)
+    return this.getCharacterBuffer(n).writeU16LE(value, layout.CHARACTER_BODY_TYPE_H)
   }
 
   getCharacterSkillAllocation(n, skill) {
-    return this.getCharacterBuffer(n)[layout.CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill]
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill)
   }
 
   setCharacterSkillAllocationRaw(n, skill, value) {
-    this.getCharacterBuffer(n)[layout.CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill] = value
+    this.getCharacterBuffer(n).writeByte(value, layout.CHARACTER_SKILL_ALLOCATIONS_OFFSET + skill)
   }
 
   setCharacterSkillAllocation(n, skill, value) {
@@ -292,48 +296,53 @@ export default class SaveManager {
 
   getCharacterProficiency(n, id) {
     return !!(
-      this.getCharacterBuffer(n)[layout.CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)] &
+      this.getCharacterBuffer(n).readByte(
+        layout.CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)
+      ) &
       (1 << id % 8)
     )
   }
 
   setCharacterProficiency(n, id, value) {
     const mask = 1 << id % 8
+    const prev = this.getCharacterBuffer(n).readByte(
+      layout.CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)
+    )
 
-    this.getCharacterBuffer(n)[layout.CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)] =
-      (this.getCharacterBuffer(n)[layout.CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)] &
-        ~mask) |
-      (value ? mask : 0)
+    this.getCharacterBuffer(n).writeByte(
+      (prev & ~mask) | (value ? mask : 0),
+      layout.CHARACTER_PROFICIENCY_OFFSET + Math.floor(id / 8)
+    )
   }
 
   knowsZoom(n) {
-    return !!(this.getCharacterBuffer(n)[layout.CHARACTER_ZOOM_OFFSET] & 0x10)
+    return !!(this.getCharacterBuffer(n).readByte(layout.CHARACTER_ZOOM_OFFSET) & 0x10)
   }
 
   knowsEggOn(n) {
-    return !!(this.getCharacterBuffer(n)[layout.CHARACTER_EGG_ON_OFFSET] & 0x40)
+    return !!(this.getCharacterBuffer(n).readByte(layout.CHARACTER_EGG_ON_OFFSET) & 0x40)
   }
 
   setKnowsZoom(n, knows) {
     knows = knows ? 0x10 : 0
-    const prev = this.getCharacterBuffer(n)[layout.CHARACTER_ZOOM_OFFSET] & 0x10
-    this.getCharacterBuffer(n)[layout.CHARACTER_ZOOM_OFFSET] = (prev & 0xef) | knows
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_ZOOM_OFFSET) & 0x10
+    this.getCharacterBuffer(n).writeByte((prev & 0xef) | knows, layout.CHARACTER_ZOOM_OFFSET)
   }
 
   setKnowsEggOn(n, knows) {
     knows = knows ? 0x40 : 0
-    const prev = this.getCharacterBuffer(n)[layout.CHARACTER_EGG_ON_OFFSET] & 0x40
-    this.getCharacterBuffer(n)[layout.CHARACTER_EGG_ON_OFFSET] = (prev & 0xbf) | knows
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_EGG_ON_OFFSET) & 0x40
+    this.getCharacterBuffer(n).writeByte((prev & 0xbf) | knows, layout.CHARACTER_EGG_ON_OFFSET)
   }
 
   getUnallocatedSkillPoints(n) {
-    return this.getCharacterBuffer(n).readUInt16LE(layout.CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET)
+    return this.getCharacterBuffer(n).readU16LE(layout.CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET)
   }
 
   setUnallocatedSkillPoints(n, pts) {
     pts = Math.max(0, Math.min(9999, pts))
 
-    this.getCharacterBuffer(n).writeUInt16LE(pts, layout.CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET)
+    this.getCharacterBuffer(n).writeU16LE(pts, layout.CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET)
   }
 
   /// returns the item id for the equipped item in the given slot, n is the character index
@@ -343,9 +352,7 @@ export default class SaveManager {
       throw `bad type: "${type}"`
     }
 
-    return this.getCharacterBuffer(n).readUInt16LE(
-      layout.CHARACTER_EQUIPMENT_OFFSET + (type - 1) * 2
-    )
+    return this.getCharacterBuffer(n).readU16LE(layout.CHARACTER_EQUIPMENT_OFFSET + (type - 1) * 2)
   }
 
   /// Sets the equipped item in the given slot for the given character
@@ -354,7 +361,7 @@ export default class SaveManager {
       throw `bad type: "${type}"`
     }
 
-    return this.getCharacterBuffer(n).writeUInt16LE(
+    return this.getCharacterBuffer(n).writeU16LE(
       id,
       layout.CHARACTER_EQUIPMENT_OFFSET + (type - 1) * 2
     )
@@ -362,7 +369,7 @@ export default class SaveManager {
 
   /// returns the vocation index of the given character
   getCharacterVocation(n) {
-    return this.getCharacterBuffer(n)[layout.CURRENT_VOCATION_OFFSET]
+    return this.getCharacterBuffer(n).readByte(layout.CURRENT_VOCATION_OFFSET)
   }
 
   /// returns the ith item held by the nth character, assumes the character is in the party
@@ -372,7 +379,7 @@ export default class SaveManager {
       return []
     }
 
-    return this.getSaveLogBuffer().readUInt16LE(layout.HELD_ITEM_OFFSET + 18 * n + 2 * i)
+    return this.getSaveLogBuffer().readU16LE(layout.HELD_ITEM_OFFSET + 18 * n + 2 * i)
   }
 
   /// sets the ith item held by the nth character, assumes the character is in the party
@@ -382,7 +389,7 @@ export default class SaveManager {
       return
     }
 
-    return this.getSaveLogBuffer().writeUInt16LE(id, layout.HELD_ITEM_OFFSET + 18 * n + 2 * i)
+    return this.getSaveLogBuffer().writeU16LE(id, layout.HELD_ITEM_OFFSET + 18 * n + 2 * i)
   }
 
   /*************************************************************************************************
@@ -398,13 +405,13 @@ export default class SaveManager {
     let idx = 0xffff
     //NOTE: linear search isn't ideal here, maybe make this a hashmap created in the constructor?
     for (let i = 0; i < gameData.itemTables[itemType].length; i++) {
-      if (this.getSaveLogBuffer().readUInt16LE(offset.idOffset + 2 * i) == id) {
+      if (this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * i) == id) {
         idx = i
         break
       }
     }
 
-    return idx != 0xffff ? this.getSaveLogBuffer()[offset.countOffset + idx] : 0
+    return idx != 0xffff ? this.getSaveLogBuffer().readByte(offset.countOffset + idx) : 0
   }
 
   /// sets the number of an item in the bag
@@ -417,13 +424,13 @@ export default class SaveManager {
 
     let available = null
     for (let i = 0; i < gameData.itemTables[itemType].length; i++) {
-      if (this.getSaveLogBuffer().readUInt16LE(offset.idOffset + 2 * i) == id) {
+      if (this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * i) == id) {
         idx = i
         break
       }
       if (
         available === null &&
-        this.getSaveLogBuffer().readUInt16LE(offset.idOffset + 2 * i) == 0xffff
+        this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * i) == 0xffff
       ) {
         available = i
       }
@@ -431,11 +438,11 @@ export default class SaveManager {
 
     if (idx == 0xffff) idx = available
 
-    this.getSaveLogBuffer()[offset.countOffset + idx] = count
+    this.getSaveLogBuffer().writeByte(count, offset.countOffset + idx)
     if (count == 0) {
-      this.getSaveLogBuffer().writeUInt16LE(0xffff, offset.idOffset + 2 * idx)
+      this.getSaveLogBuffer().writeU16LE(0xffff, offset.idOffset + 2 * idx)
     } else {
-      this.getSaveLogBuffer().writeUInt16LE(id, offset.idOffset + 2 * idx)
+      this.getSaveLogBuffer().writeU16LE(id, offset.idOffset + 2 * idx)
     }
 
     if (offset.needsPacking) {
@@ -449,18 +456,20 @@ export default class SaveManager {
     const offset = layout.itemOffsets[type]
 
     outer: for (let i = 0; i < gameData.itemTables[type].length; i++) {
-      if (this.getSaveLogBuffer().readUInt16LE(offset.idOffset + 2 * i) == 0xffff) {
+      if (this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * i) == 0xffff) {
         for (let j = i + 1; j < gameData.itemTables[type].length; j++) {
-          if (this.getSaveLogBuffer().readUInt16LE(offset.idOffset + 2 * j) != 0xffff) {
-            this.getSaveLogBuffer().writeUInt16LE(
-              this.getSaveLogBuffer().readUInt16LE(offset.idOffset + 2 * j),
+          if (this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * j) != 0xffff) {
+            this.getSaveLogBuffer().writeU16LE(
+              this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * j),
               offset.idOffset + 2 * i
             )
-            this.getSaveLogBuffer()[offset.countOffset + i] =
-              this.getSaveLogBuffer()[offset.countOffset + j]
+            this.getSaveLogBuffer().writeByte(
+              this.getSaveLogBuffer().readByte(offset.countOffset + j),
+              offset.countOffset + i
+            )
 
-            this.getSaveLogBuffer()[offset.countOffset + j] = 0
-            this.getSaveLogBuffer().writeUInt16LE(0xffff, offset.idOffset + 2 * j)
+            this.getSaveLogBuffer().writeByte(0, offset.countOffset + j)
+            this.getSaveLogBuffer().writeU16LE(0xffff, offset.idOffset + 2 * j)
 
             continue outer
           }
@@ -476,29 +485,29 @@ export default class SaveManager {
    *************************************************************************************************/
 
   getGoldOnHand() {
-    return this.getSaveLogBuffer().readUInt32LE(layout.GOLD_ON_HAND_OFFSET)
+    return this.getSaveLogBuffer().readU32LE(layout.GOLD_ON_HAND_OFFSET)
   }
 
   getGoldInBank() {
-    return this.getSaveLogBuffer().readUInt32LE(layout.GOLD_IN_BANK_OFFSET)
+    return this.getSaveLogBuffer().readU32LE(layout.GOLD_IN_BANK_OFFSET)
   }
 
   setGoldOnHand(gold) {
     gold = Math.max(0, Math.min(gold, 9999999))
-    return this.getSaveLogBuffer().writeUInt32LE(gold, layout.GOLD_ON_HAND_OFFSET)
+    return this.getSaveLogBuffer().writeU32LE(gold, layout.GOLD_ON_HAND_OFFSET)
   }
 
   setGoldInBank(gold) {
     gold = Math.max(0, Math.min(gold, 1000000000))
-    return this.getSaveLogBuffer().writeUInt32LE(gold, layout.GOLD_IN_BANK_OFFSET)
+    return this.getSaveLogBuffer().writeU32LE(gold, layout.GOLD_IN_BANK_OFFSET)
   }
 
   getMiniMedals() {
-    return this.getSaveLogBuffer().readUint32LE(layout.MINI_MEDAL_OFFSET)
+    return this.getSaveLogBuffer().readU32LE(layout.MINI_MEDAL_OFFSET)
   }
 
   setMiniMedals(medals) {
-    this.getSaveLogBuffer().writeUint32LE(medals, layout.MINI_MEDAL_OFFSET)
+    this.getSaveLogBuffer().writeU32LE(medals, layout.MINI_MEDAL_OFFSET)
   }
 
   getPartyTrickLearned(i) {
@@ -506,7 +515,7 @@ export default class SaveManager {
       return null
     }
 
-    return this.getSaveLogBuffer().readInt32LE(layout.PARTY_TRICK_LEARNED_OFFSET) & (1 << (i + 2))
+    return this.getSaveLogBuffer().readI32LE(layout.PARTY_TRICK_LEARNED_OFFSET) & (1 << (i + 2))
   }
 
   setPartyTrickLearned(i, learned) {
@@ -516,9 +525,9 @@ export default class SaveManager {
     learned = learned ? 1 : 0
     i += 2
 
-    let prev = this.getSaveLogBuffer().readInt32LE(layout.PARTY_TRICK_LEARNED_OFFSET)
+    let prev = this.getSaveLogBuffer().readI32LE(layout.PARTY_TRICK_LEARNED_OFFSET)
 
-    this.getSaveLogBuffer().writeInt32LE(
+    this.getSaveLogBuffer().writeI32LE(
       (prev & ~(1 << i)) | (learned << i),
       layout.PARTY_TRICK_LEARNED_OFFSET
     )
@@ -526,17 +535,17 @@ export default class SaveManager {
 
   getPlaytime() {
     return [
-      this.getSaveLogBuffer().readUint16LE(layout.PLAYTIME_HOURS),
-      this.getSaveLogBuffer()[layout.PLAYTIME_MINUTES],
-      this.getSaveLogBuffer()[layout.PLAYTIME_SECONDS],
+      this.getSaveLogBuffer().readU16LE(layout.PLAYTIME_HOURS),
+      this.getSaveLogBuffer().readByte(layout.PLAYTIME_MINUTES),
+      this.getSaveLogBuffer().readByte(layout.PLAYTIME_SECONDS),
     ]
   }
 
   getMultiplayerTime() {
     return [
-      this.getSaveLogBuffer().readUint16LE(layout.MULTIPLAYER_HOURS),
-      this.getSaveLogBuffer()[layout.MULTIPLAYER_MINUTES],
-      this.getSaveLogBuffer()[layout.MULTIPLAYER_SECONDS],
+      this.getSaveLogBuffer().readU16LE(layout.MULTIPLAYER_HOURS),
+      this.getSaveLogBuffer().readByte(layout.MULTIPLAYER_MINUTES),
+      this.getSaveLogBuffer().readByte(layout.MULTIPLAYER_SECONDS),
     ]
   }
 
@@ -544,24 +553,24 @@ export default class SaveManager {
     value[0] = Math.max(0, Math.min(0xffff, value[0]))
     value[1] = Math.max(0, Math.min(59, value[1]))
     value[2] = Math.max(0, Math.min(59, value[2]))
-    this.getSaveLogBuffer().writeUint16LE(value[0], layout.PLAYTIME_HOURS)
-    this.getSaveLogBuffer()[layout.PLAYTIME_MINUTES] = value[1]
-    this.getSaveLogBuffer()[layout.PLAYTIME_SECONDS] = value[2]
+    this.getSaveLogBuffer().writeU16LE(value[0], layout.PLAYTIME_HOURS)
+    this.getSaveLogBuffer().writeByte(value[1], layout.PLAYTIME_MINUTES)
+    this.getSaveLogBuffer().writeByte(value[2], layout.PLAYTIME_SECONDS)
   }
 
   setMultiplayerTime(value) {
     value[0] = Math.max(0, Math.min(0xffff, value[0]))
     value[1] = Math.max(0, Math.min(59, value[1]))
     value[2] = Math.max(0, Math.min(59, value[2]))
-    this.getSaveLogBuffer().writeUint16LE(value[0], layout.MULTIPLAYER_HOURS)
-    this.getSaveLogBuffer()[layout.MULTIPLAYER_MINUTES] = value[1]
-    this.getSaveLogBuffer()[layout.MULTIPLAYER_SECONDS] = value[2]
+    this.getSaveLogBuffer().writeU16LE(value[0], layout.MULTIPLAYER_HOURS)
+    this.getSaveLogBuffer().writeByte(value[1], layout.MULTIPLAYER_MINUTES)
+    this.getSaveLogBuffer().writeByte(value[2], layout.MULTIPLAYER_SECONDS)
   }
 
   /// Returns true if the vocation is unlocked, id is the index into `gameData.vocationTable`
   isVocationUnlocked(id) {
     return !!(
-      this.getSaveLogBuffer().readUint16LE(layout.UNLOCKABLE_VOCATION_OFFSET) &
+      this.getSaveLogBuffer().readU16LE(layout.UNLOCKABLE_VOCATION_OFFSET) &
       (1 << (id - 1))
     )
   }
@@ -570,22 +579,22 @@ export default class SaveManager {
     id -= 1
     unlocked = unlocked ? 1 : 0
 
-    const prev = this.getSaveLogBuffer().readUint16LE(layout.UNLOCKABLE_VOCATION_OFFSET)
-    this.getSaveLogBuffer().writeUint16LE(
+    const prev = this.getSaveLogBuffer().readU16LE(layout.UNLOCKABLE_VOCATION_OFFSET)
+    this.getSaveLogBuffer().writeU16LE(
       (prev & ~(1 << id)) | (unlocked << id),
       layout.UNLOCKABLE_VOCATION_OFFSET
     )
   }
 
   visitedLocation(i) {
-    return this.getSaveLogBuffer().readInt32LE(layout.VISITED_LOCATIONS_OFFSET) & (1 << i)
+    return this.getSaveLogBuffer().readI32LE(layout.VISITED_LOCATIONS_OFFSET) & (1 << i)
   }
 
   setVisitedLocation(i, visited) {
     visited = visited ? 1 : 0
 
-    const prev = this.getSaveLogBuffer().readInt32LE(layout.VISITED_LOCATIONS_OFFSET)
-    this.getSaveLogBuffer().writeInt32LE(
+    const prev = this.getSaveLogBuffer().readI32LE(layout.VISITED_LOCATIONS_OFFSET)
+    this.getSaveLogBuffer().writeI32LE(
       (prev & ~(1 << i)) | (visited << i),
       layout.VISITED_LOCATIONS_OFFSET
     )
@@ -602,133 +611,134 @@ export default class SaveManager {
   }
 
   getCanvasedGuestCount() {
-    return this.getSaveLogBuffer()[layout.CURRENT_GUESTS_CANVASED_OFFSET]
+    return this.getSaveLogBuffer().readByte(layout.CURRENT_GUESTS_CANVASED_OFFSET)
   }
 
   getCanvasedGuestIndex(n) {
-    return (this.getCanvasedGuest(n)[layout.GUEST_INDEX_OFFSET] & 0xfffffffc) >> 2
+    return (this.getCanvasedGuest(n).readByte(layout.GUEST_INDEX_OFFSET) & 0xfffffffc) >> 2
   }
 
   getCanvasedGuestName(n) {
-    return readDqixStringFromBuffer(
-      this.getCanvasedGuest(n).subarray(
-        layout.GUEST_NAME_OFFSET,
-        layout.GUEST_NAME_OFFSET + layout.NAME_LENGTH
-      )
-    )
+    return this.getCanvasedGuest(n).readDqixString(layout.GUEST_NAME_OFFSET, layout.NAME_LENGTH)
+  }
+
+  setCanvasedGuestName(n, name) {
+    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
+
+    this.getCanvasedGuest(n).writeDqixString(name, layout.GUEST_NAME_OFFSET)
   }
 
   getGuestBattleVictories(n) {
-    return (
-      (this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_VICTORY_COUNT_OFFSET) & 0x7fffc0) >> 6
-    )
+    return (this.getCanvasedGuest(n).readU32LE(layout.GUEST_VICTORY_COUNT_OFFSET) & 0x7fffc0) >> 6
   }
 
   setGuestBattleVictories(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_VICTORY_COUNT_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_VICTORY_COUNT_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt32LE(
+    this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xff80003f) | ((v << 6) & 0x7fffc0),
       layout.GUEST_VICTORY_COUNT_OFFSET
     )
   }
 
   getGuestAlchemyCount(n) {
-    return (this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_ALCHEMY_COUNT) & 0x3fffc0) >> 6
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_ALCHEMY_COUNT) & 0x3fffc0) >> 6
   }
 
   setGuestAlchemyCount(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_ALCHEMY_COUNT)
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_ALCHEMY_COUNT)
 
-    this.getCanvasedGuest(n).writeUInt16LE(
+    this.getCanvasedGuest(n).writeU16LE(
       (prev & 0xffc0003f) | ((v << 6) & 0x3fffc0),
       layout.GUEST_ALCHEMY_COUNT
     )
   }
 
   getGuestAccoladeCount(n) {
-    return this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_ACCOLADE_COUNT_OFFSET) & 0x3ff
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_ACCOLADE_COUNT_OFFSET) & 0x3ff
   }
 
   setGuestAccoladeCount(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_ACCOLADE_COUNT_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_ACCOLADE_COUNT_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt16LE(
+    this.getCanvasedGuest(n).writeU16LE(
       (prev & 0xfc00) | (v & 0x3ff),
       layout.GUEST_ACCOLADE_COUNT_OFFSET
     )
   }
 
   getGuestQuestsCompleted(n) {
-    return this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) & 0x1ff
+    return this.getCanvasedGuest(n).readU32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) & 0x1ff
   }
 
   setGuestQuestsCompleted(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt32LE(
+    this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xfffffe00) | (v & 0x1ff),
       layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
     )
   }
 
   getGuestGrottosCompleted(n) {
-    return (this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_GROTTO_COUNT_OFFSET) & 0xfffc) >> 2
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_GROTTO_COUNT_OFFSET) & 0xfffc) >> 2
   }
 
   setGuestGrottosCompleted(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_GROTTO_COUNT_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_GROTTO_COUNT_OFFSET)
 
-    this.getSaveLogBuffer().writeUInt16LE((prev & 0x3) | (v << 2), layout.GUEST_GROTTO_COUNT_OFFSET)
+    this.getSaveLogBuffer().writeU16LE((prev & 0x3) | (v << 2), layout.GUEST_GROTTO_COUNT_OFFSET)
   }
 
   getGuestGuestsCanvased(n) {
     return (
-      (this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) & 0x7ffe00) >>
-      9
+      (this.getCanvasedGuest(n).readU32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) & 0x7ffe00) >> 9
     )
   }
 
   setGuestGuestsCanvased(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt32LE(
+    this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xff8001ff) | ((v << 9) & 0x7ffe00),
       layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
     )
   }
 
   getGuestMonsterCompletion(n) {
-    return (this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_MONSTER_COUNT_OFFSET) & 0x1fc0) >> 6
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_MONSTER_COUNT_OFFSET) & 0x1fc0) >> 6
   }
 
   setGuestMonsterCompletion(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_MONSTER_COUNT_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_MONSTER_COUNT_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt16LE(
+    this.getCanvasedGuest(n).writeU16LE(
       (prev & 0xe03f) | ((v << 6) & 0x1fc0),
       layout.GUEST_MONSTER_COUNT_OFFSET
     )
   }
 
   getGuestWardrobeCompletion(n) {
-    return this.getCanvasedGuest(n)[layout.GUEST_WARDROBE_COUNT_OFFSET] & 0x7f
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_WARDROBE_COUNT_OFFSET) & 0x7f
   }
 
   setGuestWardrobeCompletion(n, v) {
-    const prev = this.getCanvasedGuest(n)[layout.GUEST_WARDROBE_COUNT_OFFSET]
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_WARDROBE_COUNT_OFFSET)
 
-    this.getCanvasedGuest(n)[layout.GUEST_WARDROBE_COUNT_OFFSET] = (prev & 0x80) | (v & 0x7f)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0x80) | (v & 0x7f),
+      layout.GUEST_WARDROBE_COUNT_OFFSET
+    )
   }
 
   getGuestItemCompletion(n) {
-    return (this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_ITEM_COUNT_OFFSET) & 0xfe0) >> 5
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_ITEM_COUNT_OFFSET) & 0xfe0) >> 5
   }
 
   setGuestItemCompletion(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_ITEM_COUNT_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_ITEM_COUNT_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt16LE(
+    this.getCanvasedGuest(n).writeU16LE(
       (prev & 0xf01f) | ((v << 5) & 0xfe0),
       layout.GUEST_ITEM_COUNT_OFFSET
     )
@@ -736,16 +746,15 @@ export default class SaveManager {
 
   getGuestAlchenomiconCompletion(n) {
     return (
-      (this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) &
-        0x3f800000) >>
+      (this.getCanvasedGuest(n).readU32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) & 0x3f800000) >>
       23
     )
   }
 
   setGuestAlchenomiconCompletion(n, v) {
-    const prev = this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt32LE(
+    this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xc07fffff) | ((v << 23) & 0x3f800000),
       layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
     )
@@ -753,7 +762,7 @@ export default class SaveManager {
 
   getCanvasedGuestTitle(n) {
     let title =
-      ((this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_TITLE_ORIGIN_OFFSET) >> 8) & 0x3ff8) >> 3
+      ((this.getCanvasedGuest(n).readU32LE(layout.GUEST_TITLE_ORIGIN_OFFSET) >> 8) & 0x3ff8) >> 3
 
     //NOTE: not totally sure if this should be done this way but i can't figure out any reason for it being different
     if (700 < title && title < 800) title = 700
@@ -763,71 +772,64 @@ export default class SaveManager {
   }
 
   setCanvasedGuestTitle(n, title) {
-    const prev = this.getCanvasedGuest(n).readUInt32LE(layout.GUEST_TITLE_ORIGIN_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_TITLE_ORIGIN_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt32LE(
+    this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xffc007ff) | (((title << 3) & 0x3ff8) << 8),
       layout.GUEST_TITLE_ORIGIN_OFFSET
     )
   }
 
   getCanvasedGuestOrigin(n) {
-    return (this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_TITLE_ORIGIN_OFFSET) & 0x7fe) >> 1
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_TITLE_ORIGIN_OFFSET) & 0x7fe) >> 1
   }
 
   setCanvasedGuestOrigin(n, origin) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_TITLE_ORIGIN_OFFSET)
-    this.getCanvasedGuest(n).writeUint16LE(
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_TITLE_ORIGIN_OFFSET)
+    this.getCanvasedGuest(n).writeU16LE(
       (prev & 0xf801) | ((origin << 1) & 0x7fe),
       layout.GUEST_TITLE_ORIGIN_OFFSET
     )
   }
 
   getGuestBirthday(n) {
-    return this.getCanvasedGuest(n).readInt32LE(layout.GUEST_BIRTHDAY_OFFSET)
+    return this.getCanvasedGuest(n).readI32LE(layout.GUEST_BIRTHDAY_OFFSET)
   }
 
   setGuestBirthday(n, date) {
-    this.getCanvasedGuest(n).writeInt32LE(date, layout.GUEST_BIRTHDAY_OFFSET)
+    this.getCanvasedGuest(n).writeI32LE(date, layout.GUEST_BIRTHDAY_OFFSET)
   }
 
   getCanvasedGuestSpeechStyle(n) {
-    return (this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_SPEECH_STYLE_OFFSET) & 0x1e0) >> 5
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_SPEECH_STYLE_OFFSET) & 0x1e0) >> 5
   }
 
   setCanvasedGuestSpeechStyle(n, style) {
-    const prev = this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_SPEECH_STYLE_OFFSET)
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_SPEECH_STYLE_OFFSET)
 
-    this.getCanvasedGuest(n).writeUInt16LE(
+    this.getCanvasedGuest(n).writeU16LE(
       (prev & 0xfe1f) | ((style << 5) & 0x1e0),
       layout.GUEST_SPEECH_STYLE_OFFSET
     )
   }
 
   isGuestAgeSecret(n) {
-    return (this.getCanvasedGuest(n)[layout.GUEST_SECRET_AGE_OFFSET] & 0x80) == 0
+    return (this.getCanvasedGuest(n).readByte(layout.GUEST_SECRET_AGE_OFFSET) & 0x80) == 0
   }
 
   setGuestAgeSecret(n, secret) {
-    const prev = this.getCanvasedGuest(n)[layout.GUEST_SECRET_AGE_OFFSET]
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_SECRET_AGE_OFFSET)
 
-    this.getCanvasedGuest(n)[layout.GUEST_SECRET_AGE_OFFSET] = (prev & 0x7f) | (secret ? 0 : 0x80)
-  }
-
-  setCanvasedGuestName(n, name) {
-    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
-
-    let b = writeDqixStringToBuffer(name)
-
-    b.copy(this.getCanvasedGuest(n), layout.GUEST_NAME_OFFSET)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0x7f) | (secret ? 0 : 0x80),
+      layout.GUEST_SECRET_AGE_OFFSET
+    )
   }
 
   getGuestMessage(n) {
-    return readDqixStringFromBuffer(
-      this.getCanvasedGuest(n).subarray(
-        layout.GUEST_MESSAGE_OFFSET,
-        layout.GUEST_MESSAGE_OFFSET + layout.GUEST_MESSAGE_LENGTH
-      )
+    return this.getCanvasedGuest(n).readDqixString(
+      layout.GUEST_MESSAGE_OFFSET,
+      layout.GUEST_MESSAGE_LENGTH
     )
   }
 
@@ -836,13 +838,11 @@ export default class SaveManager {
       .substr(0, layout.GUEST_MESSAGE_LENGTH)
       .padEnd(layout.GUEST_MESSAGE_LENGTH, "\0")
 
-    let b = writeDqixStringToBuffer(message)
-
-    b.copy(this.getCanvasedGuest(n), layout.GUEST_MESSAGE_OFFSET)
+    this.getCanvasedGuest(n).writeDqixString(message, layout.GUEST_MESSAGE_OFFSET)
   }
 
   getGuestVocation(n) {
-    return this.getCanvasedGuest(n)[layout.GUEST_VOCATION_AND_LOCATION_OFFSET] & 0xf
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_VOCATION_AND_LOCATION_OFFSET) & 0xf
   }
 
   getGuestEquipment(n, type) {
@@ -850,7 +850,7 @@ export default class SaveManager {
       return null
     }
 
-    return this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_EQUIPMENT_OFFSET + (type - 1) * 2)
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_EQUIPMENT_OFFSET + (type - 1) * 2)
   }
 
   /// Sets the equipped item in the given slot for the given guest
@@ -859,77 +859,81 @@ export default class SaveManager {
       return null
     }
 
-    return this.getCanvasedGuest(n).writeUInt16LE(
-      id,
-      layout.GUEST_EQUIPMENT_OFFSET + (type - 1) * 2
-    )
+    return this.getCanvasedGuest(n).writeU16LE(id, layout.GUEST_EQUIPMENT_OFFSET + (type - 1) * 2)
   }
 
   getGuestGender(n) {
     //TODO: there are like 3 different gender values? which one..?
 
-    return this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET] & 0x1
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET) & 0x1
   }
 
   getGuestEyeColor(n) {
-    return (this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET] & 0xf0) >> 4
+    return (this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET) & 0xf0) >> 4
   }
 
   setGuestEyeColor(n, color) {
-    const prev = this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET]
-    return (this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET] =
-      (prev & 0x0f) | (color << 4))
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET)
+    return this.getCanvasedGuest(n).writeByte(
+      (prev & 0x0f) | (color << 4),
+      layout.GUEST_GENDER_COLORS_OFFSET
+    )
   }
 
   getGuestSkinColor(n) {
-    return (this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET] & 0xe) >> 1
+    return (this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET) & 0xe) >> 1
   }
 
   setGuestSkinColor(n, color) {
-    const prev = this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET]
-    return (this.getCanvasedGuest(n)[layout.GUEST_GENDER_COLORS_OFFSET] =
-      (prev & 0xf1) | (color << 1))
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0xf1) | (color << 1),
+      layout.GUEST_GENDER_COLORS_OFFSET
+    )
   }
 
   getGuestFace(n) {
-    return this.getCanvasedGuest(n)[layout.GUEST_FACE_OFFSET]
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_FACE_OFFSET)
   }
 
   setGuestFace(n, value) {
-    this.getCanvasedGuest(n)[layout.GUEST_FACE_OFFSET] = value
+    this.getCanvasedGuest(n).writeByte(value, layout.GUEST_FACE_OFFSET)
   }
 
   getGuestHairstyle(n) {
-    return this.getCanvasedGuest(n)[layout.GUEST_HAIRSTYLE_OFFSET]
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_HAIRSTYLE_OFFSET)
   }
 
   setGuestHairstyle(n, value) {
-    this.getCanvasedGuest(n)[layout.GUEST_HAIRSTYLE_OFFSET] = value
+    this.getCanvasedGuest(n).writeByte(value, layout.GUEST_HAIRSTYLE_OFFSET)
   }
 
   getGuestHairColor(n) {
-    return this.getCanvasedGuest(n)[layout.GUEST_HAIR_COLOR_OFFSET] & 0xf
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_HAIR_COLOR_OFFSET) & 0xf
   }
 
   setGuestHairColor(n, value) {
-    const prev = this.getCanvasedGuest(n)[layout.GUEST_HAIR_COLOR_OFFSET]
-    this.getCanvasedGuest(n)[layout.GUEST_HAIR_COLOR_OFFSET] = (prev & 0xf0) | (value & 0x0f)
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_HAIR_COLOR_OFFSET)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0xf0) | (value & 0x0f),
+      layout.GUEST_HAIR_COLOR_OFFSET
+    )
   }
 
   getGuestBodyTypeW(n) {
-    return this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_BODY_TYPE_W)
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_BODY_TYPE_W)
   }
 
   getGuestBodyTypeH(n) {
-    return this.getCanvasedGuest(n).readUInt16LE(layout.GUEST_BODY_TYPE_H)
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_BODY_TYPE_H)
   }
 
   setGuestBodyTypeW(n, value) {
-    return this.getCanvasedGuest(n).writeUInt16LE(value, layout.GUEST_BODY_TYPE_W)
+    return this.getCanvasedGuest(n).writeU16LE(value, layout.GUEST_BODY_TYPE_W)
   }
 
   setGuestBodyTypeH(n, value) {
-    return this.getCanvasedGuest(n).writeUInt16LE(value, layout.GUEST_BODY_TYPE_H)
+    return this.getCanvasedGuest(n).writeU16LE(value, layout.GUEST_BODY_TYPE_H)
   }
 
   /*************************************************************************************************
@@ -937,15 +941,15 @@ export default class SaveManager {
    *************************************************************************************************/
 
   getInnLevel() {
-    return Math.min(6, this.getSaveLogBuffer()[layout.INN_LEVEL_OFFSET] & 0x7)
+    return Math.min(6, this.getSaveLogBuffer().readByte(layout.INN_LEVEL_OFFSET) & 0x7)
   }
 
   setInnLevel(level) {
     level = Math.max(0, Math.min(level, 6))
 
-    const prev = this.getSaveLogBuffer()[layout.INN_LEVEL_OFFSET]
+    const prev = this.getSaveLogBuffer().readByte(layout.INN_LEVEL_OFFSET)
 
-    this.getSaveLogBuffer()[layout.INN_LEVEL_OFFSET] = (prev & 0xf8) | level
+    this.getSaveLogBuffer().writeByte((prev & 0xf8) | level, layout.INN_LEVEL_OFFSET)
   }
 
   /*************************************************************************************************
@@ -953,26 +957,26 @@ export default class SaveManager {
    *************************************************************************************************/
 
   isSpecialGuestVisiting(i) {
-    return !!(this.getSaveLogBuffer().readInt32LE(layout.SPECIAL_GUEST_OFFSET) & (1 << (i + 1)))
+    return !!(this.getSaveLogBuffer().readI32LE(layout.SPECIAL_GUEST_OFFSET) & (1 << (i + 1)))
   }
 
   setSpecialGuestVisiting(i, visiting) {
-    const prev = this.getSaveLogBuffer().readInt32LE(layout.SPECIAL_GUEST_OFFSET)
+    const prev = this.getSaveLogBuffer().readI32LE(layout.SPECIAL_GUEST_OFFSET)
     const mask = 1 << (i + 1)
-    this.getSaveLogBuffer().writeInt32LE(
+    this.getSaveLogBuffer().writeI32LE(
       (prev & ~mask) | (visiting ? mask : 0),
       layout.SPECIAL_GUEST_OFFSET
     )
   }
 
   getDqvcItem(n) {
-    return this.getSaveLogBuffer().readUInt16LE(
+    return this.getSaveLogBuffer().readU16LE(
       layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_ITEM_OFFSET + layout.DQVC_ITEM_SIZE * n
     )
   }
 
   setDqvcItem(n, item) {
-    this.getSaveLogBuffer().writeUInt16LE(
+    this.getSaveLogBuffer().writeU16LE(
       item,
       layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_ITEM_OFFSET + layout.DQVC_ITEM_SIZE * n
     )
@@ -980,7 +984,7 @@ export default class SaveManager {
 
   getDqvcPrice(n) {
     return (
-      (this.getSaveLogBuffer().readUInt32LE(
+      (this.getSaveLogBuffer().readU32LE(
         layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_PRICE_STOCK_OFFSET + layout.DQVC_ITEM_SIZE * n
       ) &
         0xffffff80) >>
@@ -989,11 +993,11 @@ export default class SaveManager {
   }
 
   setDqvcPrice(n, price) {
-    const prev = this.getSaveLogBuffer().readUInt32LE(
+    const prev = this.getSaveLogBuffer().readU32LE(
       layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_PRICE_STOCK_OFFSET + layout.DQVC_ITEM_SIZE * n
     )
 
-    this.getSaveLogBuffer().writeUInt32LE(
+    this.getSaveLogBuffer().writeU32LE(
       (prev & 0x7f) | ((price << 7) & 0xffffff80),
       layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_PRICE_STOCK_OFFSET + layout.DQVC_ITEM_SIZE * n
     )
@@ -1001,43 +1005,42 @@ export default class SaveManager {
 
   getDqvcStock(n) {
     return (
-      this.getSaveLogBuffer()[
+      this.getSaveLogBuffer().readByte(
         layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_PRICE_STOCK_OFFSET + layout.DQVC_ITEM_SIZE * n
-      ] & 0x7f
+      ) & 0x7f
     )
   }
 
   setDqvcStock(n, stock) {
     const prev =
-      this.getSaveLogBuffer()[
+      this.getSaveLogBuffer().readByte(
         layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_PRICE_STOCK_OFFSET + layout.DQVC_ITEM_SIZE * n
-      ] & 0x7f
+      ) & 0x7f
 
-    this.getSaveLogBuffer()[
+    this.getSaveLogBuffer().writeByte(
+      (prev & ~0x7f) | stock,
       layout.DQVC_ITEMS_OFFSET + layout.DQVC_ITEMS_PRICE_STOCK_OFFSET + layout.DQVC_ITEM_SIZE * n
-    ] = (prev & ~0x7f) | stock
+    )
   }
 
   getDqvcMessage() {
-    return readAsciiStringFromBuffer(
-      this.getSaveLogBuffer().subarray(
-        layout.DQVC_MESSAGE_OFFSET,
-        layout.DQVC_MESSAGE_OFFSET + layout.DQVC_MESSAGE_LENGTH
-      )
+    return this.getSaveLogBuffer().readAsciiString(
+      layout.DQVC_MESSAGE_OFFSET,
+      layout.DQVC_MESSAGE_LENGTH
     )
   }
 
   setDqvcMessage(str) {
     str = str.substring(0, layout.DQVC_MESSAGE_LENGTH).padEnd(layout.DQVC_MESSAGE_LENGTH, "\0")
 
-    writeAsciiStringToBuffer(str).copy(this.getSaveLogBuffer(), layout.DQVC_MESSAGE_OFFSET)
+    this.getSaveLogBuffer().writeAsciiString(str, layout.DQVC_MESSAGE_OFFSET)
   }
 
   getDqvcMessageExpiryTime() {
-    return this.getSaveLogBuffer().readUInt32LE(layout.DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
+    return this.getSaveLogBuffer().readU32LE(layout.DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
   }
 
   setDqvcMessageExpiryTime(time) {
-    return this.getSaveLogBuffer().writeUInt32LE(time, layout.DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
+    return this.getSaveLogBuffer().writeU32LE(time, layout.DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
   }
 }

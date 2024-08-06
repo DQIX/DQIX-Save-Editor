@@ -93,7 +93,7 @@ export default props => {
             value={save.getPlaytime()}
             onChange={value => {
               save.setPlaytime(value)
-              setSave(new SaveManager(save.buffer))
+              setSave(new SaveManager(save.buffer.buffer))
             }}
           />
           <span>multiplayer:</span>{" "}
@@ -101,7 +101,7 @@ export default props => {
             value={save.getMultiplayerTime()}
             onChange={value => {
               save.setMultiplayerTime(value)
-              setSave(new SaveManager(save.buffer))
+              setSave(new SaveManager(save.buffer.buffer))
             }}
           />
         </div>
@@ -115,7 +115,7 @@ export default props => {
             defaultValue={save.getGoldOnHand()}
             onBlur={e => {
               save.setGoldOnHand(e.target.value)
-              setSave(new SaveManager(save.buffer))
+              setSave(new SaveManager(save.buffer.buffer))
             }}
           />
           <label htmlFor="hand-gold">g</label>
@@ -126,7 +126,7 @@ export default props => {
             defaultValue={save.getGoldInBank()}
             onBlur={e => {
               save.setGoldInBank(e.target.value)
-              setSave(new SaveManager(save.buffer))
+              setSave(new SaveManager(save.buffer.buffer))
             }}
           />
           <label htmlFor="bank-gold">g</label>
@@ -147,7 +147,7 @@ export default props => {
                     defaultChecked={save.getPartyTrickLearned(i)}
                     onChange={e => {
                       save.setPartyTrickLearned(i, e.target.checked)
-                      setSave(new SaveManager(save.buffer))
+                      setSave(new SaveManager(save.buffer.buffer))
                     }}
                   />
                   <span>{name}</span>
@@ -166,7 +166,7 @@ export default props => {
           defaultValue={save.getMiniMedals()}
           onChange={e => {
             save.setMiniMedals(e.target.value)
-            setSave(new SaveManager(save.buffer))
+            setSave(new SaveManager(save.buffer.buffer))
           }}
         />
         <p>
@@ -185,7 +185,7 @@ export default props => {
                   checked={save.isVocationUnlocked(v.id)}
                   onChange={e => {
                     save.setVocationUnlocked(v.id, e.target.checked)
-                    setSave(new SaveManager(save.buffer))
+                    setSave(new SaveManager(save.buffer.buffer))
                   }}
                 />
                 <VocationIcon icon={v.icon} />
@@ -203,7 +203,7 @@ export default props => {
                 checked={save.visitedLocation(i)}
                 onChange={e => {
                   save.setVisitedLocation(i, e.target.checked)
-                  setSave(new SaveManager(save.buffer))
+                  setSave(new SaveManager(save.buffer.buffer))
                 }}
                 key={i}
               />

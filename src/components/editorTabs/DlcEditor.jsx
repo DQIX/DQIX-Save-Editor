@@ -27,7 +27,7 @@ export default props => {
                 checked={save.isSpecialGuestVisiting(i)}
                 onChange={e => {
                   save.setSpecialGuestVisiting(i, e.target.checked)
-                  setSave(new SaveManager(save.buffer))
+                  setSave(new SaveManager(save.buffer.buffer))
                 }}
               />
               {name}
@@ -62,7 +62,7 @@ export default props => {
                       id={save.getDqvcItem(i)}
                       onChange={e => {
                         save.setDqvcItem(i, e.target.value)
-                        setSave(new SaveManager(save.buffer))
+                        setSave(new SaveManager(save.buffer.buffer))
                       }}
                     />
                   </td>
@@ -75,7 +75,7 @@ export default props => {
                       value={save.getDqvcPrice(i)}
                       onChange={e => {
                         save.setDqvcPrice(i, e.target.value)
-                        setSave(new SaveManager(save.buffer))
+                        setSave(new SaveManager(save.buffer.buffer))
                       }}
                     />
                     g
@@ -89,7 +89,7 @@ export default props => {
                       value={save.getDqvcStock(i)}
                       onChange={e => {
                         save.setDqvcStock(i, e.target.value)
-                        setSave(new SaveManager(save.buffer))
+                        setSave(new SaveManager(save.buffer.buffer))
                       }}
                     />
                   </td>
@@ -134,7 +134,7 @@ export default props => {
                   save.setDqvcStock(i, 1)
                 }
 
-                setSave(new SaveManager(save.buffer))
+                setSave(new SaveManager(save.buffer.buffer))
               }}
             >
               <span></span>
@@ -156,7 +156,7 @@ export default props => {
           maxLength={DQVC_MESSAGE_LENGTH}
           onChange={e => {
             save.setDqvcMessage(e.target.value)
-            setSave(new SaveManager(save.buffer))
+            setSave(new SaveManager(save.buffer.buffer))
           }}
         />
         <TimeInput
@@ -164,7 +164,7 @@ export default props => {
           value={save.getDqvcMessageExpiryTime()}
           onChange={time => {
             save.setDqvcMessageExpiryTime(time)
-            setSave(new SaveManager(save.buffer))
+            setSave(new SaveManager(save.buffer.buffer))
           }}
         />
       </Card>

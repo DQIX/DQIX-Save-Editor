@@ -37,7 +37,7 @@ const ItemCard = props => {
               size="3"
               onChange={e => {
                 save.setItemCount(item.id, e.target.value)
-                setSave(new SaveManager(save.buffer))
+                setSave(new SaveManager(save.buffer.buffer))
               }}
             />
             <span>
