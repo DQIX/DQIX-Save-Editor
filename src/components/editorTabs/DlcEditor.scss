@@ -43,6 +43,7 @@ $grid-size: 184px;
     td {
       text-align: left;
       padding: 0 1em 0 0;
+      text-wrap: nowrap;
       .item-select {
         margin: 0;
       }
@@ -105,6 +106,9 @@ $grid-size: 184px;
   .dqvc-msg {
     grid-column: span 2;
     height: $grid-size;
+    textarea {
+      max-height: 80px;
+    }
   }
 
   .unlock {
