@@ -11,16 +11,11 @@ import gameData from "./game/data"
 import * as layout from "./game/layout"
 import HistoryBuffer from "./historyBuffer"
 
-export const STATE_NULL = 0
-export const STATE_LOADING = 1
-export const STATE_LOADED = 2
-
 export default class SaveManager {
   /*************************************************************************************************
    *                                        control methods                                        *
    *************************************************************************************************/
   constructor(buffer) {
-    this.state = buffer == null ? STATE_NULL : STATE_LOADED
     this.buffer = buffer && new HistoryBuffer(buffer)
 
     this.saveIdx = 0

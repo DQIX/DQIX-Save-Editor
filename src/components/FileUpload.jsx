@@ -3,13 +3,15 @@ import { Buffer } from "buffer"
 
 import "./FileUpload.scss"
 import { SaveManagerContext } from "../SaveManagerContext.jsx"
-import SaveManager, { STATE_LOADING } from "../saveManager.js"
+import SaveManager from "../saveManager.js"
+import { EditorUiContext, LOAD_STATE_LOADED, LOAD_STATE_LOADING } from "../EditorUiContext.jsx"
 
 export default props => {
   const parentRef = useRef(null)
   const fileInputRef = useRef(null)
 
   let { save, setSave, updateSave } = useContext(SaveManagerContext)
+  let { setLoadState } = useContext(EditorUiContext)
 
   return (
     <div id="upload" ref={parentRef}>
@@ -40,7 +42,7 @@ export default props => {
         <button id="input" onClick={() => fileInputRef.current.click()}>
           Choose a file
         </button>
-        <button id="demo" onClick={e => loadDemoFile(e, save, updateSave, setSave)}>
+        <button id="demo" onClick={e => loadDemoFile(e, setLoadState, save, setSave)}>
           Load the demo file
         </button>
       </div>
@@ -48,11 +50,11 @@ export default props => {
   )
 }
 
-function loadDemoFile(e, save, updateSave, setSave) {
-  updateSave({
-    state: STATE_LOADING,
-  })
+function loadDemoFile(e, setLoadState, save, setSave) {
+  setLoadState(LOAD_STATE_LOADING)
+
   save.loadDemo().then(res => {
     setSave(new SaveManager(res))
+    setLoadState(LOAD_STATE_LOADED)
   })
 }

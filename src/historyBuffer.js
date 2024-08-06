@@ -18,6 +18,10 @@ export default class HistoryBuffer {
     return this._buffer
   }
 
+  undo() {}
+
+  redo() {}
+
   subarray(start, end) {
     return new HistoryBuffer(this._buffer.subarray(start, end), this.commands, this.position)
   }

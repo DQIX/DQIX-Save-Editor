@@ -2,9 +2,15 @@ import { useContext } from "react"
 
 import "./NavBar.scss"
 
-import { EditorUiContext, tabs, DARK_THEME_NAME, LIGHT_THEME_NAME } from "../EditorUiContext"
+import {
+  EditorUiContext,
+  tabs,
+  DARK_THEME_NAME,
+  LIGHT_THEME_NAME,
+  LOAD_STATE_LOADED,
+} from "../EditorUiContext"
 import { SaveManagerContext } from "../SaveManagerContext"
-import { STATE_LOADED } from "../saveManager"
+
 import Button from "./atoms/Button"
 
 export default props => {
@@ -15,8 +21,8 @@ export default props => {
     <nav>
       <ul
         style={{
-          opacity: save.state == STATE_LOADED ? 1 : 0,
-          pointerEvents: save.state == STATE_LOADED ? "auto" : "none",
+          opacity: state.loadState == LOAD_STATE_LOADED ? 1 : 0,
+          pointerEvents: state.loadState == LOAD_STATE_LOADED ? "auto" : "none",
         }}
       >
         {tabs
@@ -34,8 +40,8 @@ export default props => {
         <Button
           className="export"
           style={{
-            opacity: save.state == STATE_LOADED ? 1 : 0,
-            pointerEvents: save.state == STATE_LOADED ? "auto" : "none",
+            opacity: state.loadState == LOAD_STATE_LOADED ? 1 : 0,
+            pointerEvents: state.loadState == LOAD_STATE_LOADED ? "auto" : "none",
           }}
           onClick={e => save.download()}
         >
