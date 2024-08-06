@@ -30,7 +30,7 @@ const ItemCard = props => {
             <Input
               type="number"
               name={item.name}
-              defaultValue={save.getItemCount(item.id)}
+              value={save.getItemCount(item.id)}
               min={0}
               max={99}
               size="3"

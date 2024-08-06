@@ -31,6 +31,10 @@ export default class HistoryBuffer {
   }
 
   pushAction(action) {
+    if (action.prev == action.value) {
+      return
+    }
+
     this.history.uncommittedActions.push(action)
     this.applyAction(action)
   }
@@ -201,10 +205,16 @@ export default class HistoryBuffer {
   }
 
   writeDqixString(value, offset) {
+    console.log(value)
+    console.log(value.length)
+    console.log(Buffer.from(value))
+    console.log(this.readDqixString(offset, value.length, true))
+    console.log(this.readDqixString(offset, value.length, true).length)
+    console.log(Buffer.from(this.readDqixString(offset, value.length, true)))
     this.pushAction({
       type: WRITE_TYPE_DQIX_STRING,
       offset: offset + this.buffer.byteOffset,
-      prev: this.readDqixString(offset, value.length),
+      prev: this.readDqixString(offset, value.length, true),
       value,
     })
   }
@@ -213,7 +223,7 @@ export default class HistoryBuffer {
     this.pushAction({
       type: WRITE_TYPE_ASCII_STRING,
       offset: offset + this.buffer.byteOffset,
-      prev: this.readAsciiString(offset, value.length),
+      prev: this.readAsciiString(offset, value.length, true),
       value,
     })
   }

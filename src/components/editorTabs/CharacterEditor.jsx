@@ -14,7 +14,7 @@ import AppearanceCards from "./inputs/AppearanceCards.jsx"
 
 export default props => {
   const { save, updateSave } = useContext(SaveManagerContext)
-  console.log(save)
+
   let [character, setCharacter] = useState(save.getStandbyCount())
   let [selectedSkill, setSelectedSkill] = useState(0)
 

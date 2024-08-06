@@ -17,63 +17,51 @@ const TimeInput = props => {
       <label>
         <Input
           type="number"
-          defaultValue={props.value[0]}
+          value={props.value[0]}
           size={2}
           min={0}
           max={0xffff}
           onChange={
             props.onChange &&
             (e => {
-              if (e.target.value === "") return
               time[0] = e.target.value
               props.onChange(time)
             })
           }
-          onBlur={e => {
-            e.target.value = props.value[0]
-          }}
         />
         h
       </label>
       <label>
         <Input
           type="number"
-          defaultValue={props.value[1]}
+          value={props.value[1]}
           size={3}
           min={0}
           max={59}
           onChange={
             props.onChange &&
             (e => {
-              if (e.target.value === "") return
               time[1] = e.target.value
               props.onChange(time)
             })
           }
-          onBlur={e => {
-            e.target.value = props.value[1]
-          }}
         />
         m
       </label>
       <label>
         <Input
           type="number"
-          defaultValue={props.value[2]}
+          value={props.value[2]}
           size={3}
           min={0}
           max={59}
           onChange={
             props.onChange &&
             (e => {
-              if (e.target.value === "") return
               time[2] = e.target.value
               props.onChange(time)
             })
           }
-          onBlur={e => {
-            e.target.value = props.value[2]
-          }}
         />
         s
       </label>
@@ -114,8 +102,8 @@ export default props => {
           <Input
             id="hand-gold"
             type="number"
-            defaultValue={save.getGoldOnHand()}
-            onBlur={e => {
+            value={save.getGoldOnHand()}
+            onChange={e => {
               updateSave(save => {
                 save.setGoldOnHand(e.target.value)
               })
@@ -126,8 +114,8 @@ export default props => {
           <Input
             id="bank-gold"
             type="number"
-            defaultValue={save.getGoldInBank()}
-            onBlur={e => {
+            value={save.getGoldInBank()}
+            onChange={e => {
               updateSave(save => {
                 save.setGoldInBank(e.target.value)
               })
@@ -148,7 +136,7 @@ export default props => {
                 <label key={i}>
                   <Input
                     type="checkbox"
-                    defaultChecked={save.getPartyTrickLearned(i)}
+                    checked={save.getPartyTrickLearned(i)}
                     onChange={e => {
                       updateSave(save => {
                         save.setPartyTrickLearned(i, e.target.checked)
@@ -168,7 +156,7 @@ export default props => {
             fontSize: "2.5em",
             width: "100%",
           }}
-          defaultValue={save.getMiniMedals()}
+          value={save.getMiniMedals()}
           onChange={e => {
             updateSave(save => {
               save.setMiniMedals(e.target.value)
