@@ -154,8 +154,7 @@ export default props => {
                   type="radio"
                   name="body-type-preset"
                   onChange={e => {
-                    props.setCharacterBodyTypeW(preset.width)
-                    props.setCharacterBodyTypeH(preset.height)
+                    props.setCharacterBodyType(preset.width, preset.height)
                   }}
                   checked={
                     props.getCharacterBodyTypeW() == preset.width &&

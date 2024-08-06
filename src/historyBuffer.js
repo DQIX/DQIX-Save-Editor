@@ -20,6 +20,7 @@ export default class HistoryBuffer {
     this.parentBuffer = parentBuffer || buffer
 
     this.history = history || {
+      uncommittedActions: [],
       commands: [null],
       idx: 0,
     }
@@ -29,46 +30,40 @@ export default class HistoryBuffer {
     return this._buffer
   }
 
-  pushCommand(cmd) {
-    if (this.history.idx < this.history.commands.length - 1) {
-      this.history.commands = this.history.commands.slice(0, this.history.idx + 1)
-    }
-
-    this.history.commands.push(cmd)
-    this.history.idx++
-
-    this.applyCommand(cmd, false)
+  pushAction(action) {
+    this.history.uncommittedActions.push(action)
+    this.applyAction(action)
   }
 
-  applyCommand(cmd, undo) {
-    const value = undo ? cmd.prev : cmd.value
+  applyAction(action, undo) {
+    const value = undo ? action.prev : action.value
 
-    switch (cmd.type) {
+    switch (action.type) {
       case WRITE_TYPE_BYTE:
-        this.parentBuffer[cmd.offset] = value
+        this.parentBuffer[action.offset] = value
         break
 
       case WRITE_TYPE_I16LE:
-        this.parentBuffer.writeInt16LE(value, cmd.offset)
+        this.parentBuffer.writeInt16LE(value, action.offset)
         break
 
       case WRITE_TYPE_I32LE:
-        this.parentBuffer.writeInt32LE(value, cmd.offset)
+        this.parentBuffer.writeInt32LE(value, action.offset)
         break
 
       case WRITE_TYPE_U16LE:
-        this.parentBuffer.writeUint16LE(value, cmd.offset)
+        this.parentBuffer.writeUint16LE(value, action.offset)
         break
 
       case WRITE_TYPE_U32LE:
-        this.parentBuffer.writeUint32LE(value, cmd.offset)
+        this.parentBuffer.writeUint32LE(value, action.offset)
         break
 
       case WRITE_TYPE_DQIX_STRING:
         {
           let b = writeDqixStringToBuffer(value)
 
-          b.copy(this.parentBuffer, cmd.offset)
+          b.copy(this.parentBuffer, action.offset)
         }
         break
 
@@ -76,12 +71,35 @@ export default class HistoryBuffer {
         {
           let b = writeAsciiStringToBuffer(value)
 
-          b.copy(this.parentBuffer, cmd.offset)
+          b.copy(this.parentBuffer, action.offset)
         }
         break
 
       default:
-        throw `unknown write type ${cmd.type}`
+        throw `unknown write type ${action.type}`
+    }
+  }
+
+  commitActions() {
+    this.pushCommand({
+      actions: this.history.uncommittedActions,
+    })
+    this.history.uncommittedActions = []
+  }
+
+  pushCommand(cmd) {
+    if (this.history.idx < this.history.commands.length - 1) {
+      this.history.commands = this.history.commands.slice(0, this.history.idx + 1)
+    }
+
+    this.history.commands.push(cmd)
+    this.history.idx++
+  }
+
+  applyCommand(cmd, undo) {
+    for (let i = 0; i < cmd.actions.length; i++) {
+      let ri = undo ? cmd.actions.length - i - 1 : i
+      this.applyAction(cmd.actions[ri], undo)
     }
   }
 
@@ -138,7 +156,7 @@ export default class HistoryBuffer {
   }
 
   writeByte(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_BYTE,
       offset: offset + this.buffer.byteOffset,
       prev: this.buffer[offset],
@@ -147,7 +165,7 @@ export default class HistoryBuffer {
   }
 
   writeI16LE(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_I16LE,
       offset: offset + this.buffer.byteOffset,
       prev: this.readI16LE(offset),
@@ -156,7 +174,7 @@ export default class HistoryBuffer {
   }
 
   writeI32LE(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_I32LE,
       offset: offset + this.buffer.byteOffset,
       prev: this.readI32LE(offset),
@@ -165,7 +183,7 @@ export default class HistoryBuffer {
   }
 
   writeU16LE(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_U16LE,
       offset: offset + this.buffer.byteOffset,
       prev: this.readU16LE(offset),
@@ -174,7 +192,7 @@ export default class HistoryBuffer {
   }
 
   writeU32LE(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_U32LE,
       offset: offset + this.buffer.byteOffset,
       prev: this.readU32LE(offset),
@@ -183,7 +201,7 @@ export default class HistoryBuffer {
   }
 
   writeDqixString(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_DQIX_STRING,
       offset: offset + this.buffer.byteOffset,
       prev: this.readDqixString(offset, value.length),
@@ -192,7 +210,7 @@ export default class HistoryBuffer {
   }
 
   writeAsciiString(value, offset) {
-    this.pushCommand({
+    this.pushAction({
       type: WRITE_TYPE_ASCII_STRING,
       offset: offset + this.buffer.byteOffset,
       prev: this.readAsciiString(offset, value.length),

@@ -36,7 +36,6 @@ export default props => {
                   update()
                 }
               }
-              console.log(save.buffer)
 
               break
           }

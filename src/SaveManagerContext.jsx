@@ -14,12 +14,12 @@ export const useSaveManagerContext = () => {
     update,
     updateSave: callback => {
       callback(state)
+      console.log([...state.buffer.history.uncommittedActions])
+      state.buffer.commitActions()
       update()
     },
     setSave: value => {
       setState(value)
-      // console.log(value)
-      // console.log(state)
       update()
     },
   }

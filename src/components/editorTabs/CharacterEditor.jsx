@@ -245,14 +245,10 @@ export default props => {
             getCharacterBodyTypeH={() => {
               return save.getCharacterBodyTypeH(character)
             }}
-            setCharacterBodyTypeW={v => {
+            setCharacterBodyType={(w, h) => {
               updateSave(save => {
-                save.setCharacterBodyTypeW(character, v)
-              })
-            }}
-            setCharacterBodyTypeH={v => {
-              updateSave(save => {
-                save.setCharacterBodyTypeH(character, v)
+                save.setCharacterBodyTypeW(character, w)
+                save.setCharacterBodyTypeH(character, h)
               })
             }}
           />
