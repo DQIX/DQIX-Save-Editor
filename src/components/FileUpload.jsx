@@ -10,7 +10,7 @@ export default props => {
   const parentRef = useRef(null)
   const fileInputRef = useRef(null)
 
-  let { save, setSave, updateSave } = useContext(SaveManagerContext)
+  let { save, setSave } = useContext(SaveManagerContext)
   let { setLoadState } = useContext(EditorUiContext)
 
   return (
@@ -30,11 +30,10 @@ export default props => {
         onDragLeave={() => parentRef.current.classList.remove("drag-over")}
         onDrop={e => parentRef.current.classList.remove("drag-over")}
         onChange={async e => {
-          updateSave({
-            state: STATE_LOADING,
-          })
+          setLoadState(LOAD_STATE_LOADING)
           await e.target.files[0].arrayBuffer().then(res => {
-            setSave(new SaveManager(new Buffer(res)))
+            setSave(new SaveManager(Buffer.from(res)))
+            setLoadState(LOAD_STATE_LOADED)
           })
         }}
       />

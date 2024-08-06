@@ -82,7 +82,7 @@ const TimeInput = props => {
 }
 
 export default props => {
-  let { save, setSave } = useContext(SaveManagerContext)
+  let { save, updateSave } = useContext(SaveManagerContext)
 
   return (
     <div className="misc-root">
@@ -92,16 +92,18 @@ export default props => {
           <TimeInput
             value={save.getPlaytime()}
             onChange={value => {
-              save.setPlaytime(value)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setPlaytime(value)
+              })
             }}
           />
           <span>multiplayer:</span>{" "}
           <TimeInput
             value={save.getMultiplayerTime()}
             onChange={value => {
-              save.setMultiplayerTime(value)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setMultiplayerTime(value)
+              })
             }}
           />
         </div>
@@ -114,8 +116,9 @@ export default props => {
             type="number"
             defaultValue={save.getGoldOnHand()}
             onBlur={e => {
-              save.setGoldOnHand(e.target.value)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGoldOnHand(e.target.value)
+              })
             }}
           />
           <label htmlFor="hand-gold">g</label>
@@ -125,8 +128,9 @@ export default props => {
             type="number"
             defaultValue={save.getGoldInBank()}
             onBlur={e => {
-              save.setGoldInBank(e.target.value)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGoldInBank(e.target.value)
+              })
             }}
           />
           <label htmlFor="bank-gold">g</label>
@@ -146,8 +150,9 @@ export default props => {
                     type="checkbox"
                     defaultChecked={save.getPartyTrickLearned(i)}
                     onChange={e => {
-                      save.setPartyTrickLearned(i, e.target.checked)
-                      setSave(new SaveManager(save.buffer.buffer))
+                      updateSave(save => {
+                        save.setPartyTrickLearned(i, e.target.checked)
+                      })
                     }}
                   />
                   <span>{name}</span>
@@ -165,8 +170,9 @@ export default props => {
           }}
           defaultValue={save.getMiniMedals()}
           onChange={e => {
-            save.setMiniMedals(e.target.value)
-            setSave(new SaveManager(save.buffer.buffer))
+            updateSave(save => {
+              save.setMiniMedals(e.target.value)
+            })
           }}
         />
         <p>
@@ -184,8 +190,9 @@ export default props => {
                   name={v.name}
                   checked={save.isVocationUnlocked(v.id)}
                   onChange={e => {
-                    save.setVocationUnlocked(v.id, e.target.checked)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setVocationUnlocked(v.id, e.target.checked)
+                    })
                   }}
                 />
                 <VocationIcon icon={v.icon} />
@@ -202,8 +209,9 @@ export default props => {
                 type="checkbox"
                 checked={save.visitedLocation(i)}
                 onChange={e => {
-                  save.setVisitedLocation(i, e.target.checked)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setVisitedLocation(i, e.target.checked)
+                  })
                 }}
                 key={i}
               />

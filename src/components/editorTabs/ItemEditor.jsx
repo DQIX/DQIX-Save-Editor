@@ -2,7 +2,6 @@ import { useContext, useState } from "react"
 
 import "./ItemEditor.scss"
 
-import SaveManager from "../../saveManager"
 import { SaveManagerContext } from "../../SaveManagerContext"
 import gameData from "../../game/data"
 
@@ -11,7 +10,7 @@ import Card from "../atoms/Card"
 import Input from "../atoms/Input"
 
 const ItemCard = props => {
-  let { save, setSave } = useContext(SaveManagerContext)
+  let { save, updateSave } = useContext(SaveManagerContext)
 
   const items = props.items.filter(
     item =>
@@ -36,8 +35,9 @@ const ItemCard = props => {
               max={99}
               size="3"
               onChange={e => {
-                save.setItemCount(item.id, e.target.value)
-                setSave(new SaveManager(save.buffer.buffer))
+                updateSave(save => {
+                  save.setItemCount(item.id, e.target.value)
+                })
               }}
             />
             <span>

@@ -41,8 +41,8 @@ function prepareStringTables() {
 
 prepareStringTables()
 
-export function readDqixStringFromBuffer(buffer) {
-  const arr = Array.from(buffer).map(b => b != 0 && (stringTables.encode[b] || "?"))
+export function readDqixStringFromBuffer(buffer, noTrim) {
+  const arr = Array.from(buffer).map(b => (noTrim || b != 0) && (stringTables.encode[b] || "?"))
   let idx = arr.indexOf(false)
   return arr.slice(0, idx).join("")
 }
@@ -51,9 +51,9 @@ export function writeDqixStringToBuffer(str) {
   return Buffer.from([...str].map(c => stringTables.decode[c]))
 }
 
-export function readAsciiStringFromBuffer(buffer) {
+export function readAsciiStringFromBuffer(buffer, noTrim) {
   return Array.from(buffer)
-    .map(b => b != 0 && String.fromCharCode(b))
+    .map(b => (noTrim || b != 0) && String.fromCharCode(b))
     .filter(x => x)
     .join("")
 }

@@ -13,7 +13,8 @@ import EquipmentCard from "./inputs/EquipmentCard.jsx"
 import AppearanceCards from "./inputs/AppearanceCards.jsx"
 
 export default props => {
-  let { save, setSave } = useContext(SaveManagerContext)
+  const { save, updateSave } = useContext(SaveManagerContext)
+  console.log(save)
   let [character, setCharacter] = useState(save.getStandbyCount())
   let [selectedSkill, setSelectedSkill] = useState(0)
 
@@ -57,8 +58,9 @@ export default props => {
               value={save.getCharacterName(character)}
               placeholder="name"
               onChange={e => {
-                save.writeCharacterName(character, e.target.value)
-                setSave(new SaveManager(save.buffer.buffer))
+                updateSave(save => {
+                  save.writeCharacterName(character, e.target.value)
+                })
               }}
               style={{ display: "inline-block", marginLeft: "1em" }}
             />
@@ -69,8 +71,9 @@ export default props => {
               return save.getCharacterEquipment(i, type)
             }}
             setter={(i, type, value) => {
-              save.setCharacterEquipment(i, type, value)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterEquipment(i, type, value)
+              })
             }}
           />
           <Card
@@ -86,8 +89,9 @@ export default props => {
                 nothingValue={0xffff}
                 disabled={!save.inParty(character)}
                 onChange={e => {
-                  save.setHeldItem(character, j, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setHeldItem(character, j, e.target.value)
+                  })
                 }}
               />
             ))}
@@ -100,8 +104,9 @@ export default props => {
                   type="number"
                   value={save.getUnallocatedSkillPoints(character)}
                   onChange={e => {
-                    save.setUnallocatedSkillPoints(character, e.target.value)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setUnallocatedSkillPoints(character, e.target.value)
+                    })
                   }}
                   min={0}
                   max={9999}
@@ -116,8 +121,9 @@ export default props => {
                   type="checkbox"
                   checked={save.knowsZoom(character)}
                   onChange={e => {
-                    save.setKnowsZoom(character, e.target.checked)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setKnowsZoom(character, e.target.checked)
+                    })
                   }}
                 />
               </label>
@@ -127,8 +133,9 @@ export default props => {
                   type="checkbox"
                   checked={save.knowsEggOn(character)}
                   onChange={e => {
-                    save.setKnowsEggOn(character, e.target.checked)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setKnowsEggOn(character, e.target.checked)
+                    })
                   }}
                 />
               </label>
@@ -154,8 +161,9 @@ export default props => {
                   max={100}
                   size={4}
                   onChange={e => {
-                    save.setCharacterSkillAllocation(character, selectedSkill, e.target.value)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setCharacterSkillAllocation(character, selectedSkill, e.target.value)
+                    })
                   }}
                 />
               </label>
@@ -167,14 +175,15 @@ export default props => {
                     type="checkbox"
                     checked={save.getCharacterProficiency(character, p.id)}
                     onChange={e => {
-                      // save.setCharacterProficiency(character, p.id, e.target.checked)
+                      updateSave(save => {
+                        // save.setCharacterProficiency(character, p.id, e.target.checked)
 
-                      const points = e.target.checked
-                        ? p.points
-                        : i && gameData.skills[selectedSkill].proficiencies[i - 1].points
+                        const points = e.target.checked
+                          ? p.points
+                          : i && gameData.skills[selectedSkill].proficiencies[i - 1].points
 
-                      save.setCharacterSkillAllocation(character, selectedSkill, points)
-                      setSave(new SaveManager(save.buffer.buffer))
+                        save.setCharacterSkillAllocation(character, selectedSkill, points)
+                      })
                     }}
                   />
                   <span>{p.points}</span>
@@ -194,36 +203,41 @@ export default props => {
               return save.getCharacterFace(character)
             }}
             setCharacterFace={v => {
-              save.setCharacterFace(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterFace(character, v)
+              })
             }}
             getCharacterHairstyle={() => {
               return save.getCharacterHairstyle(character)
             }}
             setCharacterHairstyle={v => {
-              save.setCharacterHairstyle(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterHairstyle(character, v)
+              })
             }}
             getCharacterEyeColor={() => {
               return save.getCharacterEyeColor(character)
             }}
             setCharacterEyeColor={v => {
-              save.setCharacterEyeColor(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterEyeColor(character, v)
+              })
             }}
             getCharacterSkinColor={() => {
               return save.getCharacterSkinColor(character)
             }}
             setCharacterSkinColor={v => {
-              save.setCharacterSkinColor(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterSkinColor(character, v)
+              })
             }}
             getCharacterHairColor={() => {
               return save.getCharacterHairColor(character)
             }}
             setCharacterHairColor={v => {
-              save.setCharacterHairColor(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterHairColor(character, v)
+              })
             }}
             getCharacterBodyTypeW={() => {
               return save.getCharacterBodyTypeW(character)
@@ -232,12 +246,14 @@ export default props => {
               return save.getCharacterBodyTypeH(character)
             }}
             setCharacterBodyTypeW={v => {
-              save.setCharacterBodyTypeW(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterBodyTypeW(character, v)
+              })
             }}
             setCharacterBodyTypeH={v => {
-              save.setCharacterBodyTypeH(character, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setCharacterBodyTypeH(character, v)
+              })
             }}
           />
         </div>

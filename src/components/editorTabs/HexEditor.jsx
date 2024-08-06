@@ -66,7 +66,7 @@ const Row = props => {
 }
 
 export default props => {
-  let { save, setSave } = useContext(SaveManagerContext)
+  let { save } = useContext(SaveManagerContext)
 
   let [selected, setSelected] = useState(null)
 

@@ -14,7 +14,7 @@ import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
 
 export default props => {
-  let { save, setSave } = useContext(SaveManagerContext)
+  let { save, updateSave } = useContext(SaveManagerContext)
   let [guest, setGuest] = useState(2)
 
   return (
@@ -29,8 +29,9 @@ export default props => {
               size={4}
               value={save.getInnLevel()}
               onChange={e => {
-                save.setInnLevel(e.target.value)
-                setSave(new SaveManager(save.buffer.buffer))
+                updateSave(save => {
+                  save.setInnLevel(e.target.value)
+                })
               }}
             />
           </label>
@@ -63,8 +64,9 @@ export default props => {
               value={save.getCanvasedGuestName(guest)}
               placeholder="name"
               onChange={e => {
-                save.setCanvasedGuestName(guest, e.target.value)
-                setSave(new SaveManager(save.buffer.buffer))
+                updateSave(save => {
+                  save.setCanvasedGuestName(guest, e.target.value)
+                })
               }}
               style={{ display: "inline-block", marginLeft: "1em" }}
             />
@@ -75,8 +77,9 @@ export default props => {
               return save.getGuestEquipment(i, type)
             }}
             setter={(i, type, value) => {
-              save.setGuestEquipment(i, type, value)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestEquipment(i, type, value)
+              })
             }}
           />
           <Card label="profile:" className="profile">
@@ -86,8 +89,9 @@ export default props => {
                 <select
                   value={save.getCanvasedGuestOrigin(guest)}
                   onChange={e => {
-                    save.setCanvasedGuestOrigin(guest, e.target.value)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setCanvasedGuestOrigin(guest, e.target.value)
+                    })
                   }}
                 >
                   {Object.entries(gameData.guestOrigins).map(([id, origin]) => (
@@ -102,8 +106,9 @@ export default props => {
                 <TimeInput
                   value={save.getGuestBirthday(guest)}
                   onChange={time => {
-                    save.setGuestBirthday(guest, time)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setGuestBirthday(guest, time)
+                    })
                   }}
                   noHours
                 />
@@ -113,8 +118,9 @@ export default props => {
                     type="checkbox"
                     checked={save.isGuestAgeSecret(guest)}
                     onChange={e => {
-                      save.setGuestAgeSecret(guest, e.target.checked)
-                      setSave(new SaveManager(save.buffer.buffer))
+                      updateSave(save => {
+                        save.setGuestAgeSecret(guest, e.target.checked)
+                      })
                     }}
                   />
                 </label>
@@ -124,8 +130,9 @@ export default props => {
                 <select
                   value={save.getCanvasedGuestTitle(guest)}
                   onChange={e => {
-                    save.setCanvasedGuestTitle(guest, e.target.value)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setCanvasedGuestTitle(guest, e.target.value)
+                    })
                   }}
                 >
                   {Object.entries(gameData.titles)
@@ -142,8 +149,9 @@ export default props => {
                 <select
                   value={save.getCanvasedGuestSpeechStyle(guest)}
                   onChange={e => {
-                    save.setCanvasedGuestSpeechStyle(guest, e.target.value)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setCanvasedGuestSpeechStyle(guest, e.target.value)
+                    })
                   }}
                 >
                   {gameData.speechStyles.map((style, i) => (
@@ -159,16 +167,19 @@ export default props => {
                   type="text"
                   value={save.getGuestMessage(guest)}
                   onChange={e => {
-                    save.setGuestMessage(guest, e.target.value)
-                    setSave(new SaveManager(save.buffer.buffer))
+                    updateSave(save => {
+                      save.setGuestMessage(guest, e.target.value)
+                    })
                   }}
                 />
               </label>
               {/* <Textarea
                 value={save.getGuestMessage(guest)}
                 onChange={e => {
-                  save.setGuestMessage(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    })
+
+                    save.setGuestMessage(guest, e.target.value)
                 }}
               /> */}
             </div>
@@ -180,8 +191,9 @@ export default props => {
                 type="number"
                 value={save.getGuestBattleVictories(guest)}
                 onChange={e => {
-                  save.setGuestBattleVictories(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestBattleVictories(guest, e.target.value)
+                  })
                 }}
               />
             </label>
@@ -191,8 +203,9 @@ export default props => {
                 type="number"
                 value={save.getGuestAlchemyCount(guest)}
                 onChange={e => {
-                  save.setGuestAlchemyCount(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestAlchemyCount(guest, e.target.value)
+                  })
                 }}
               />
             </label>
@@ -202,8 +215,9 @@ export default props => {
                 type="number"
                 value={save.getGuestAccoladeCount(guest)}
                 onChange={e => {
-                  save.setGuestAccoladeCount(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestAccoladeCount(guest, e.target.value)
+                  })
                 }}
               />
             </label>
@@ -213,8 +227,9 @@ export default props => {
                 type="number"
                 value={save.getGuestQuestsCompleted(guest)}
                 onChange={e => {
-                  save.setGuestQuestsCompleted(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestQuestsCompleted(guest, e.target.value)
+                  })
                 }}
               />
             </label>
@@ -224,8 +239,9 @@ export default props => {
                 type="number"
                 value={save.getGuestGrottosCompleted(guest)}
                 onChange={e => {
-                  save.setGuestGrottosCompleted(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestGrottosCompleted(guest, e.target.value)
+                  })
                 }}
               />
             </label>
@@ -235,8 +251,9 @@ export default props => {
                 type="number"
                 value={save.getGuestGuestsCanvased(guest)}
                 onChange={e => {
-                  save.setGuestGuestsCanvased(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestGuestsCanvased(guest, e.target.value)
+                  })
                 }}
               />
             </label>
@@ -247,8 +264,9 @@ export default props => {
                 type="number"
                 value={save.getGuestMonsterCompletion(guest)}
                 onChange={e => {
-                  save.setGuestMonsterCompletion(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestMonsterCompletion(guest, e.target.value)
+                  })
                 }}
                 min={0}
                 max={100}
@@ -262,8 +280,9 @@ export default props => {
                 type="number"
                 value={save.getGuestWardrobeCompletion(guest)}
                 onChange={e => {
-                  save.setGuestWardrobeCompletion(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestWardrobeCompletion(guest, e.target.value)
+                  })
                 }}
                 min={0}
                 max={100}
@@ -277,8 +296,9 @@ export default props => {
                 type="number"
                 value={save.getGuestItemCompletion(guest)}
                 onChange={e => {
-                  save.setGuestItemCompletion(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestItemCompletion(guest, e.target.value)
+                  })
                 }}
                 min={0}
                 max={100}
@@ -292,8 +312,9 @@ export default props => {
                 type="number"
                 value={save.getGuestAlchenomiconCompletion(guest)}
                 onChange={e => {
-                  save.setGuestAlchenomiconCompletion(guest, e.target.value)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setGuestAlchenomiconCompletion(guest, e.target.value)
+                  })
                 }}
                 min={0}
                 max={100}
@@ -309,36 +330,41 @@ export default props => {
               return save.getGuestFace(guest)
             }}
             setCharacterFace={v => {
-              save.setGuestFace(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestFace(guest, v)
+              })
             }}
             getCharacterHairstyle={() => {
               return save.getGuestHairstyle(guest)
             }}
             setCharacterHairstyle={v => {
-              save.setGuestHairstyle(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestHairstyle(guest, v)
+              })
             }}
             getCharacterEyeColor={() => {
               return save.getGuestEyeColor(guest)
             }}
             setCharacterEyeColor={v => {
-              save.setGuestEyeColor(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestEyeColor(guest, v)
+              })
             }}
             getCharacterSkinColor={() => {
               return save.getGuestSkinColor(guest)
             }}
             setCharacterSkinColor={v => {
-              save.setGuestSkinColor(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestSkinColor(guest, v)
+              })
             }}
             getCharacterHairColor={() => {
               return save.getGuestHairColor(guest)
             }}
             setCharacterHairColor={v => {
-              save.setGuestHairColor(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestHairColor(guest, v)
+              })
             }}
             getCharacterBodyTypeW={() => {
               return save.getGuestBodyTypeW(guest)
@@ -347,12 +373,14 @@ export default props => {
               return save.getGuestBodyTypeH(guest)
             }}
             setCharacterBodyTypeW={v => {
-              save.setGuestBodyTypeW(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestBodyTypeW(guest, v)
+              })
             }}
             setCharacterBodyTypeH={v => {
-              save.setGuestBodyTypeH(guest, v)
-              setSave(new SaveManager(save.buffer.buffer))
+              updateSave(save => {
+                save.setGuestBodyTypeH(guest, v)
+              })
             }}
           />
         </div>

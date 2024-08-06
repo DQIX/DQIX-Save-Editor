@@ -13,7 +13,7 @@ import Textarea from "../atoms/Textarea"
 import { DQVC_MESSAGE_LENGTH } from "../../game/layout"
 
 export default props => {
-  const { save, setSave } = useContext(SaveManagerContext)
+  const { save, updateSave } = useContext(SaveManagerContext)
   const [listing, setListing] = useState(gameData.dqvcListings.length)
 
   return (
@@ -26,8 +26,9 @@ export default props => {
                 type="checkbox"
                 checked={save.isSpecialGuestVisiting(i)}
                 onChange={e => {
-                  save.setSpecialGuestVisiting(i, e.target.checked)
-                  setSave(new SaveManager(save.buffer.buffer))
+                  updateSave(save => {
+                    save.setSpecialGuestVisiting(i, e.target.checked)
+                  })
                 }}
               />
               {name}
@@ -61,8 +62,9 @@ export default props => {
                       nothingValue={0xffff}
                       id={save.getDqvcItem(i)}
                       onChange={e => {
-                        save.setDqvcItem(i, e.target.value)
-                        setSave(new SaveManager(save.buffer.buffer))
+                        updateSave(save => {
+                          save.setDqvcItem(i, e.target.value)
+                        })
                       }}
                     />
                   </td>
@@ -74,8 +76,9 @@ export default props => {
                       size={10}
                       value={save.getDqvcPrice(i)}
                       onChange={e => {
-                        save.setDqvcPrice(i, e.target.value)
-                        setSave(new SaveManager(save.buffer.buffer))
+                        updateSave(save => {
+                          save.setDqvcPrice(i, e.target.value)
+                        })
                       }}
                     />
                     g
@@ -88,8 +91,9 @@ export default props => {
                       size={4}
                       value={save.getDqvcStock(i)}
                       onChange={e => {
-                        save.setDqvcStock(i, e.target.value)
-                        setSave(new SaveManager(save.buffer.buffer))
+                        updateSave(save => {
+                          save.setDqvcStock(i, e.target.value)
+                        })
                       }}
                     />
                   </td>
@@ -133,8 +137,7 @@ export default props => {
                   save.setDqvcPrice(i, l.items[idx].price)
                   save.setDqvcStock(i, 1)
                 }
-
-                setSave(new SaveManager(save.buffer.buffer))
+                updateSave(save => {})
               }}
             >
               <span></span>
@@ -155,16 +158,18 @@ export default props => {
           value={save.getDqvcMessage()}
           maxLength={DQVC_MESSAGE_LENGTH}
           onChange={e => {
-            save.setDqvcMessage(e.target.value)
-            setSave(new SaveManager(save.buffer.buffer))
+            updateSave(save => {
+              save.setDqvcMessage(e.target.value)
+            })
           }}
         />
         <TimeInput
           label="expires:"
           value={save.getDqvcMessageExpiryTime()}
           onChange={time => {
-            save.setDqvcMessageExpiryTime(time)
-            setSave(new SaveManager(save.buffer.buffer))
+            updateSave(save => {
+              save.setDqvcMessageExpiryTime(time)
+            })
           }}
         />
       </Card>
