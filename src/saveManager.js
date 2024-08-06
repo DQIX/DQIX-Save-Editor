@@ -790,6 +790,84 @@ export default class SaveManager {
     )
   }
 
+  getGuestMonsterCompletion(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_MONSTER_COUNT_OFFSET) &
+        0x1fc0) >>
+      6
+    )
+  }
+
+  setGuestMonsterCompletion(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(
+      offset + layout.GUEST_MONSTER_COUNT_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      (prev & 0xe03f) | ((v << 6) & 0x1fc0),
+      offset + layout.GUEST_MONSTER_COUNT_OFFSET
+    )
+  }
+
+  getGuestWardrobeCompletion(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return this.saveSlots[this.saveIdx][offset + layout.GUEST_WARDROBE_COUNT_OFFSET] & 0x7f
+  }
+
+  setGuestWardrobeCompletion(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx][offset + layout.GUEST_WARDROBE_COUNT_OFFSET]
+
+    this.saveSlots[this.saveIdx][offset + layout.GUEST_WARDROBE_COUNT_OFFSET] =
+      (prev & 0x80) | (v & 0x7f)
+  }
+
+  getGuestItemCompletion(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_ITEM_COUNT_OFFSET) &
+        0xfe0) >>
+      5
+    )
+  }
+
+  setGuestItemCompletion(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt16LE(offset + layout.GUEST_ITEM_COUNT_OFFSET)
+
+    this.saveSlots[this.saveIdx].writeUInt16LE(
+      (prev & 0xf01f) | ((v << 5) & 0xfe0),
+      offset + layout.GUEST_ITEM_COUNT_OFFSET
+    )
+  }
+
+  getGuestAlchenomiconCompletion(n) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+
+    return (
+      (this.saveSlots[this.saveIdx].readUInt32LE(offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET) &
+        0x3f800000) >>
+      23
+    )
+  }
+
+  setGuestAlchenomiconCompletion(n, v) {
+    const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
+    const prev = this.saveSlots[this.saveIdx].readUInt32LE(
+      offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+
+    this.saveSlots[this.saveIdx].writeUInt32LE(
+      (prev & 0xc07fffff) | ((v << 23) & 0x3f800000),
+      offset + layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+  }
+
   getCanvasedGuestTitle(n) {
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
     let title =

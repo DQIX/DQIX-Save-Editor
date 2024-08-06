@@ -241,6 +241,67 @@ export default props => {
                 }}
               />
             </label>
+
+            <label>
+              <span>defeated monster list completion:</span>
+              <Input
+                type="number"
+                value={save.getGuestMonsterCompletion(guest)}
+                onChange={e => {
+                  save.setGuestMonsterCompletion(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+                min={0}
+                max={100}
+                size={4}
+              />
+              %
+            </label>
+            <label>
+              <span>wardrobe completion:</span>
+              <Input
+                type="number"
+                value={save.getGuestWardrobeCompletion(guest)}
+                onChange={e => {
+                  save.setGuestWardrobeCompletion(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+                min={0}
+                max={100}
+                size={4}
+              />
+              %
+            </label>
+            <label>
+              <span>item list completion:</span>
+              <Input
+                type="number"
+                value={save.getGuestItemCompletion(guest)}
+                onChange={e => {
+                  save.setGuestItemCompletion(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+                min={0}
+                max={100}
+                size={4}
+              />
+              %
+            </label>
+            <label>
+              <span>alchenomicon completion:</span>
+              <Input
+                type="number"
+                value={save.getGuestAlchenomiconCompletion(guest)}
+                onChange={e => {
+                  save.setGuestAlchenomiconCompletion(guest, e.target.value)
+                  setSave(new SaveManager(save.buffer))
+                }}
+                min={0}
+                max={100}
+                size={4}
+              />
+              %
+            </label>
           </Card>
 
           <AppearanceCards

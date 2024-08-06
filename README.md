@@ -50,11 +50,11 @@ A save editor for dragon quest ix
     - [x] quests completed
     - [x] grottos completed
     - [x] guests canvased
-  - [ ] completion
-    - [ ] monster list
-    - [ ] wardrobe
-    - [ ] item list
-    - [ ] alchenomicon
+  - [x] completion
+    - [x] monster list
+    - [x] wardrobe
+    - [x] item list
+    - [x] alchenomicon
   - [ ] play time
   - [ ] map
   - [ ] level/revocations
