@@ -107,10 +107,11 @@ A save editor for dragon quest ix
 - [ ] first clear
 - [x] zoom locations
 - [ ] player profile
+- [x] save location
 
 ### etc:
 
-- [ ] auto detection of quick/confessed save
+- [x] auto detection of quick/confessed save
 - [x] undo/redo history
 
 ## Credits

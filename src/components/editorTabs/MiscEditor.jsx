@@ -189,6 +189,58 @@ export default props => {
         </div>
       </Card>
 
+      <Card
+        label={save.isQuickSave() ? "quick save location:" : "confessed save location:"}
+        className="save-location"
+      >
+        <div>
+          <label>
+            <span>area:</span>
+            <select
+              name="save location"
+              value={save.getSaveLocation()}
+              onChange={e => {
+                updateSave(save => {
+                  save.setSaveLocation(e.target.value)
+                })
+              }}
+            >
+              {gameData.saveLocations.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className={save.isQuickSave() || "disabled"}>
+            {["x", "y", "z"].map((c, i) => (
+              <label key={i}>
+                <span>{c}: </span>
+                <Input
+                  type="number"
+                  disabled={!save.isQuickSave()}
+                  value={save.getQuickSaveCoordinate(i)}
+                  onChange={e => {
+                    updateSave(save => {
+                      save.setQuickSaveCoordinate(i, e.target.value)
+                    })
+                  }}
+                />
+                {i == 2 && (
+                  <small
+                    style={{
+                      marginLeft: "0.5em",
+                    }}
+                  >
+                    (z is up)
+                  </small>
+                )}
+              </label>
+            ))}
+          </div>
+        </div>
+      </Card>
+
       <Card label="visited locations:" className="visited-locations">
         <div>
           {gameData.locationNames.map((name, i) => (

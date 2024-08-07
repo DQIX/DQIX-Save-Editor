@@ -11,6 +11,16 @@ export const CHECKSUM_B_OFFSET = 132
 export const CHECKSUM_B_DATA_OFFSET = 136
 export const CHECKSUM_B_DATA_END = 28644
 
+/// byte for if the save slot is a quick save
+export const IS_QUICK_SAVE_OFFSET = 20
+
+export const SAVE_AREA = 11476
+
+export const QUICK_SAVE_AREA = 27104
+
+/// coordinates of the player quick save location as an ivec3
+export const QUICK_SAVE_COORDINATES = 27108
+
 /// total size of a character's data in bytes
 export const CHARACTER_SIZE = 572
 

@@ -27,6 +27,10 @@ export default class SaveManager {
         this.buffer.subarray(layout.SAVE_SIZE, layout.SAVE_SIZE + layout.SAVE_SIZE),
       ]
 
+      if (this.isSlotQuickSave(1)) {
+        this.saveIdx = 1
+      }
+
       this.validate()
     }
   }
@@ -133,6 +137,42 @@ export default class SaveManager {
   /// returns a subarray of the currently active save log
   getSaveLogBuffer() {
     return this.saveSlots[this.saveIdx]
+  }
+
+  /*************************************************************************************************
+   *                                          save methods                                         *
+   *************************************************************************************************/
+
+  isSlotQuickSave(n) {
+    return !!this.saveSlots[n].readByte(layout.IS_QUICK_SAVE_OFFSET)
+  }
+
+  isQuickSave() {
+    return this.isSlotQuickSave(this.saveIdx)
+  }
+
+  getQuickSaveCoordinate(n) {
+    if (!(0 <= n < 3)) throw "bad coordinate index"
+    return this.getSaveLogBuffer().readI32LE(layout.QUICK_SAVE_COORDINATES + 4 * n)
+  }
+
+  setQuickSaveCoordinate(n, coord) {
+    if (!(0 <= n < 3)) throw "bad coordinate index"
+
+    return this.getSaveLogBuffer().writeI32LE(coord, layout.QUICK_SAVE_COORDINATES + 4 * n)
+  }
+
+  getSaveLocation() {
+    return this.getSaveLogBuffer().readU16LE(
+      this.isQuickSave() ? layout.QUICK_SAVE_AREA : layout.SAVE_AREA
+    )
+  }
+
+  setSaveLocation(value) {
+    this.getSaveLogBuffer().writeU16LE(
+      value,
+      this.isQuickSave() ? layout.QUICK_SAVE_AREA : layout.SAVE_AREA
+    )
   }
 
   /*************************************************************************************************

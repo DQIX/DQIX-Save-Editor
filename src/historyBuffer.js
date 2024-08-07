@@ -205,12 +205,6 @@ export default class HistoryBuffer {
   }
 
   writeDqixString(value, offset) {
-    console.log(value)
-    console.log(value.length)
-    console.log(Buffer.from(value))
-    console.log(this.readDqixString(offset, value.length, true))
-    console.log(this.readDqixString(offset, value.length, true).length)
-    console.log(Buffer.from(this.readDqixString(offset, value.length, true)))
     this.pushAction({
       type: WRITE_TYPE_DQIX_STRING,
       offset: offset + this.buffer.byteOffset,
