@@ -4,13 +4,14 @@ import "./CharacterEditor.scss"
 
 import SaveManager from "../../saveManager.js"
 import Input from "../atoms/Input.jsx"
-import { VocationIcon, AppearanceIcon, ItemIcon } from "../atoms/Icon.jsx"
+import { VocationIcon, AppearanceIcon, ItemIcon, GenderIcon } from "../atoms/Icon.jsx"
 import { SaveManagerContext } from "../../SaveManagerContext.jsx"
 import gameData from "../../game/data.js"
 import { ItemSelect, VocationSelect } from "../atoms/IconSelect.jsx"
 import Card from "../atoms/Card.jsx"
 import EquipmentCard from "./inputs/EquipmentCard.jsx"
 import AppearanceCards from "./inputs/AppearanceCards.jsx"
+import GenderToggle from "./inputs/GenderToggle.jsx"
 
 export default props => {
   const { save, updateSave } = useContext(SaveManagerContext)
@@ -51,6 +52,14 @@ export default props => {
       <div className="character-editor">
         <div className="character-grid">
           <Card className="character-header">
+            <GenderToggle
+              gender={save.getCharacterGender(character)}
+              onChange={gender => {
+                updateSave(save => {
+                  save.setCharacterGender(character, gender)
+                })
+              }}
+            />
             <VocationSelect
               id={save.getCharacterVocation(character)}
               onChange={e => {

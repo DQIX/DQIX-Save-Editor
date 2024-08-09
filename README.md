@@ -2,7 +2,7 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>Features/Todo (64/93)</h2></summary>
+<details><summary><h2>Features/Todo (65/93)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -23,7 +23,7 @@ A save editor for dragon quest ix
 - [x] equipment
 - [x] held items
 - [x] name
-- [ ] gender
+- [x] gender
 - [ ] party/standby move
 - [ ] import/export
 

@@ -244,6 +244,14 @@ export default class SaveManager {
     return this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET) & 1
   }
 
+  setCharacterGender(n, gender) {
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET)
+    this.getCharacterBuffer(n).writeByte(
+      (prev & 0xfe) | (gender & 1),
+      layout.CHARACTER_GENDER_COLORS_OFFSET
+    )
+  }
+
   getCharacterFace(n) {
     return this.getCharacterBuffer(n).readByte(layout.CHARACTER_FACE_OFFSET)
   }
@@ -950,6 +958,15 @@ export default class SaveManager {
     //TODO: there are like 3 different gender values? which one..?
 
     return this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET) & 0x1
+  }
+
+  setGuestGender(n, gender) {
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_GENDER_COLORS_OFFSET)
+
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0xfe) | (gender & 1),
+      layout.GUEST_GENDER_COLORS_OFFSET
+    )
   }
 
   getGuestEyeColor(n) {

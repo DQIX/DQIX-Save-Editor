@@ -12,6 +12,7 @@ import TimeInput from "../atoms/TimeInput"
 import { VocationIcon } from "../atoms/Icon"
 import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
+import GenderToggle from "./inputs/GenderToggle"
 
 export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
@@ -58,6 +59,14 @@ export default props => {
       <div className="guest-editor">
         <div className="guest-grid">
           <Card className="guest-header">
+            <GenderToggle
+              gender={save.getGuestGender(guest)}
+              onChange={gender => {
+                updateSave(save => {
+                  save.setGuestGender(guest, gender)
+                })
+              }}
+            />
             <VocationIcon icon={gameData.vocationTable[save.getGuestVocation(guest)].icon} />
             <Input
               type="text"

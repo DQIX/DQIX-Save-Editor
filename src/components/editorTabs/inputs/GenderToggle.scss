@@ -1,0 +1,33 @@
+.gender-toggle {
+  cursor: pointer;
+  &::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+
+    background: linear-gradient(
+      0deg,
+      var(--blue) 0%,
+      var(--blue) 20%,
+      var(--pink) 20%,
+      var(--pink) 40%,
+      #fff 40%,
+      #fff 60%,
+      var(--pink) 60%,
+      var(--pink) 80%,
+      var(--blue) 80%,
+      var(--blue) 100%
+    );
+  }
+
+  &.trans::after {
+    opacity: 0.3;
+  }
+}
