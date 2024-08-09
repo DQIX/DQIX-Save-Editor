@@ -6,6 +6,7 @@ import MiscEditor from "./components/editorTabs/MiscEditor"
 import DlcEditor from "./components/editorTabs/DlcEditor"
 import HexEditor from "./components/editorTabs/HexEditor"
 import GrottoEditor from "./components/editorTabs/GrottoEditor"
+import QuestEditor from "./components/editorTabs/QuestEditor"
 
 export const DARK_THEME_NAME = "dark"
 export const LIGHT_THEME_NAME = "light"
@@ -14,13 +15,14 @@ export const tabs = [
   { name: "party", component: CharacterEditor },
   { name: "items", component: ItemEditor },
   { name: "inn", component: InnEditor },
+  { name: "quests", component: QuestEditor },
   { name: "grottos", component: GrottoEditor, disabled: true },
   { name: "dlc", component: DlcEditor },
   { name: "misc", component: MiscEditor },
   { name: "hex", component: HexEditor, disabled: true },
 ]
 
-const initialTab = 5
+const initialTab = 3
 
 const initialTheme =
   localStorage.getItem("theme") ||

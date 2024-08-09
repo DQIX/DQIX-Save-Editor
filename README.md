@@ -69,8 +69,11 @@ A save editor for dragon quest ix
 
 ### quests:
 
-- [ ] list of quests
+- [x] list of quests
+  - [x] status
+  - [ ] date
 - [ ] bulk edit
+  - [ ] filter
 
 ### records: (probably too big?)
 
@@ -113,6 +116,11 @@ A save editor for dragon quest ix
 
 - [x] auto detection of quick/confessed save
 - [x] undo/redo history
+- [ ] unsafe mode?
+
+### stretch:
+
+- [ ] allow marking quests in progress?
 
 ## Credits
 

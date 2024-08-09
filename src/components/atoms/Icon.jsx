@@ -1,6 +1,7 @@
 import itemIcons from "../../assets/itemIcons.png"
 import vocationIcons from "../../assets/vocationIcons.png"
 import appearanceIcons from "../../assets/appearanceIcons-transparent.png"
+import questStatusIcons from "../../assets/questStatusIcons.png"
 
 export const ItemIcon = props => (
   <div
@@ -47,6 +48,25 @@ export const AppearanceIcon = props => {
         backgroundImage: `url(${appearanceIcons})`,
         backgroundPosition: `-${kind * size}px -${props.icon * size}px`,
         backgroundSize: `${256 * scale}px ${640 * scale}px`,
+        ...props.style,
+      }}
+    ></div>
+  )
+}
+
+export const QuestStatusIcon = props => {
+  const scale = 0.75
+
+  return (
+    <div
+      style={{
+        width: scale * 22 + "px",
+        height: scale * 22 + "px",
+        display: "inline-block",
+        verticalAlign: "top",
+        backgroundImage: `url(${questStatusIcons})`,
+        backgroundPosition: `-0px -${22 * scale * Math.floor(props.icon)}px`,
+        backgroundSize: `${22 * scale}px ${88 * scale}px`,
         ...props.style,
       }}
     ></div>

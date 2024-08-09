@@ -42,4 +42,9 @@ input[type="checkbox"] {
   &:checked::before {
     transform: scale(1);
   }
+
+  &:disabled {
+    filter: grayscale(100%);
+    opacity: 0.6;
+  }
 }

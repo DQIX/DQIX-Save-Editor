@@ -1,0 +1,65 @@
+$sidebar-width: 184px;
+
+.quest-root {
+  padding: 1em;
+
+  .sidebar {
+    width: $sidebar-width;
+
+    p:not(:first-of-type) {
+      position: absolute;
+      bottom: 0;
+      width: calc(100% - 2em);
+    }
+  }
+
+  .quests {
+    margin-left: calc($sidebar-width + 1em);
+    height: calc(100vh - var(--navbar-height) - 2em);
+    display: flex;
+    flex-direction: column;
+    padding: 0.4em 0 0 1em;
+    > div {
+      overflow-y: scroll;
+      padding-bottom: 1em;
+      flex-grow: 1;
+      scrollbar-color: var(--accent-color) var(--surface-bg);
+      scrollbar-width: thin;
+    }
+
+    table {
+      border-spacing: 0;
+      //   margin-left: -1em;
+      //   width: calc(100% + 2em);
+      thead {
+        position: sticky;
+        top: 0;
+        background-color: var(--card-bg-color);
+        z-index: 1;
+      }
+
+      th {
+        text-align-last: left;
+        padding: 4px 1em;
+      }
+      td {
+        padding: 8px 1em;
+      }
+      tr {
+        &:nth-child(even) {
+          background-color: rgba(#fff, 0.05);
+        }
+      }
+
+      td,
+      th {
+        &:first-child {
+          padding-left: 1em;
+        }
+        &:last-child {
+          padding-right: 1em;
+        }
+      }
+    }
+  }
+}

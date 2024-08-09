@@ -1078,4 +1078,62 @@ export default class SaveManager {
   setDqvcMessageExpiryTime(time) {
     return this.getSaveLogBuffer().writeU32LE(time, layout.DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
   }
+
+  /*************************************************************************************************
+   *                                         quest methods                                         *
+   *************************************************************************************************/
+
+  getQuestStatus(id) {
+    const completed =
+      this.getSaveLogBuffer().readByte(layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)) &
+      (1 << id % 8)
+    // if (completed) {
+    //   return gameData.QUEST_STATUS_COMPLETE
+    // }
+
+    const byte = this.getSaveLogBuffer().readByte(layout.QUEST_STATUS_OFFSET + Math.floor(id / 2))
+
+    return (id % 2 ? byte >> 4 : byte & 0xf) & 0x7
+  }
+
+  setQuestStatus(id, status) {
+    const prevCompleted = this.getSaveLogBuffer().readByte(
+      layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)
+    )
+    this.getSaveLogBuffer().writeByte(
+      (prevCompleted & ~(1 << id % 8)) | ((status == gameData.QUEST_STATUS_COMPLETE) << id % 8),
+      layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)
+    )
+
+    status = status & 0x7
+    const prev = this.getSaveLogBuffer().readByte(layout.QUEST_STATUS_OFFSET + Math.floor(id / 2))
+
+    this.getSaveLogBuffer().writeByte(
+      (prev & (id % 2 ? 0x8f : 0xf8)) | (id % 2 ? status << 4 : status),
+      layout.QUEST_STATUS_OFFSET + Math.floor(id / 2)
+    )
+  }
+
+  getDlcQuestUnlocked(id) {
+    const byte = this.getSaveLogBuffer().readByte(layout.QUEST_STATUS_OFFSET + Math.floor(id / 2))
+    return !!((id % 2 ? byte >> 4 : byte & 0xf) & 0x8)
+  }
+
+  setDlcQuestUnlocked(id, unlocked) {
+    unlocked = unlocked ? 1 : 0
+    const prev = this.getSaveLogBuffer().readByte(layout.QUEST_STATUS_OFFSET + Math.floor(id / 2))
+
+    this.getSaveLogBuffer().writeByte(
+      (prev & (id % 2 ? 0x7f : 0xf7)) | (unlocked << (id % 2 ? 7 : 3)),
+      layout.QUEST_STATUS_OFFSET + Math.floor(id / 2)
+    )
+  }
+
+  getQuestTime(id) {
+    return this.getSaveLogBuffer().readU32LE(layout.QUEST_TIMES_OFFSET + id * 4)
+  }
+
+  setQuestTime(id, time) {
+    return this.getSaveLogBuffer().writeU32LE(time, layout.QUEST_TIMES_OFFSET + id * 4)
+  }
 }

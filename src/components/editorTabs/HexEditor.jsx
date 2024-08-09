@@ -107,7 +107,7 @@ export default props => {
             </span>
           </div>
         </div>
-        <Virtualizer overscan={200} height={(save.buffer.length / rowLen) * 30}>
+        <Virtualizer overscan={200} height={(save.buffer.buffer.length / rowLen) * 30}>
           {[
             ...annotations.map((a, i) => {
               const active =
@@ -166,7 +166,7 @@ export default props => {
               )
             }),
             ...Array.from({
-              length: save.buffer.length / rowLen,
+              length: save.buffer.buffer.length / rowLen,
             }).map((_, i) => {
               return (
                 <Row
@@ -176,7 +176,7 @@ export default props => {
                     top: i * 30,
                     height: 30,
                   }}
-                  buffer={save.buffer}
+                  buffer={save.buffer.buffer}
                   length={rowLen}
                   i={i * rowLen}
                   select={i => setSelected(i)}
@@ -200,51 +200,53 @@ export default props => {
                 </tr>
                 <tr>
                   <td>binary: </td>
-                  <td>{save.buffer[selected].toString(2).padStart(8, "0")}</td>
+                  <td>{save.buffer.buffer[selected].toString(2).padStart(8, "0")}</td>
                 </tr>
                 <tr>
                   <td>octal: </td>
-                  <td>{save.buffer[selected].toString(8).padStart(3, "0")}</td>
+                  <td>{save.buffer.buffer[selected].toString(8).padStart(3, "0")}</td>
                 </tr>
                 <tr>
                   <td>hex: </td>
-                  <td>{save.buffer[selected].toString(16).padStart(2, "0")}</td>
+                  <td>{save.buffer.buffer[selected].toString(16).padStart(2, "0")}</td>
                 </tr>
                 <tr>
                   <td>u8: </td>
-                  <td>{save.buffer.readUInt8(selected)}</td>
+                  <td>{save.buffer.buffer.readUInt8(selected)}</td>
                 </tr>
                 <tr>
                   <td>i8: </td>
-                  <td>{save.buffer.readInt8(selected)}</td>
+                  <td>{save.buffer.buffer.readInt8(selected)}</td>
                 </tr>
                 <tr>
                   <td>u16: </td>
-                  <td>{save.buffer.readUInt16LE(selected)}</td>
+                  <td>{save.buffer.buffer.readUInt16LE(selected)}</td>
                 </tr>
                 <tr>
                   <td>i16: </td>
-                  <td>{save.buffer.readInt16LE(selected)}</td>
+                  <td>{save.buffer.buffer.readInt16LE(selected)}</td>
                 </tr>
                 <tr>
                   <td>u32: </td>
-                  <td>{save.buffer.readUInt32LE(selected)}</td>
+                  <td>{save.buffer.buffer.readUInt32LE(selected)}</td>
                 </tr>
                 <tr>
                   <td>i32: </td>
-                  <td>{save.buffer.readInt32LE(selected)}</td>
+                  <td>{save.buffer.buffer.readInt32LE(selected)}</td>
                 </tr>
                 <tr>
                   <td>dqix character: </td>
-                  <td>{stringTables.encode[save.buffer[selected]] || "?"}</td>
+                  <td>{stringTables.encode[save.buffer.buffer[selected]] || "?"}</td>
                 </tr>
                 <tr>
                   <td>item: </td>
                   <td>
-                    {gameData.items[save.buffer.readUInt16LE(selected)] ? (
+                    {gameData.items[save.buffer.buffer.readUInt16LE(selected)] ? (
                       <>
-                        <ItemIcon icon={gameData.items[save.buffer.readUInt16LE(selected)].icon} />
-                        {gameData.items[save.buffer.readUInt16LE(selected)].name}
+                        <ItemIcon
+                          icon={gameData.items[save.buffer.buffer.readUInt16LE(selected)].icon}
+                        />
+                        {gameData.items[save.buffer.buffer.readUInt16LE(selected)].name}
                       </>
                     ) : (
                       "unknown"

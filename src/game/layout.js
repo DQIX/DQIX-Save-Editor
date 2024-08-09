@@ -181,6 +181,11 @@ export const DQVC_MESSAGE_LENGTH = 510
 
 export const DQVC_MESSAGE_EXPIRY_TIME_OFFSET = 28096
 
+/// offset of quest status array, each element is 4 bits of data
+export const QUEST_STATUS_OFFSET = 12300
+export const QUEST_CLEARED_OFFSET = 12536
+export const QUEST_TIMES_OFFSET = 12564
+
 export const annotations = []
 
 for (let i = 0; i < 2; i++) {
