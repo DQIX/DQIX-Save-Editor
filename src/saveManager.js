@@ -1083,10 +1083,31 @@ export default class SaveManager {
    *                                         quest methods                                         *
    *************************************************************************************************/
 
+  getQuestCompletionCount() {
+    return this.getSaveLogBuffer().readByte(layout.QUEST_CLEAR_COUNT_OFFSET)
+  }
+
+  updateQuestCompletionCount() {
+    this.getSaveLogBuffer().writeByte(
+      gameData.quests.reduce(
+        (a, q) =>
+          a +
+          (!!(
+            this.getSaveLogBuffer().readByte(layout.QUEST_CLEARED_OFFSET + Math.floor(q.id / 8)) &
+            (1 << q.id % 8)
+          )
+            ? 1
+            : 0),
+        0
+      ),
+      layout.QUEST_CLEAR_COUNT_OFFSET
+    )
+  }
+
   getQuestStatus(id) {
-    const completed =
-      this.getSaveLogBuffer().readByte(layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)) &
-      (1 << id % 8)
+    // const completed =
+    //   this.getSaveLogBuffer().readByte(layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)) &
+    //   (1 << id % 8)
     // if (completed) {
     //   return gameData.QUEST_STATUS_COMPLETE
     // }
@@ -1101,9 +1122,12 @@ export default class SaveManager {
       layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)
     )
     this.getSaveLogBuffer().writeByte(
-      (prevCompleted & ~(1 << id % 8)) | ((status == gameData.QUEST_STATUS_COMPLETE) << id % 8),
+      (prevCompleted & (0xff ^ (1 << id % 8))) |
+        ((status == gameData.QUEST_STATUS_COMPLETE) << id % 8),
       layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)
     )
+
+    this.updateQuestCompletionCount()
 
     status = status & 0x7
     const prev = this.getSaveLogBuffer().readByte(layout.QUEST_STATUS_OFFSET + Math.floor(id / 2))

@@ -6,7 +6,7 @@ $sidebar-width: 184px;
   .sidebar {
     width: $sidebar-width;
 
-    p:not(:first-of-type) {
+    p:last-child {
       position: absolute;
       bottom: 0;
       width: calc(100% - 2em);

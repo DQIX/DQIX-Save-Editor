@@ -88,6 +88,7 @@ export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
 
   let [filter, setFilter] = useState("")
+  let [typeFilter, setTypeFilter] = useState({ dlc: true, normal: true })
 
   return (
     <div className="quest-root">
@@ -98,6 +99,23 @@ export default props => {
           value={filter}
           onChange={e => setFilter(e.target.value)}
         />
+        <label>
+          <Input
+            type="checkbox"
+            checked={typeFilter.normal}
+            onChange={e => setTypeFilter({ ...typeFilter, normal: e.target.checked })}
+          />
+          normal
+        </label>
+        <label>
+          <Input
+            type="checkbox"
+            checked={typeFilter.dlc}
+            onChange={e => setTypeFilter({ ...typeFilter, dlc: e.target.checked })}
+          />
+          dlc
+        </label>
+        {/* <p>{save.getQuestCompletionCount()}</p> */}
         <p>
           <small>
             quests in progress status' cannot be change as doing so runs the risk of creating an
@@ -119,7 +137,12 @@ export default props => {
             </thead>
             <tbody>
               {gameData.orderedQuests
-                .filter(q => q.name.toLowerCase().includes(filter.toLowerCase()))
+                .filter(q => {
+                  return (
+                    q.name.toLowerCase().includes(filter.toLowerCase()) &&
+                    ((q.dlc && typeFilter.dlc) || (!q.dlc && typeFilter.normal))
+                  )
+                })
                 .map(q => (
                   <tr key={q.id}>
                     <td>{q.number}</td>

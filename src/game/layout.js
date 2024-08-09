@@ -186,6 +186,9 @@ export const QUEST_STATUS_OFFSET = 12300
 export const QUEST_CLEARED_OFFSET = 12536
 export const QUEST_TIMES_OFFSET = 12564
 
+/// offset of count of quests cleared
+export const QUEST_CLEAR_COUNT_OFFSET = 16035
+
 export const annotations = []
 
 for (let i = 0; i < 2; i++) {
