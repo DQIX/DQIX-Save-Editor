@@ -2,9 +2,9 @@
 
 A save editor for dragon quest ix
 
-## Features/Todo:
+<details><summary><h2>Features/Todo</h2></summary>
 
-### party:
+<details><summary><h3>party</h3></summary>
 
 - [x] skills
 - [x] appearance
@@ -17,19 +17,26 @@ A save editor for dragon quest ix
   - [x] width
 - [ ] seeds
 - [ ] party/standby move
-- [ ] current vocation
-- [ ] vocation exp stuff
+- [x] current vocation
+- [x] vocation exp stuff
+  - [x] revocations
+  - [ ] sync exp, lvl, and skill points?
 - [x] equipment
 - [x] held items
 - [x] name
 - [ ] gender
+- [ ] import/export
 
-### items:
+</details>
+
+<details><summary><h3>items:</h3></summary>
 
 - [x] list of items
 - [ ] bulk edit
 
-### inn:
+</details>
+
+<details><summary><h3>inn:</h3></summary>
 
 - [ ] lodged characters profiles
   - [x] name
@@ -66,8 +73,11 @@ A save editor for dragon quest ix
     - [x] message
   - [ ] gender
 - [x] inn rank
+- [ ] import/export
 
-### quests:
+</details>
+
+<details><summary><h3>quests:</h3></summary>
 
 - [x] list of quests
   - [x] status
@@ -75,7 +85,9 @@ A save editor for dragon quest ix
 - [ ] bulk edit
   - [x] filter
 
-### records: (probably too big?)
+</details>
+
+<details><summary><h3>records:</h3></summary>
 
 - [ ] items found
 - [ ] wardrobe completion
@@ -84,12 +96,16 @@ A save editor for dragon quest ix
 - [ ] accolades
 - [ ] first completion record (or under misc?)
 
-### grottos:
+</details>
+
+<details><summary><h3>grottos:</h3></summary>
 
 - [ ] treasure map list
 - [ ] grotto search + add
 
-### dlc:
+</details>
+
+<details><summary><h3>dlc:</h3></summary>
 
 - [ ] dqvc
   - [x] items
@@ -100,7 +116,9 @@ A save editor for dragon quest ix
 - [x] historical characters
 - [x] unlock all dlc
 
-### misc:
+</details>
+
+<details><summary><h3>misc:</h3></summary>
 
 - [x] play time + multiplayer
 - [x] learned party tricks
@@ -113,15 +131,23 @@ A save editor for dragon quest ix
 - [ ] player profile
 - [x] save location
 
-### etc:
+</details>
+
+<details><summary><h3>etc:</h3></summary>
 
 - [x] auto detection of quick/confessed save
 - [x] undo/redo history
-- [ ] unsafe mode?
 
-### stretch:
+</details>
+
+<details><summary><h3>stretch:</h3></summary>
 
 - [ ] allow marking quests in progress?
+- [ ] unsafe mode?
+
+</details>
+
+</details>
 
 ## Credits
 
