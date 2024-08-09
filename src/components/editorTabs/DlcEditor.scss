@@ -1,4 +1,4 @@
-$grid-size: 184px;
+$grid-size: 200px;
 
 .dlc-root {
   display: grid;
@@ -9,7 +9,7 @@ $grid-size: 184px;
   grid-template-rows: repeat(auto-fit, $grid-size);
 
   justify-content: center;
-  max-width: 1080px;
+  max-width: 1280px;
   margin: 0 auto;
 
   .special-guests {

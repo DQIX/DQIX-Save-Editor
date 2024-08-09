@@ -5,6 +5,9 @@ $sidebar-width: 184px;
 
   .sidebar {
     width: $sidebar-width;
+    input[type="text"] {
+      width: 100%;
+    }
 
     p:last-child {
       position: absolute;
@@ -53,6 +56,8 @@ $sidebar-width: 184px;
 
       td,
       th {
+        text-wrap: nowrap;
+
         &:first-child {
           padding-left: 1em;
         }

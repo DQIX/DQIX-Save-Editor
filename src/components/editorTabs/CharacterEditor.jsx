@@ -4,10 +4,10 @@ import "./CharacterEditor.scss"
 
 import SaveManager from "../../saveManager.js"
 import Input from "../atoms/Input.jsx"
-import { VocationIcon, AppearanceIcon } from "../atoms/Icon.jsx"
+import { VocationIcon, AppearanceIcon, ItemIcon } from "../atoms/Icon.jsx"
 import { SaveManagerContext } from "../../SaveManagerContext.jsx"
 import gameData from "../../game/data.js"
-import ItemSelect from "../atoms/ItemSelect.jsx"
+import { ItemSelect, VocationSelect } from "../atoms/IconSelect.jsx"
 import Card from "../atoms/Card.jsx"
 import EquipmentCard from "./inputs/EquipmentCard.jsx"
 import AppearanceCards from "./inputs/AppearanceCards.jsx"
@@ -17,6 +17,7 @@ export default props => {
 
   let [character, setCharacter] = useState(save.getStandbyCount())
   let [selectedSkill, setSelectedSkill] = useState(0)
+  let [selectedVocation, setSelectedVocation] = useState(2)
 
   return (
     <div className="character-root">
@@ -50,8 +51,13 @@ export default props => {
       <div className="character-editor">
         <div className="character-grid">
           <Card className="character-header">
-            <VocationIcon
-              icon={gameData.vocationTable[save.getCharacterVocation(character)].icon}
+            <VocationSelect
+              id={save.getCharacterVocation(character)}
+              onChange={e => {
+                updateSave(save => {
+                  save.setCharacterVocation(character, e.target.value)
+                })
+              }}
             />
             <Input
               type="text"
@@ -196,6 +202,81 @@ export default props => {
                 <small>editing here does not give hero skill accolades</small>
               </p>
             )}
+          </Card>
+          <Card label="vocations:" className="vocation-editor">
+            <VocationSelect
+              id={selectedVocation}
+              onChange={e => {
+                setSelectedVocation(parseInt(e.target.value))
+              }}
+            />
+            <small>expertise:</small>
+            <div>
+              <label>
+                level:{" "}
+                <Input
+                  type="number"
+                  value={save.getCharacterLevel(character, selectedVocation)}
+                  min={1}
+                  max={99}
+                  size={3}
+                  onChange={e => {
+                    updateSave(save => {
+                      save.setCharacterLevel(character, selectedVocation, e.target.value)
+                    })
+                  }}
+                />
+              </label>
+
+              <label>
+                exp:{" "}
+                <Input
+                  type="number"
+                  value={save.getCharacterExp(character, selectedVocation)}
+                  onChange={e => {
+                    updateSave(save => {
+                      save.setCharacterExp(character, selectedVocation, e.target.value)
+                    })
+                  }}
+                />
+              </label>
+
+              <label>
+                revocations:{" "}
+                <Input
+                  type="number"
+                  value={save.getCharacterRevocations(character, selectedVocation)}
+                  min={0}
+                  max={10}
+                  size={4}
+                  onChange={e => {
+                    updateSave(save => {
+                      save.setCharacterRevocations(character, selectedVocation, e.target.value)
+                    })
+                  }}
+                />
+              </label>
+            </div>
+            <small>stat bonuses (in points):</small>
+            <div>
+              {gameData.seeds.map((seed, i) => (
+                <label key={i}>
+                  <ItemIcon icon={seed.icon} /> {seed.name}
+                  <Input
+                    type="number"
+                    min={0}
+                    max={999}
+                    size={4}
+                    value={save.getCharacterSeed(character, selectedVocation, seed.id)}
+                    onChange={e =>
+                      updateSave(save => {
+                        save.setCharacterSeed(character, selectedVocation, seed.id, e.target.value)
+                      })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
           </Card>
           <AppearanceCards
             gender={save.getCharacterGender(character)}

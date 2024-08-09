@@ -1,5 +1,5 @@
 import Card from "../../atoms/Card"
-import ItemSelect from "../../atoms/ItemSelect"
+import { ItemSelect } from "../../atoms/IconSelect"
 import gameData from "../../../game/data"
 
 import "./EquipmentCard.scss"

@@ -118,7 +118,7 @@ export default props => {
         {/* <p>{save.getQuestCompletionCount()}</p> */}
         <p>
           <small>
-            quests in progress status' cannot be change as doing so runs the risk of creating an
+            in progress quests' statuses cannot be changed as doing so runs the risk of creating an
             invalid state.
           </small>
         </p>

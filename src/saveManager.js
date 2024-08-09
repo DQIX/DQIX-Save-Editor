@@ -407,6 +407,55 @@ export default class SaveManager {
     return this.getCharacterBuffer(n).readByte(layout.CURRENT_VOCATION_OFFSET)
   }
 
+  setCharacterVocation(n, v) {
+    this.getCharacterBuffer(n).writeByte(v, layout.CURRENT_VOCATION_OFFSET)
+  }
+
+  getCharacterLevel(n, v) {
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_VOCATION_LEVEL_OFFSET + v)
+  }
+
+  setCharacterLevel(n, v, l) {
+    return this.getCharacterBuffer(n).writeByte(l, layout.CHARACTER_VOCATION_LEVEL_OFFSET + v)
+  }
+
+  getCharacterExp(n, v) {
+    return this.getCharacterBuffer(n).readU32LE(layout.CHARACTER_VOCATION_EXP_OFFSET + v * 4)
+  }
+
+  setCharacterExp(n, v, e) {
+    return this.getCharacterBuffer(n).writeU32LE(e, layout.CHARACTER_VOCATION_EXP_OFFSET + v * 4)
+  }
+
+  getCharacterRevocations(n, v) {
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_VOCATION_REVOCATION_OFFSET + v)
+  }
+
+  setCharacterRevocations(n, v, r) {
+    return this.getCharacterBuffer(n).writeByte(r, layout.CHARACTER_VOCATION_REVOCATION_OFFSET + v)
+  }
+
+  getCharacterSeed(n, v, s) {
+    return (
+      (this.getCharacterBuffer(n).readU32LE(
+        layout.CHARACTER_VOCATION_SEEDS_OFFSET + Math.floor(s / 3) * 4 + 12 * v
+      ) >>
+        (10 * (s % 3))) &
+      0x3ff
+    )
+  }
+
+  setCharacterSeed(n, v, s, value) {
+    const offset = layout.CHARACTER_VOCATION_SEEDS_OFFSET + Math.floor(s / 3) * 4 + 12 * v
+
+    const prev = this.getCharacterBuffer(n).readU32LE(offset)
+
+    this.getCharacterBuffer(n).writeU32LE(
+      (prev & (0xffffffff ^ (0x3ff << (10 * (s % 3))))) | (value << (10 * (s % 3))),
+      offset
+    )
+  }
+
   /// returns the ith item held by the nth character, assumes the character is in the party
   getHeldItem(n, i) {
     n -= this.getStandbyCount()

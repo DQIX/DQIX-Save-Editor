@@ -60,6 +60,10 @@ $grid-size: 232px;
     align-items: center;
     padding: 1em;
     grid-column: 1/-1;
+
+    .icon-select {
+      width: 160px;
+    }
   }
 
   .character-grid {
@@ -124,6 +128,19 @@ $grid-size: 232px;
             margin-right: 1em;
           }
         }
+      }
+    }
+  }
+
+  .vocation-editor {
+    grid-column: span 1;
+    grid-row: span 2;
+
+    label {
+      display: block;
+      margin-bottom: 2px;
+      input {
+        float: right;
       }
     }
   }

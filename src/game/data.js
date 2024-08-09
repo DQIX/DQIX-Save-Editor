@@ -5178,6 +5178,19 @@ const quests = [
 
 const orderedQuests = [...quests].sort((a, b) => a.number - b.number)
 
+// prettier-ignore
+const seeds = [
+  { id: 7, name: "max HP",          icon: 790 },
+  { id: 8, name: "max MP",          icon: 791 },
+  { id: 0, name: "strength",        icon: 792 },
+  { id: 1, name: "agility",         icon: 794 },
+  { id: 2, name: "resiliance",      icon: 795 },
+  { id: 3, name: "deftness",        icon: 793 },
+  { id: 4, name: "charm",           icon: 789 },
+  { id: 5, name: "magical mending", icon: 797 },
+  { id: 6, name: "magical might",   icon: 796 },
+]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -5275,4 +5288,6 @@ export default {
   quests,
   orderedQuests,
   questStatusNames,
+
+  seeds,
 }

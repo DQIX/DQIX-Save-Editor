@@ -24,6 +24,15 @@ export const QUICK_SAVE_COORDINATES = 27108
 /// total size of a character's data in bytes
 export const CHARACTER_SIZE = 572
 
+/// offset of character level array relative to the beginning of character data
+export const CHARACTER_VOCATION_LEVEL_OFFSET = 138
+export const CHARACTER_VOCATION_REVOCATION_OFFSET = 151
+export const CHARACTER_VOCATION_EXP_OFFSET = 164
+
+/// offset of character stat bonuses, each seed is 10 bits
+/// they're stored as 3 u32s with the final 2 bits of each being unused
+export const CHARACTER_VOCATION_SEEDS_OFFSET = 224
+
 /// offset of name relative to beginning of character data
 export const CHARACTER_NAME_OFFSET = 456
 

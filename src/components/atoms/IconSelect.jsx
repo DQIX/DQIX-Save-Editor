@@ -1,15 +1,15 @@
 import { useRef } from "react"
 import gameData from "../../game/data"
 
-import { ItemIcon } from "../atoms/Icon"
-import "./ItemSelect.scss"
+import { ItemIcon, VocationIcon } from "../atoms/Icon"
+import "./IconSelect.scss"
 
-export default props => {
+export const ItemSelect = props => {
   const selected = gameData.items[props.id]
   const selectRef = useRef(null)
 
   return (
-    <label className="item-select" onClick={e => selectRef.current.click()}>
+    <label className="icon-select" onClick={e => selectRef.current.click()}>
       <ItemIcon
         icon={selected?.icon}
         style={{
@@ -33,6 +33,29 @@ export default props => {
                 ))}
               </optgroup>
             ))}
+      </select>
+    </label>
+  )
+}
+
+export const VocationSelect = props => {
+  const selected = gameData.vocationTable[props.id]
+  const selectRef = useRef(null)
+
+  return (
+    <label className="icon-select" onClick={e => selectRef.current.click()}>
+      <VocationIcon
+        icon={selected?.icon}
+        style={{
+          opacity: selected ? 1 : 0,
+        }}
+      />
+      <select ref={selectRef} value={props.id} onChange={props.onChange} disabled={props.disabled}>
+        {gameData.vocations.map(v => (
+          <option key={v.id} value={v.id}>
+            {v.name}
+          </option>
+        ))}
       </select>
     </label>
   )

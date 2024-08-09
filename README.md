@@ -2,7 +2,7 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>Features/Todo (63/93)</h2></summary>
+<details><summary><h2>Features/Todo (64/93)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -18,8 +18,8 @@ A save editor for dragon quest ix
 - [x] current vocation
 - [x] vocation exp stuff
   - [x] revocations
-  - [ ] seeds
-  - [ ] sync exp, lvl, and skill points?
+  - [x] seeds
+  - [ ] sync exp, lvl, and skill points? maybe?
 - [x] equipment
 - [x] held items
 - [x] name

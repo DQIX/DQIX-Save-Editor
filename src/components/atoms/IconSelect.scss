@@ -1,4 +1,4 @@
-.item-select {
+.icon-select {
   border-bottom: 2px solid transparent;
   background-color: var(--surface-bg);
   display: inline-block;
@@ -9,7 +9,7 @@
   margin: 0.2em;
   position: relative;
 
-  .item-icon {
+  .icon {
     position: absolute;
   }
 
@@ -30,7 +30,7 @@
   }
 }
 
-:not(.item-select) > select {
+:not(.icon-select) > select {
   border: none;
   border-bottom: 2px solid transparent;
   background-color: var(--surface-bg);

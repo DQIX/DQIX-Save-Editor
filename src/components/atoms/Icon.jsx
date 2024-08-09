@@ -16,7 +16,7 @@ export const ItemIcon = props => (
       }px`,
       ...props.style,
     }}
-    className="item-icon"
+    className="icon item-icon"
   ></div>
 )
 
@@ -31,6 +31,7 @@ export const VocationIcon = props => (
       backgroundPosition: `0px -${props.icon * 24}px`,
       ...props.style,
     }}
+    className="icon"
   ></div>
 )
 
