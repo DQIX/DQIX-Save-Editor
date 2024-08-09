@@ -2,7 +2,7 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>Features/Todo</h2></summary>
+<details><summary><h2>Features/Todo (63/93)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -15,16 +15,16 @@ A save editor for dragon quest ix
   - [x] eye color
   - [x] height
   - [x] width
-- [ ] seeds
-- [ ] party/standby move
 - [x] current vocation
 - [x] vocation exp stuff
   - [x] revocations
+  - [ ] seeds
   - [ ] sync exp, lvl, and skill points?
 - [x] equipment
 - [x] held items
 - [x] name
 - [ ] gender
+- [ ] party/standby move
 - [ ] import/export
 
 </details>
