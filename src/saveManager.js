@@ -1079,6 +1079,14 @@ export default class SaveManager {
     return this.getSaveLogBuffer().writeU32LE(time, layout.DQVC_MESSAGE_EXPIRY_TIME_OFFSET)
   }
 
+  getDqvcItemExpiryTime() {
+    return this.getSaveLogBuffer().readU32LE(layout.DQVC_ITEMS_EXPIRY_TIME_OFFSET)
+  }
+
+  setDqvcItemExpiryTime(time) {
+    return this.getSaveLogBuffer().writeU32LE(time, layout.DQVC_ITEMS_EXPIRY_TIME_OFFSET)
+  }
+
   /*************************************************************************************************
    *                                         quest methods                                         *
    *************************************************************************************************/

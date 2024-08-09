@@ -180,6 +180,7 @@ export const DQVC_MESSAGE_OFFSET = 23176
 export const DQVC_MESSAGE_LENGTH = 510
 
 export const DQVC_MESSAGE_EXPIRY_TIME_OFFSET = 28096
+export const DQVC_ITEMS_EXPIRY_TIME_OFFSET = 28084
 
 /// offset of quest status array, each element is 4 bits of data
 export const QUEST_STATUS_OFFSET = 12300

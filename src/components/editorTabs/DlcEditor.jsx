@@ -11,10 +11,25 @@ import SaveManager from "../../saveManager"
 import { SaveManagerContext } from "../../SaveManagerContext"
 import Textarea from "../atoms/Textarea"
 import { DQVC_MESSAGE_LENGTH } from "../../game/layout"
+import { timeFromDateObject } from "../../game/time"
 
 export default props => {
   const { save, updateSave } = useContext(SaveManagerContext)
   const [listing, setListing] = useState(gameData.dqvcListings.length)
+
+  function unlockedDlc() {
+    for (const q of gameData.quests) {
+      if (q.dlc && !save.getDlcQuestUnlocked(q.id)) {
+        return false
+      }
+    }
+
+    for (let i = 0; i < gameData.specialGuests.length; i++) {
+      if (!save.isSpecialGuestVisiting(i)) return false
+    }
+
+    return true
+  }
 
   return (
     <div className="dlc-root">
@@ -123,21 +138,22 @@ export default props => {
             <button
               className="randomize"
               onClick={e => {
-                const l = gameData.dqvcListings[listing]
-                let idxs = new Set()
-                while (idxs.size != 6) {
-                  idxs.add(Math.floor(Math.random() * l.items.length))
-                }
+                updateSave(save => {
+                  const l = gameData.dqvcListings[listing]
+                  let idxs = new Set()
+                  while (idxs.size != 6) {
+                    idxs.add(Math.floor(Math.random() * l.items.length))
+                  }
 
-                idxs = [...idxs]
+                  idxs = [...idxs]
 
-                for (let i = 0; i < 6; i++) {
-                  const idx = idxs[i]
-                  save.setDqvcItem(i, l.items[idx].itemId)
-                  save.setDqvcPrice(i, l.items[idx].price)
-                  save.setDqvcStock(i, 1)
-                }
-                updateSave(save => {})
+                  for (let i = 0; i < 6; i++) {
+                    const idx = idxs[i]
+                    save.setDqvcItem(i, l.items[idx].itemId)
+                    save.setDqvcPrice(i, l.items[idx].price)
+                    save.setDqvcStock(i, 1)
+                  }
+                })
               }}
             >
               <span></span>
@@ -174,14 +190,53 @@ export default props => {
         />
       </Card>
 
-      {/* TODO: */}
-      {/* <Card label="unlock:" className="unlock">
-        // - unlock dlc all quests
-        // - set all special guests to be visiting
-        <button>unlock all</button>
-        // - give all dlc exclusive items?
-        <button>unlock all with items</button>
-      </Card> */}
+      <Card label="unlock:" className="unlock">
+        <button
+          onClick={e => {
+            updateSave(save => {
+              for (let i = 0; i < gameData.specialGuests.length; i++) {
+                save.setSpecialGuestVisiting(i, true)
+              }
+
+              for (const q of gameData.quests) {
+                if (q.dlc) {
+                  save.setDlcQuestUnlocked(q.id, true)
+                }
+              }
+
+              const dqvcItems = [
+                { id: 22031, price: 4800, stock: 10 }, // chirstmas cake, needed for quest #155
+                { id: 0xffff, price: 0, stock: 0 },
+                { id: 0xffff, price: 0, stock: 0 },
+                { id: 0xffff, price: 0, stock: 0 },
+                { id: 0xffff, price: 0, stock: 0 },
+                { id: 0xffff, price: 0, stock: 0 },
+              ]
+
+              for (let i = 0; i < 6; i++) {
+                save.setDqvcItem(i, dqvcItems[i].id)
+                save.setDqvcPrice(i, dqvcItems[i].price)
+                save.setDqvcStock(i, dqvcItems[i].stock)
+              }
+
+              save.setDqvcMessage("//Adenine// Thanks for using the save editor :)")
+
+              let tomorrow = new Date()
+              tomorrow.setDate(tomorrow.getDate() + 1)
+              save.setDqvcMessageExpiryTime(timeFromDateObject(tomorrow))
+              save.setDqvcItemExpiryTime(timeFromDateObject(new Date(2099, 11, 31)))
+            })
+          }}
+        >
+          unlock all dlc {unlockedDlc() ? "✔" : ""}
+        </button>
+        <p>
+          <small>
+            clicking this will unlock all quests and special guests only available by dlc, it will
+            also place quest critical items in the dqvc
+          </small>
+        </p>
+      </Card>
     </div>
   )
 }

@@ -71,9 +71,9 @@ A save editor for dragon quest ix
 
 - [x] list of quests
   - [x] status
-  - [ ] date
+  - [x] date
 - [ ] bulk edit
-  - [ ] filter
+  - [x] filter
 
 ### records: (probably too big?)
 
@@ -98,6 +98,7 @@ A save editor for dragon quest ix
   - [x] message expiry date
   - [ ] stock expiry date
 - [x] historical characters
+- [x] unlock all dlc
 
 ### misc:
 

@@ -112,7 +112,9 @@ $grid-size: 184px;
   }
 
   .unlock {
-    grid-row: span 1;
-    aspect-ratio: 1;
+    grid-column: span 2;
+    p:last-child {
+      margin: 0.5em 0 0;
+    }
   }
 }
