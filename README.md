@@ -49,7 +49,7 @@ A save editor for dragon quest ix
     - [x] height
     - [x] width
   - [ ] color
-  - [ ] vocation
+  - [x] vocation
   - [x] battle records
     - [x] battle victories
     - [x] times alchemy performed
@@ -94,6 +94,7 @@ A save editor for dragon quest ix
 - [ ] monster list
 - [ ] alchenomicon
 - [ ] accolades
+- [ ] deaths
 - [ ] first completion record (or under misc?)
 
 </details>
@@ -101,6 +102,7 @@ A save editor for dragon quest ix
 <details><summary><h3>grottos:</h3></summary>
 
 - [ ] treasure map list
+- [ ] map preview
 - [ ] grotto search + add
 
 </details>

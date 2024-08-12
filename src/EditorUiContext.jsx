@@ -16,13 +16,13 @@ export const tabs = [
   { name: "items", component: ItemEditor },
   { name: "inn", component: InnEditor },
   { name: "quests", component: QuestEditor },
-  { name: "grottos", component: GrottoEditor, disabled: true },
+  { name: "grottos", component: GrottoEditor },
   { name: "dlc", component: DlcEditor },
   { name: "misc", component: MiscEditor },
   { name: "hex", component: HexEditor, disabled: true },
 ]
 
-const initialTab = 0
+const initialTab = 4
 
 const initialTheme =
   localStorage.getItem("theme") ||

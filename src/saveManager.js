@@ -82,7 +82,7 @@ export default class SaveManager {
   }
 
   async loadDemo() {
-    const response = await fetch("demo.sav")
+    const response = await fetch("__demo.sav")
     if (!response.ok) {
       return null
     }
@@ -937,6 +937,15 @@ export default class SaveManager {
     return this.getCanvasedGuest(n).readByte(layout.GUEST_VOCATION_AND_LOCATION_OFFSET) & 0xf
   }
 
+  setGuestVocation(n, v) {
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_VOCATION_AND_LOCATION_OFFSET)
+
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0xf0) | (v & 0xf),
+      layout.GUEST_VOCATION_AND_LOCATION_OFFSET
+    )
+  }
+
   getGuestEquipment(n, type) {
     if (type <= 0 || type > gameData.ITEM_TYPE_ACCESSORY) {
       return null
@@ -1233,5 +1242,28 @@ export default class SaveManager {
 
   setQuestTime(id, time) {
     return this.getSaveLogBuffer().writeU32LE(time, layout.QUEST_TIMES_OFFSET + id * 4)
+  }
+
+  /*************************************************************************************************
+   *                                         grotto methods                                         *
+   *************************************************************************************************/
+
+  getHeldGrottoCount() {
+    return this.getSaveLogBuffer().readByte(layout.HELD_GROTTO_COUNT_OFFSET)
+  }
+
+  getGrottoBuffer(n) {
+    return this.getSaveLogBuffer().subarray(
+      layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n,
+      layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n + layout.GROTTO_DATA_SIZE
+    )
+  }
+
+  getGrottoSeed(n) {
+    return this.getGrottoBuffer(n).readU16LE(layout.GROTTO_SEED_OFFSET)
+  }
+
+  getGrottoRank(n) {
+    return this.getGrottoBuffer(n).readByte(layout.GROTTO_RANK_OFFSET)
   }
 }

@@ -13,6 +13,7 @@ import { VocationIcon } from "../atoms/Icon"
 import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
 import GenderToggle from "./inputs/GenderToggle"
+import { VocationSelect } from "../atoms/IconSelect"
 
 export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
@@ -67,7 +68,15 @@ export default props => {
                 })
               }}
             />
-            <VocationIcon icon={gameData.vocationTable[save.getGuestVocation(guest)].icon} />
+            <VocationSelect
+              id={save.getGuestVocation(guest)}
+              onChange={e => {
+                updateSave(save => {
+                  save.setGuestVocation(guest, e.target.value)
+                })
+              }}
+            />
+
             <Input
               type="text"
               value={save.getCanvasedGuestName(guest)}

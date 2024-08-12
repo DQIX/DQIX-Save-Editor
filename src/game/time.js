@@ -6,6 +6,8 @@
 ///
 /// haven't split this up into its own class or something because its relatively cheap
 /// and mostly more convenient to deal with in this form
+///
+/// this isn't used everywhere :(
 
 export function timeFromDateObject(date) {
   const h = (date.getHours() << 21) & 0x3e00000

@@ -22,6 +22,7 @@ $grid-size: 232px;
         transition: 0.1s ease-in-out background-color;
         border-left: 2px solid transparent;
         position: relative;
+        cursor: pointer;
         > span {
           float: right;
         }
@@ -60,10 +61,6 @@ $grid-size: 232px;
     align-items: center;
     padding: 1em;
     grid-column: 1/-1;
-
-    .icon-select {
-      width: 160px;
-    }
   }
 
   .character-grid {

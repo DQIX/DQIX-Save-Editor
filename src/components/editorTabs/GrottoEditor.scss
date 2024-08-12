@@ -1,0 +1,57 @@
+$grid-size: 200px;
+$sidebar-width: calc($grid-size * 2 + 1em);
+.grotto-root {
+  padding: 1em;
+
+  .sidebar {
+    width: $sidebar-width;
+    overflow: hidden;
+
+    > ul {
+      box-sizing: content-box;
+      height: calc(100% - 3em);
+      margin: 0;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      padding: 1em 0;
+      list-style: none;
+      width: calc(100% + 2em);
+      position: relative;
+      left: -1em;
+      scrollbar-color: var(--accent-color) var(--surface-bg);
+      scrollbar-width: thin;
+
+      li {
+        padding: 0.2em 1.4em;
+        transition: 0.1s ease-in-out background-color;
+        border-left: 2px solid transparent;
+        position: relative;
+        > span {
+          float: right;
+        }
+        &:hover {
+          background-color: var(--accent-fade);
+        }
+
+        &.active {
+          border-left: 2px solid var(--accent-color);
+          // &::after {
+          //   content: "";
+          //   width: 32px;
+          //   height: 30px;
+          //   display: block;
+          //   position: absolute;
+          //   top: calc(50% - 32px / 2);
+          //   left: -0.7em;
+          //   background-image: url("/sword.gif");
+          //   background-size: cover;
+          // }
+        }
+      }
+    }
+  }
+
+  .grotto-editor {
+    margin-left: calc(1em + $sidebar-width);
+  }
+}

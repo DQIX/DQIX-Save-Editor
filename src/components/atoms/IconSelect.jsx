@@ -43,7 +43,7 @@ export const VocationSelect = props => {
   const selectRef = useRef(null)
 
   return (
-    <label className="icon-select" onClick={e => selectRef.current.click()}>
+    <label className="icon-select vocation-select" onClick={e => selectRef.current.click()}>
       <VocationIcon
         icon={selected?.icon}
         style={{

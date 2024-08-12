@@ -5191,6 +5191,71 @@ const seeds = [
   { id: 6, name: "magical might",   icon: 796 },
 ]
 
+const grottoNamePrefixes = [
+  "Clay",
+  "Rock",
+  "Granite",
+  "Basalt",
+  "Graphite",
+  "Iron",
+  "Copper",
+  "Bronze",
+  "Steel",
+  "Silver",
+  "Gold",
+  "Platinum",
+  "Ruby",
+  "Emerald",
+  "Sapphire",
+  "Diamond",
+]
+
+const grottoNamePlaces = [
+  "Cave",
+  "Mine",
+  "Lair",
+  "Path",
+  "Crypt",
+  "Nest",
+  "World",
+  "Abyss",
+  "Tunnel",
+  "Ruins",
+  "Maze",
+  "Crevasse",
+  "Icepit",
+  "Snowhall",
+  "Tundra",
+  "Glacier",
+  "Marsh",
+  "Lake",
+  "Moor",
+  "Waterway",
+  "Chasm",
+  "Crater",
+  "Dungeon",
+  "Void",
+]
+
+const grottoNameSuffixes = [
+  "Joy",
+  "Bliss",
+  "Glee",
+  "Doubt",
+  "Woe",
+  "Dolour",
+  "Regret",
+  "Bane",
+  "Fear",
+  "Dread",
+  "Hurt",
+  "Gloom",
+  "Doom",
+  "Evil",
+  "Ruin",
+  "Death",
+]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -5290,4 +5355,8 @@ export default {
   questStatusNames,
 
   seeds,
+
+  grottoNamePrefixes,
+  grottoNamePlaces,
+  grottoNameSuffixes,
 }

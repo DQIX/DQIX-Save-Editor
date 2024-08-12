@@ -199,6 +199,19 @@ export const QUEST_TIMES_OFFSET = 12564
 /// offset of count of quests cleared
 export const QUEST_CLEAR_COUNT_OFFSET = 16035
 
+export const HELD_GROTTO_COUNT_OFFSET = 24204
+
+export const HELD_GROTTO_COUNT_MAX = 99
+
+/// offset of grotto array
+export const GROTTO_DATA_OFFSET = 24206
+
+export const GROTTO_RANK_OFFSET = 23
+export const GROTTO_SEED_OFFSET = 26
+
+/// size of each grotto's data
+export const GROTTO_DATA_SIZE = 28
+
 export const annotations = []
 
 for (let i = 0; i < 2; i++) {
