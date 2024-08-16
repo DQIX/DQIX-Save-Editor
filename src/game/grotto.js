@@ -173,7 +173,7 @@ const tables = {
     137, 138,
   ],
 
-  suffixIndex: [
+  placeIndices: [
     0, 8, 0, 0, 0, 1, 1, 11, 16, 1, 2, 2, 12, 17, 21, 3, 3, 13, 18, 22, 4, 4, 4, 4, 4, 5, 9, 14, 19,
     5, 6, 6, 6, 6, 6, 7, 10, 15, 20, 23,
   ],
@@ -233,45 +233,47 @@ function seek4(table1, table2, rank, roopCount, rng) {
   return 0
 }
 
-export function getGrottoName(seed, rank) {
+function getGrottoDetails(seed, rank) {
   const rng = new Rng(seed)
 
   for (let i = 0; i < 12; i++) {
-    rng.nextRem(100)
+    rng.next()
   }
 
   const details = []
-  details[3] = seek1(tables.a, 5, rng)
-  details[1] = seek2(tables.b, rank, 9, rng)
-  details[2] = seek2(tables.c, rank, 8, rng)
-  details[0] = seek4(tables.d, tables.e, rank, 9, rng)
-  console.log("_seed", rng.seed[0])
+  details.type = seek1(tables.a, 5, rng) - 1
+  details.floorCount = seek2(tables.b, rank, 9, rng)
+  details.monsterRank = seek2(tables.c, rank, 8, rng)
+  details.boss = seek4(tables.d, tables.e, rank, 9, rng) - 1
 
   for (let i = 0; i < 12; i++) {
-    details[i + 8] = seek3(tables.f[i * 4 + 1], tables.f[i * 4 + 2], rng)
+    rng.next()
+    // details[i + 8] = seek3(tables.f[i * 4 + 1], tables.f[i * 4 + 2], rng)
   }
 
-  details[5] = seek2(tables.h, details[2], 5, rng)
-  details[6] = seek2(tables.i, details[0], 4, rng)
-  details[7] = seek2(tables.g, details[1], 8, rng)
+  details.namePrefixIdx = seek2(tables.h, details.monsterRank, 5, rng) - 1
+  details.nameSuffixIdx = seek2(tables.i, details.boss + 1, 4, rng) - 1
+  details[7] = seek2(tables.g, details.floorCount, 8, rng)
+  details.namePlaceIdx = tables.placeIndices[(details[7] - 1) * 5 + details.type]
 
-  let num = (details[0] + details[1] + details[2] - 4) * 3
-  num += rng.nextRem(11) - 5
-  num = Math.max(1, Math.min(num, 99))
-  details[4] = num
+  details.level = (details.boss + details.floorCount + details.monsterRank - 3) * 3
+  details.level += rng.nextRem(11) - 5
+  details.level = Math.max(1, Math.min(details.level, 99))
 
-  console.log(details)
+  return details
+}
 
-  const suffixIndex = tables.suffixIndex[(details[7] - 1) * 5 + details[3] - 1]
+export function getGrottoName(seed, rank) {
+  const details = getGrottoDetails(seed, rank)
 
   return (
-    gameData.grottoNamePrefixes[details[5] - 1] +
+    (gameData.grottoNamePrefixes[details.namePrefixIdx] || "unknown") +
     " " +
-    gameData.grottoNamePlaces[suffixIndex] +
+    (gameData.grottoNamePlaces[details.namePlaceIdx] || "unknown") +
     " of " +
-    gameData.grottoNameSuffixes[details[6] - 1] +
+    (gameData.grottoNameSuffixes[details.nameSuffixIdx] || "unknown") +
     " lv. " +
-    details[4]
+    (details.level || 1)
   )
 }
 
@@ -286,7 +288,52 @@ export default class GrottoData {
     return this.rank.toString(16).padStart(2, "0") + this.seed.toString(16).padStart(4, "0")
   }
 
-  getLevel() {}
+  getDetails() {
+    return getGrottoDetails(this.seed, this.rank)
+  }
+}
 
-  getNameMaterial() {}
+const rankDivisions = [0x02, 0x38, 0x3d, 0x4c, 0x51, 0x65, 0x79, 0x8d, 0xa1, 0xb5, 0xc9, 0xdd]
+export const grottoLookup = {}
+
+export function registerGrottos() {
+  if (Object.keys(grottoLookup).length) return
+
+  for (const rank of rankDivisions) {
+    for (let seed = 0; seed < 0xffff; seed++) {
+      const details = getGrottoDetails(seed, rank)
+
+      if (!grottoLookup[details.namePrefixIdx]) grottoLookup[details.namePrefixIdx] = {}
+      if (!grottoLookup[details.namePrefixIdx][details.namePlaceIdx])
+        grottoLookup[details.namePrefixIdx][details.namePlaceIdx] = {}
+      if (!grottoLookup[details.namePrefixIdx][details.namePlaceIdx][details.nameSuffixIdx])
+        grottoLookup[details.namePrefixIdx][details.namePlaceIdx][details.nameSuffixIdx] = {}
+      if (
+        !grottoLookup[details.namePrefixIdx][details.namePlaceIdx][details.nameSuffixIdx][
+          details.level
+        ]
+      )
+        grottoLookup[details.namePrefixIdx][details.namePlaceIdx][details.nameSuffixIdx][
+          details.level
+        ] = []
+      grottoLookup[details.namePrefixIdx][details.namePlaceIdx][details.nameSuffixIdx][
+        details.level
+      ].push({
+        seed,
+        rank,
+      })
+    }
+  }
+}
+
+export function getGrottoSeedsByDetails(details) {
+  return (
+    grottoLookup?.[details.namePrefixIdx]?.[details.namePlaceIdx]?.[details.nameSuffixIdx]?.[
+      details.level
+    ] || []
+  )
+}
+
+export function getGrottoSeedsByNameData(prefix, place, suffix, lvl) {
+  return grottoLookup?.[prefix]?.[place]?.[suffix]?.[lvl] || []
 }

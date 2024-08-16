@@ -206,6 +206,10 @@ export const HELD_GROTTO_COUNT_MAX = 99
 /// offset of grotto array
 export const GROTTO_DATA_OFFSET = 24206
 
+export const GROTTO_DISCOVERED_BY_OFFSET = 1
+export const GROTTO_CONQUERED_BY_OFFSET = 11
+export const GROTTO_LOCATION_OFFSET = 21
+export const GROTTO_TREASURE_PLUNDERED_OFFSET = 22
 export const GROTTO_RANK_OFFSET = 23
 export const GROTTO_SEED_OFFSET = 26
 

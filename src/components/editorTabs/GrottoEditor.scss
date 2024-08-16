@@ -1,5 +1,6 @@
 $grid-size: 200px;
 $sidebar-width: calc($grid-size * 2 + 1em);
+
 .grotto-root {
   padding: 1em;
 
@@ -53,5 +54,22 @@ $sidebar-width: calc($grid-size * 2 + 1em);
 
   .grotto-editor {
     margin-left: calc(1em + $sidebar-width);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, $grid-size);
+    grid-template-rows: $grid-size * 0.3 repeat(auto-fill, $grid-size);
+    grid-auto-flow: dense;
+    grid-auto-rows: $grid-size;
+    gap: 1em;
+    justify-content: center;
+
+    .name {
+      display: flex;
+      align-items: center;
+      padding: 1em;
+      grid-column: 1/-1;
+      > * {
+        margin-right: 0.4em;
+      }
+    }
   }
 }

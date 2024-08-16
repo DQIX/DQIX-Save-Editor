@@ -101,9 +101,18 @@ A save editor for dragon quest ix
 
 <details><summary><h3>grottos:</h3></summary>
 
-- [ ] treasure map list
-- [ ] map preview
-- [ ] grotto search + add
+- [x] treasure map list
+- [x] treasures
+  - [ ] name preview?
+- [x] discoverer/conquerer
+- [ ] add/remove
+- [ ] normal
+  - [x] info
+  - [ ] map preview
+  - [ ] grotto search
+- [ ] legacy
+  - [ ] turns
+  - [ ] boss
 
 </details>
 
@@ -146,6 +155,9 @@ A save editor for dragon quest ix
 
 - [ ] allow marking quests in progress?
 - [ ] unsafe mode?
+- [ ] fountain group
+- [ ] pals past and present
+- [ ] world things (chests, item respawns)
 
 </details>
 

@@ -5256,6 +5256,22 @@ const grottoNameSuffixes = [
   "Death",
 ]
 
+const grottoBossNames = [
+  "Equinox",
+  "Nemean",
+  "Shogum",
+  "Trauminator",
+  "Elusid",
+  "Sir Sanguinus",
+  "Atlas",
+  "Hammibal",
+  "Fowleye",
+  "Excalipurr",
+  "Tyrannosaurus Wrecks",
+  "Greygnarl",
+]
+const grottoTypeNames = ["Caves", "Ruins", "Ice", "Water", "Volcano"]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -5359,4 +5375,6 @@ export default {
   grottoNamePrefixes,
   grottoNamePlaces,
   grottoNameSuffixes,
+  grottoBossNames,
+  grottoTypeNames,
 }
