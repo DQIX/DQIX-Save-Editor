@@ -212,7 +212,7 @@ export default class SaveManager {
    *************************************************************************************************/
 
   getCharacterBuffer(n) {
-    const offset = layout.CHARACTER_SIZE * n
+    const offset = layout.CHARACTER_OFFSET + layout.CHARACTER_SIZE * n
 
     return this.getSaveLogBuffer().subarray(offset, offset + layout.CHARACTER_SIZE)
   }
@@ -1190,12 +1190,12 @@ export default class SaveManager {
   }
 
   getQuestStatus(id) {
-    // const completed =
-    //   this.getSaveLogBuffer().readByte(layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)) &
-    //   (1 << id % 8)
-    // if (completed) {
-    //   return gameData.QUEST_STATUS_COMPLETE
-    // }
+    const completed =
+      this.getSaveLogBuffer().readByte(layout.QUEST_CLEARED_OFFSET + Math.floor(id / 8)) &
+      (1 << id % 8)
+    if (completed) {
+      return gameData.QUEST_STATUS_COMPLETE
+    }
 
     const byte = this.getSaveLogBuffer().readByte(layout.QUEST_STATUS_OFFSET + Math.floor(id / 2))
 

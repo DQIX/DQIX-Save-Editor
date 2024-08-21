@@ -1,5 +1,8 @@
 import gameData from "./data"
 
+/// max length of character (guests and party) names in bytes
+export const NAME_LENGTH = 10
+
 /// total size of one save slot in bytes
 export const SAVE_SIZE = 32768
 
@@ -21,62 +24,62 @@ export const QUICK_SAVE_AREA = 27104
 /// coordinates of the player quick save location as an ivec3
 export const QUICK_SAVE_COORDINATES = 27108
 
+/// bytes between each character's data
+export const CHARACTER_OFFSET = 136
+
 /// total size of a character's data in bytes
 export const CHARACTER_SIZE = 572
 
 /// offset of character level array relative to the beginning of character data
-export const CHARACTER_VOCATION_LEVEL_OFFSET = 138
-export const CHARACTER_VOCATION_REVOCATION_OFFSET = 151
-export const CHARACTER_VOCATION_EXP_OFFSET = 164
+export const CHARACTER_VOCATION_LEVEL_OFFSET = 2
+export const CHARACTER_VOCATION_REVOCATION_OFFSET = 15
+export const CHARACTER_VOCATION_EXP_OFFSET = 28
+
+/// offset of current vocation index relative to beginning of character data
+export const CURRENT_VOCATION_OFFSET = 80
 
 /// offset of character stat bonuses, each seed is 10 bits
 /// they're stored as 3 u32s with the final 2 bits of each being unused
-export const CHARACTER_VOCATION_SEEDS_OFFSET = 224
+export const CHARACTER_VOCATION_SEEDS_OFFSET = 88
+
+/// offset of character's unallocated skill points, relative to beginning of character data
+export const CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET = 244
+
+/// offset of character's skill allocation array, relative to beginning of character data
+export const CHARACTER_SKILL_ALLOCATIONS_OFFSET = 247
+
+/// offset of character's proficiency bitflags, relative to beginning of character data
+export const CHARACTER_PROFICIENCY_OFFSET = 282
+
+export const CHARACTER_PROFICIENCY_LENGTH = 36
+
+// NOTE: zoom and egg on are just special indices into the character proficiencies bitmap
+export const CHARACTER_ZOOM_OFFSET = 280
+export const CHARACTER_EGG_ON_OFFSET = 317
 
 /// offset of name relative to beginning of character data
-export const CHARACTER_NAME_OFFSET = 456
-
-/// max length of name in bytes
-export const NAME_LENGTH = 10
+export const CHARACTER_NAME_OFFSET = 320
 
 /// offset of name equipments relative to beginning of character data
-export const CHARACTER_EQUIPMENT_OFFSET = 488
+export const CHARACTER_EQUIPMENT_OFFSET = 352
 
+export const CHARACTER_FACE_OFFSET = 356
+export const CHARACTER_HAIRSTYLE_OFFSET = 358
 /// offset of character gender/colors byte relative to beginning of character data
 // u8 laid out like: `eeeesssg`
 // where e is eye color, s is skin color, and g is gender
-export const CHARACTER_GENDER_COLORS_OFFSET = 508
-
-export const CHARACTER_FACE_OFFSET = 492
-export const CHARACTER_HAIRSTYLE_OFFSET = 494
+export const CHARACTER_GENDER_COLORS_OFFSET = 372
 
 /// offset of character hairstyle byte relative to beginning of character data
 // u8 laid out like: `xxxxcccc`
 // where x is unknown data, and c is the color index
-export const CHARACTER_HAIR_COLOR_OFFSET = 509
+export const CHARACTER_HAIR_COLOR_OFFSET = 373
 
-export const CHARACTER_BODY_TYPE_W = 512
-export const CHARACTER_BODY_TYPE_H = 514
-
-/// offset of current vocation index relative to beginning of character data
-export const CURRENT_VOCATION_OFFSET = 216
+export const CHARACTER_BODY_TYPE_W = 376
+export const CHARACTER_BODY_TYPE_H = 378
 
 /// offset of character's held items, relative to the beginning of the save
 export const HELD_ITEM_OFFSET = 7578
-
-/// offset of character's skill allocation array, relative to beginning of character data
-export const CHARACTER_SKILL_ALLOCATIONS_OFFSET = 383
-
-/// offset of character's proficiency bitflags, relative to beginning of character data
-export const CHARACTER_PROFICIENCY_OFFSET = 418
-
-export const CHARACTER_PROFICIENCY_LENGTH = 36
-
-/// offset of character's unallocated skill points, relative to beginning of character data
-export const CHARACTER_UNALLOCATED_SKILL_POINTS_OFFSET = 380
-
-export const CHARACTER_ZOOM_OFFSET = 416
-export const CHARACTER_EGG_ON_OFFSET = 453
 
 /// order of party members
 export const PARTY_ORDER_OFFSET = 7573
@@ -230,7 +233,7 @@ for (let i = 0; i < 2; i++) {
   // party
   {
     for (let i = 0; i < 13; i++) {
-      const characterOffset = slotOffset + CHARACTER_SIZE * i
+      const characterOffset = slotOffset + CHARACTER_OFFSET + CHARACTER_SIZE * i
 
       annotations.push({
         name: `character ${i}`,

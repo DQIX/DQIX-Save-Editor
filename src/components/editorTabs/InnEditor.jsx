@@ -51,7 +51,7 @@ export default props => {
                   className={x.guest == guest ? "active" : ""}
                   onClick={_ => setGuest(x.guest)}
                 >
-                  {save.getCanvasedGuestName(x.guest) || "\u00A0"}
+                  {save.getCanvasedGuestName(x.guest) || "(unnamed)"}
                 </li>
               ))}
           </ul>
