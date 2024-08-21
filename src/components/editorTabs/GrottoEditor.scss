@@ -19,8 +19,6 @@ $sidebar-width: calc($grid-size * 2 + 1em);
       width: calc(100% + 2em);
       position: relative;
       left: -1em;
-      scrollbar-color: var(--accent-color) var(--surface-bg);
-      scrollbar-width: thin;
 
       li {
         padding: 0.2em 1.4em;
@@ -62,7 +60,7 @@ $sidebar-width: calc($grid-size * 2 + 1em);
     gap: 1em;
     justify-content: center;
 
-    .name {
+    > .name {
       display: flex;
       align-items: center;
       padding: 1em;

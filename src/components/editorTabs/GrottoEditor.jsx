@@ -1,12 +1,7 @@
 import { useContext, useState } from "react"
 
 import { SaveManagerContext } from "../../SaveManagerContext"
-import GrottoData, {
-  getGrottoName,
-  getGrottoSeedsByDetails,
-  getGrottoSeedsByNameData,
-  grottoLookup,
-} from "../../game/grotto"
+import GrottoData, { getGrottoName } from "../../game/grotto"
 import gameData from "../../game/data"
 
 import Card from "../atoms/Card"
@@ -14,10 +9,14 @@ import Card from "../atoms/Card"
 import "./GrottoEditor.scss"
 import Input from "../atoms/Input"
 import MapThumb from "../atoms/MapThumb"
+import Button from "../atoms/Button"
+import Modal from "../atoms/Modal"
+import GrottoSearch from "./inputs/GrottoSearch"
 
 export default props => {
   const { save, updateSave } = useContext(SaveManagerContext)
   const [selectedGrotto, setGrotto] = useState(0)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const grotto = new GrottoData(
     save.getGrottoSeed(selectedGrotto),
@@ -25,26 +24,6 @@ export default props => {
   )
 
   const details = grotto.getDetails()
-
-  const updateByName = (e, id) => {
-    let nameIdxs = [
-      details.namePrefixIdx,
-      details.namePlaceIdx,
-      details.nameSuffixIdx,
-      details.level,
-    ]
-    nameIdxs[id] = parseInt(e.target.value)
-    let seeds = getGrottoSeedsByNameData(nameIdxs[0], nameIdxs[1], nameIdxs[2], nameIdxs[3])
-
-    if (seeds.length == 0) {
-      return
-    }
-
-    updateSave(save => {
-      save.setGrottoSeed(selectedGrotto, seeds[0].seed)
-      save.setGrottoRank(selectedGrotto, seeds[0].rank)
-    })
-  }
 
   return (
     <div className="grotto-root">
@@ -59,49 +38,36 @@ export default props => {
       </Card>
       <div className="grotto-editor">
         <Card className="name">
-          <select
-            name="grotto name prefix"
-            value={details.namePrefixIdx}
-            onChange={e => updateByName(e, 0)}
+          <span>
+            {getGrottoName(save.getGrottoSeed(selectedGrotto), save.getGrottoRank(selectedGrotto))}
+          </span>
+          <Button
+            onClick={e => {
+              setModalOpen(true)
+            }}
           >
-            {gameData.grottoNamePrefixes.map((prefix, i) => (
-              <option key={i} value={i}>
-                {prefix}
-              </option>
-            ))}
-          </select>
-          <select
-            name="grotto name place"
-            value={details.namePlaceIdx}
-            onChange={e => updateByName(e, 1)}
+            search
+          </Button>
+          <Modal
+            open={modalOpen}
+            label="search grottos:"
+            onClose={e => {
+              setModalOpen(false)
+            }}
           >
-            {gameData.grottoNamePlaces.map((place, i) => (
-              <option key={i} value={i}>
-                {place}
-              </option>
-            ))}
-          </select>
-          <span>of</span>
-          <select
-            name="grotto name suffix"
-            value={details.nameSuffixIdx}
-            onChange={e => updateByName(e, 2)}
-          >
-            {gameData.grottoNameSuffixes.map((suffix, i) => (
-              <option key={i} value={i}>
-                {suffix}
-              </option>
-            ))}
-          </select>
-          <span>lv.</span>
-          <Input
-            type="number"
-            min="1"
-            max="99"
-            size="3"
-            value={details.level}
-            onChange={e => updateByName(e, 3)}
-          />
+            <GrottoSearch
+              seed={save.getGrottoSeed(selectedGrotto)}
+              rank={save.getGrottoRank(selectedGrotto)}
+              onChange={({ seed, rank, location }) => {
+                updateSave(save => {
+                  save.setGrottoSeed(selectedGrotto, seed)
+                  save.setGrottoRank(selectedGrotto, rank)
+                  save.setGrottoLocation(selectedGrotto, location)
+                  setModalOpen(false)
+                })
+              }}
+            />
+          </Modal>
         </Card>
         <Card label="identifier:" className="save-details">
           <div>
@@ -236,21 +202,6 @@ export default props => {
             />
           </label>
           <br />
-        </Card>
-        <Card label="same name:">
-          {getGrottoSeedsByDetails(details).map(({ seed, rank }, i) => (
-            <p key={i}>
-              {seed.toString(16)} - {rank.toString(16)}{" "}
-              <a
-                target="_blank"
-                href={`https://yabd.org/apps/dq9/grottodetails.php?map=${
-                  rank.toString(16).padStart(2, "0") + seed.toString(16).padStart(4, "0")
-                }`}
-              >
-                yab's tools
-              </a>
-            </p>
-          ))}
         </Card>
       </div>
     </div>

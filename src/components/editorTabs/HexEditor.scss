@@ -20,8 +20,6 @@ $row-height: 30px;
   flex-direction: column;
 
   > div:not(:first-child) {
-    scrollbar-color: var(--accent-color) var(--surface-bg);
-    scrollbar-width: thin;
     overflow-y: scroll;
     padding-bottom: 1em;
     width: 100%;

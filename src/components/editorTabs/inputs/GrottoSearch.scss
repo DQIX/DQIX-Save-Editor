@@ -1,0 +1,40 @@
+.grotto-search {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  .search-input {
+    margin-bottom: 1em;
+    p:last-child {
+      margin: 0;
+    }
+    .name {
+      display: flex;
+      align-items: center;
+      > * {
+        margin-right: 0.4em;
+      }
+    }
+  }
+
+  .search-results {
+    flex-grow: 1;
+    overflow-y: scroll;
+    table {
+      border-collapse: collapse;
+    }
+    .search-result {
+      border-bottom: 0.5px solid var(--alt-text-color);
+      td {
+        padding: 1em;
+      }
+    }
+  }
+}
+
+.card {
+  .grotto-search {
+    height: calc(100% - 4em);
+  }
+}

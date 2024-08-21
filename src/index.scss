@@ -110,6 +110,9 @@
 * {
   box-sizing: border-box;
   color: var(--font-color);
+  scrollbar-color: var(--accent-color) var(--surface-bg);
+  scrollbar-width: thin;
+
   // transition: 1s ease-in-out color, 1s ease-in-out background-color, 1s ease-in-out border-color,
   //   1s ease-in-out scrollbar-color;
 }

@@ -38,8 +38,6 @@ $grid-size: 232px;
       width: calc(100% + 2em);
       position: relative;
       left: -1em;
-      scrollbar-color: var(--accent-color) var(--surface-bg);
-      scrollbar-width: thin;
 
       li {
         padding: 0.2em 1.4em;

@@ -12,9 +12,6 @@ textarea {
   font-family: "Atkinson Hyperlegible", sans-serif;
   font-size: medium;
 
-  scrollbar-color: var(--accent-color) var(--surface-bg);
-  scrollbar-width: thin;
-
   &:focus {
     border-bottom: 2px solid var(--accent-color);
   }

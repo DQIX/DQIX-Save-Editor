@@ -233,7 +233,7 @@ function seek4(table1, table2, rank, roopCount, rng) {
   return 0
 }
 
-function getGrottoDetails(seed, rank) {
+export function getGrottoDetails(seed, rank) {
   const rng = new Rng(seed)
 
   for (let i = 0; i < 12; i++) {
