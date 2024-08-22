@@ -163,6 +163,13 @@ A save editor for dragon quest ix
 
 </details>
 
+## for devs
+
+- `src/game/data.js` contains game data info including items, equipment, appearance data, etc
+- `src/game/grotto.js` contains a partial implementation of the grotto generation algorithms
+- `src/game/layout.js` contains known values of where various things in the save file are, if you find something else please feel free to open an issue or pr
+- `src/saveManager.js` contains an implementation of reading and writing various data from the save file
+
 ## Credits
 
 - `src/assets/item_icons.png`: original image compiled by [Indogutsu Tenbuki](https://www.spriters-resource.com/submitter/Indogutsu+Tenbuki/)
