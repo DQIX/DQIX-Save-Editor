@@ -19,13 +19,21 @@ $grid-size: 232px;
       li {
         padding: 0.2em 1.4em;
         cursor: pointer;
-        transition: 0.1s ease-in-out background-color;
+        transition: 0.1s ease-in-out background-color, 0.1s ease-in-out border-bottom-width;
         border-left: 2px solid transparent;
         position: relative;
-        cursor: pointer;
+        border-bottom: 0px solid var(--accent-color);
+
         > span {
           float: right;
+          color: var(--alt-text-color);
+          transition: 0.1s ease-in-out color;
+          cursor: grab;
+          &:hover {
+            color: var(--font-color);
+          }
         }
+
         &:hover {
           background-color: var(--accent-fade);
         }
@@ -44,7 +52,28 @@ $grid-size: 232px;
           //   background-size: cover;
           // }
         }
+
+        &.dragging {
+          cursor: grabbing;
+        }
+
+        &.drag-entered {
+          border-bottom: 2px solid var(--accent-color);
+          > span {
+            pointer-events: none;
+          }
+        }
       }
+    }
+
+    .edit-list {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      padding: 1em;
+      background-color: var(--card-bg-color);
+      border-top: 1px solid var(--surface-bg);
     }
   }
 

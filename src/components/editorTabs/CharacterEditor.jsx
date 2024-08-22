@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
 
 import "./CharacterEditor.scss"
 
@@ -12,6 +12,47 @@ import Card from "../atoms/Card.jsx"
 import EquipmentCard from "./inputs/EquipmentCard.jsx"
 import AppearanceCards from "./inputs/AppearanceCards.jsx"
 import GenderToggle from "./inputs/GenderToggle.jsx"
+
+const CharacterListItem = props => {
+  const ref = useRef(null)
+  return (
+    <li
+      ref={ref}
+      className={props.active ? "active" : ""}
+      onClick={_ => props.onSelect(props.i)}
+      // draggable
+      onDragStart={e => {
+        e.dataTransfer.setData("dqix-editor/character", props.i)
+        ref.current.classList.add("dragging")
+      }}
+      onDragOver={e => {
+        e.preventDefault()
+        e.dataTransfer.effectAllowed = "copyMove"
+      }}
+      onDragEnd={e => {
+        ref.current.classList.remove("dragging")
+      }}
+      onDrop={e => {
+        e.preventDefault()
+        ref.current.classList.remove("drag-entered")
+        const data = e.dataTransfer.getData("dqix-editor/character")
+        if (parseInt(data) != props.i) {
+          props.onReorder(parseInt(data), props.i)
+        }
+      }}
+      onDragEnter={e => {
+        e.dataTransfer.dropEffect = "move"
+        ref.current.classList.add("drag-entered")
+      }}
+      onDragLeave={e => {
+        ref.current.classList.remove("drag-entered")
+      }}
+    >
+      {props.name || "\u00A0"} {/*<span>{props.hero && "🪽"}</span> */}
+      {/* <span>⠿</span> */}
+    </li>
+  )
+}
 
 export default props => {
   const { save, updateSave } = useContext(SaveManagerContext)
@@ -31,9 +72,23 @@ export default props => {
             const hero = i == 0
             i += save.getStandbyCount()
             return (
-              <li key={i} className={i == character ? "active" : ""} onClick={_ => setCharacter(i)}>
-                {save.getCharacterName(i) || "\u00A0"} <span>{hero && "🪽"}</span>
-              </li>
+              <CharacterListItem
+                key={i}
+                active={character == i}
+                name={save.getCharacterName(i)}
+                hero={hero}
+                i={i}
+                onSelect={i => {
+                  setCharacter(i)
+                }}
+                onReorder={(from, to) => {
+                  updateSave(save => {
+                    save.moveCharacter(from, to)
+                    if (character == from) setCharacter(to)
+                    if (character == to) setCharacter(to - 1)
+                  })
+                }}
+              />
             )
           })}
         </ul>
@@ -42,11 +97,35 @@ export default props => {
         </p>
         <ul>
           {Array.from({ length: save.getStandbyCount() }, (_, i) => (
-            <li key={i} className={i == character ? "active" : ""} onClick={_ => setCharacter(i)}>
-              {save.getCharacterName(i)}
-            </li>
+            <CharacterListItem
+              key={i}
+              i={i}
+              active={character == i}
+              name={save.getCharacterName(i)}
+              onSelect={i => {
+                setCharacter(i)
+              }}
+              onReorder={(from, to) => {
+                updateSave(save => {
+                  save.moveCharacter(from, to)
+                  if (character == from) setCharacter(to)
+                  if (character == to) setCharacter(to - 1)
+                })
+              }}
+            />
           ))}
         </ul>
+        <div className="edit-list">
+          <button
+            onClick={e => {
+              updateSave(save => {
+                save.tryAddNewCharacter()
+              })
+            }}
+          >
+            add
+          </button>
+        </div>
       </Card>
 
       <div className="character-editor">
@@ -327,6 +406,14 @@ export default props => {
             setCharacterHairColor={v => {
               updateSave(save => {
                 save.setCharacterHairColor(character, v)
+              })
+            }}
+            getCharacterColor={() => {
+              return save.getCharacterColor(character)
+            }}
+            setCharacterColor={v => {
+              updateSave(save => {
+                save.setCharacterColor(character, v)
               })
             }}
             getCharacterBodyTypeW={() => {

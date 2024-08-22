@@ -24,7 +24,13 @@ export const QUICK_SAVE_AREA = 27104
 /// coordinates of the player quick save location as an ivec3
 export const QUICK_SAVE_COORDINATES = 27108
 
-/// bytes between each character's data
+/// maximum number of characters in save
+export const NUM_CHARACTERS = 13
+
+/// maximum number of characters in inn
+export const MAX_CHARACTERS_IN_INN = 8
+
+/// offset of character array
 export const CHARACTER_OFFSET = 136
 
 /// total size of a character's data in bytes
@@ -69,6 +75,8 @@ export const CHARACTER_HAIRSTYLE_OFFSET = 358
 // u8 laid out like: `eeeesssg`
 // where e is eye color, s is skin color, and g is gender
 export const CHARACTER_GENDER_COLORS_OFFSET = 372
+
+export const CHARACTER_COLOR_OFFSET = 1
 
 /// offset of character hairstyle byte relative to beginning of character data
 // u8 laid out like: `xxxxcccc`
@@ -163,6 +171,7 @@ export const GUEST_ACCOLADE_COUNT_OFFSET = 68
 export const GUEST_GROTTO_COUNT_OFFSET = 69
 export const GUEST_WARDROBE_COUNT_OFFSET = 71
 export const GUEST_QUEST_GUEST_ALCHEMY_OFFSET = 72
+export const GUEST_COLOR_OFFSET = 79
 
 export const GUEST_BIRTHDAY_OFFSET = 108
 
@@ -232,7 +241,7 @@ for (let i = 0; i < 2; i++) {
 
   // party
   {
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < NUM_CHARACTERS; i++) {
       const characterOffset = slotOffset + CHARACTER_OFFSET + CHARACTER_SIZE * i
 
       annotations.push({
@@ -316,6 +325,36 @@ for (let i = 0; i < 2; i++) {
           begin: skillOffset,
           length: 1,
           color: "var(--sky)",
+        })
+      }
+
+      for (const v of gameData.vocations) {
+        annotations.push({
+          name: `${v.name} exp`,
+          begin: characterOffset + CHARACTER_VOCATION_EXP_OFFSET + v.id * 4,
+          length: 4,
+          color: "var(--green)",
+        })
+
+        annotations.push({
+          name: `${v.name} level`,
+          begin: characterOffset + CHARACTER_VOCATION_LEVEL_OFFSET + v.id,
+          length: 1,
+          color: "var(--teal)",
+        })
+
+        annotations.push({
+          name: `${v.name} revocations`,
+          begin: characterOffset + CHARACTER_VOCATION_REVOCATION_OFFSET + v.id,
+          length: 1,
+          color: "var(--blue)",
+        })
+
+        annotations.push({
+          name: `${v.name} seeds`,
+          begin: characterOffset + CHARACTER_VOCATION_SEEDS_OFFSET + 12 * v.id,
+          length: 12,
+          color: "var(--peach)",
         })
       }
 

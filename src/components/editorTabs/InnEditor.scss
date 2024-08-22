@@ -29,7 +29,7 @@ $grid-size: 232px;
 
     > ul {
       box-sizing: content-box;
-      height: calc(100% - 3em);
+      height: calc(100% - 7em);
       margin: 0;
       overflow-y: scroll;
       overflow-x: hidden;
@@ -63,6 +63,16 @@ $grid-size: 232px;
           // }
         }
       }
+    }
+
+    .edit-list {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      padding: 1em;
+      background-color: var(--card-bg-color);
+      border-top: 1px solid var(--surface-bg);
     }
   }
 

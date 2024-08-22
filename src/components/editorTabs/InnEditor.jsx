@@ -55,6 +55,17 @@ export default props => {
                 </li>
               ))}
           </ul>
+          <div className="edit-list">
+            <button
+              onClick={e => {
+                updateSave(save => {
+                  save.tryAddNewCharacter()
+                })
+              }}
+            >
+              add
+            </button>
+          </div>
         </Card>
       </div>
       <div className="guest-editor">
@@ -382,6 +393,14 @@ export default props => {
             setCharacterHairColor={v => {
               updateSave(save => {
                 save.setGuestHairColor(guest, v)
+              })
+            }}
+            getCharacterColor={() => {
+              return save.getGuestColor(guest)
+            }}
+            setCharacterColor={v => {
+              updateSave(save => {
+                save.setGuestColor(guest, v)
               })
             }}
             getCharacterBodyTypeW={() => {

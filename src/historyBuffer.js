@@ -13,6 +13,7 @@ const WRITE_TYPE_U16LE = 4
 const WRITE_TYPE_U32LE = 5
 const WRITE_TYPE_DQIX_STRING = 6
 const WRITE_TYPE_ASCII_STRING = 7
+const WRITE_TYPE_BUFFER = 8
 
 export default class HistoryBuffer {
   constructor(buffer, history, parentBuffer) {
@@ -78,6 +79,11 @@ export default class HistoryBuffer {
           b.copy(this.parentBuffer, action.offset)
         }
         break
+      case WRITE_TYPE_BUFFER:
+        {
+          value.copy(this.parentBuffer, action.offset)
+        }
+        break
 
       default:
         throw `unknown write type ${action.type}`
@@ -129,6 +135,10 @@ export default class HistoryBuffer {
 
   subarray(start, end) {
     return new HistoryBuffer(this._buffer.subarray(start, end), this.history, this.parentBuffer)
+  }
+
+  cloneInner(start, end) {
+    return Uint8Array.prototype.slice.call(this._buffer, start, end)
   }
 
   readByte(offset) {
@@ -219,6 +229,15 @@ export default class HistoryBuffer {
       offset: offset + this.buffer.byteOffset,
       prev: this.readAsciiString(offset, value.length, true),
       value,
+    })
+  }
+
+  writeBuffer(buffer, offset) {
+    this.pushAction({
+      type: WRITE_TYPE_BUFFER,
+      offset: offset + this.buffer.byteOffset,
+      prev: this.cloneInner(offset, offset + buffer.length),
+      value: buffer,
     })
   }
 }

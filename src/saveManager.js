@@ -11,14 +11,16 @@ import gameData from "./game/data"
 import * as layout from "./game/layout"
 import HistoryBuffer from "./historyBuffer"
 import { registerGrottos } from "./game/grotto"
+import { createValidCharacter, emptyCharacter } from "./game/character"
 
 export default class SaveManager {
   /*************************************************************************************************
    *                                        control methods                                        *
    *************************************************************************************************/
   constructor(buffer) {
-    this.buffer = buffer && new HistoryBuffer(buffer)
+    window.save = this
 
+    this.buffer = buffer && new HistoryBuffer(buffer)
     this.saveIdx = 0
     this.saveSlots = []
 
@@ -207,6 +209,86 @@ export default class SaveManager {
     return this.getStandbyCount() + this.getPartyCount()
   }
 
+  moveCharacter(from, to) {
+    //FIXME: lol send help
+    // if (from > this.getStandbyCount() && to < this.getStandbyCount() && this.getPartyCount() > 1) {
+    //   this.getSaveLogBuffer().writeByte(
+    //     this.getSaveLogBuffer().readByte(layout.STANDBY_COUNT_OFFSET) + 1,
+    //     layout.STANDBY_COUNT_OFFSET
+    //   )
+    //   this.getSaveLogBuffer().writeByte(
+    //     this.getSaveLogBuffer().readByte(layout.PARTY_COUNT_OFFSET) - 1,
+    //     layout.PARTY_COUNT_OFFSET
+    //   )
+    // }
+    // const src = this.getCharacterBuffer(from).cloneInner()
+    // if (from < to) {
+    //   const offset = layout.CHARACTER_OFFSET + layout.CHARACTER_SIZE * (from + 1)
+    //   const scooted = this.getSaveLogBuffer()
+    //     .subarray(offset, offset + layout.CHARACTER_SIZE * (to - from))
+    //     .cloneInner()
+    //   this.getSaveLogBuffer()
+    //     .subarray(offset - layout.CHARACTER_SIZE, offset + layout.CHARACTER_SIZE * (to - from))
+    //     .writeBuffer(scooted, 0)
+    // } else {
+    //   const offset = layout.CHARACTER_OFFSET + layout.CHARACTER_SIZE * to
+    //   const scooted = this.getSaveLogBuffer()
+    //     .subarray(offset, offset + layout.CHARACTER_SIZE * (from - to))
+    //     .cloneInner()
+    //   this.getSaveLogBuffer()
+    //     .subarray(offset + layout.CHARACTER_SIZE, offset + layout.CHARACTER_SIZE * (from - to))
+    //     .writeBuffer(scooted, 0)
+    // }
+    // this.getCharacterBuffer(to).writeBuffer(src, 0)
+  }
+
+  tryAddNewCharacter() {
+    if (this.getCharacterCount() >= layout.MAX_CHARACTERS_IN_INN + 1) {
+      return
+    }
+
+    const characterIdx = this.getStandbyCount()
+    this.getSaveLogBuffer().writeByte(characterIdx + 1, layout.STANDBY_COUNT_OFFSET)
+
+    const offset = layout.CHARACTER_OFFSET + layout.CHARACTER_SIZE * characterIdx
+    const scooted = this.getSaveLogBuffer()
+      .subarray(offset, offset + layout.CHARACTER_SIZE * this.getPartyCount())
+      .cloneInner()
+    this.getSaveLogBuffer()
+      .subarray(
+        offset + layout.CHARACTER_SIZE,
+        offset + layout.CHARACTER_SIZE * this.getPartyCount()
+      )
+      .writeBuffer(scooted, 0)
+
+    this.getSaveLogBuffer()
+      .subarray(
+        offset + layout.CHARACTER_SIZE,
+        offset + layout.CHARACTER_SIZE * this.getPartyCount()
+      )
+      .writeBuffer(scooted, 0)
+
+    // create character
+
+    const characterBuffer = Buffer.from(emptyCharacter)
+
+    const character = createValidCharacter()
+
+    this.getCharacterBuffer(characterIdx).writeBuffer(characterBuffer, 0)
+
+    this.writeCharacterName(characterIdx, character.name)
+    this.setCharacterGender(characterIdx, character.gender)
+    this.setCharacterVocation(characterIdx, character.vocation)
+    this.setCharacterFace(characterIdx, character.face)
+    this.setCharacterHairstyle(characterIdx, character.hairstyle)
+    this.setCharacterEyeColor(characterIdx, character.eyeColor)
+    this.setCharacterHairColor(characterIdx, character.hairColor)
+    this.setCharacterSkinColor(characterIdx, character.skinColor)
+    this.setCharacterBodyTypeW(characterIdx, character.bodyType.width)
+    this.setCharacterBodyTypeH(characterIdx, character.bodyType.height)
+    this.setCharacterColor(characterIdx, character.color)
+  }
+
   /*************************************************************************************************
    *                                       character methods                                       *
    *************************************************************************************************/
@@ -289,9 +371,10 @@ export default class SaveManager {
 
   setCharacterSkinColor(n, color) {
     const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_GENDER_COLORS_OFFSET)
-
-    this.getCharacterBuffer(n).writeByte((prev & 0xf1) | (color << 1)),
+    this.getCharacterBuffer(n).writeByte(
+      (prev & 0xf1) | (color << 1),
       layout.CHARACTER_GENDER_COLORS_OFFSET
+    )
   }
 
   getCharacterHairColor(n) {
@@ -320,6 +403,16 @@ export default class SaveManager {
 
   setCharacterBodyTypeH(n, value) {
     return this.getCharacterBuffer(n).writeU16LE(value, layout.CHARACTER_BODY_TYPE_H)
+  }
+
+  /// returns undershirt color
+  getCharacterColor(n) {
+    return this.getCharacterBuffer(n).readByte(layout.CHARACTER_COLOR_OFFSET) & 0x0f
+  }
+
+  setCharacterColor(n, c) {
+    const prev = this.getCharacterBuffer(n).readByte(layout.CHARACTER_COLOR_OFFSET)
+    this.getCharacterBuffer(n).writeByte((prev & 0xf0) | (c & 0x0f), layout.CHARACTER_COLOR_OFFSET)
   }
 
   getCharacterSkillAllocation(n, skill) {
@@ -1030,6 +1123,15 @@ export default class SaveManager {
       (prev & 0xf0) | (value & 0x0f),
       layout.GUEST_HAIR_COLOR_OFFSET
     )
+  }
+
+  getGuestColor(n) {
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_COLOR_OFFSET) & 0x0f
+  }
+
+  setGuestColor(n, value) {
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_COLOR_OFFSET)
+    this.getCanvasedGuest(n).writeByte((prev & 0xf0) | (c & 0x0f), layout.GUEST_COLOR_OFFSET)
   }
 
   getGuestBodyTypeW(n) {

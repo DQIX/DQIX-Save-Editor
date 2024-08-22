@@ -31,7 +31,7 @@ const ColorRadio = props => {
   return (
     <div style={props.style}>
       {props.colors.map((color, i) => (
-        <label key={i + offset} value>
+        <label key={i + offset}>
           <input
             type="radio"
             value={i + offset}
@@ -138,6 +138,16 @@ export default props => {
           style={{ gridTemplateColumns: "repeat(5, 1fr)" }}
           onChange={e => {
             props.setCharacterHairColor(e.target.value)
+          }}
+        />
+      </Card>
+
+      <Card label="character colour:" className="color-picker">
+        <ColorRadio
+          colors={gameData.colors}
+          checked={props.getCharacterColor()}
+          onChange={e => {
+            props.setCharacterColor(e.target.value)
           }}
         />
       </Card>
