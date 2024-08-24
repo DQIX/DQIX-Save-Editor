@@ -55,7 +55,7 @@ export default props => {
                 </li>
               ))}
           </ul>
-          <div className="edit-list">
+          {/* <div className="edit-list">
             <button
               onClick={e => {
                 updateSave(save => {
@@ -65,7 +65,16 @@ export default props => {
             >
               add
             </button>
-          </div>
+            <button
+              onClick={e => {
+                updateSave(save => {
+                  save.tryAddNewCharacter()
+                })
+              }}
+            >
+              import
+            </button>
+          </div> */}
         </Card>
       </div>
       <div className="guest-editor">
@@ -100,17 +109,6 @@ export default props => {
               style={{ display: "inline-block", marginLeft: "1em" }}
             />
           </Card>
-          <EquipmentCard
-            i={guest}
-            getter={(i, type) => {
-              return save.getGuestEquipment(i, type)
-            }}
-            setter={(i, type, value) => {
-              updateSave(save => {
-                save.setGuestEquipment(i, type, value)
-              })
-            }}
-          />
           <Card label="profile:" className="profile">
             <div>
               <label>
@@ -213,6 +211,19 @@ export default props => {
               /> */}
             </div>
           </Card>
+
+          <EquipmentCard
+            i={guest}
+            getter={(i, type) => {
+              return save.getGuestEquipment(i, type)
+            }}
+            setter={(i, type, value) => {
+              updateSave(save => {
+                save.setGuestEquipment(i, type, value)
+              })
+            }}
+          />
+
           <Card label="records:" className="records">
             <label>
               <span>battle victories:</span>
@@ -350,6 +361,65 @@ export default props => {
                 size={4}
               />
               %
+            </label>
+
+            <label>
+              <span>time spent playing:</span>
+              <Input
+                type="number"
+                value={save.getGuestPlaytimeHours(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestPlaytimeHours(guest, e.target.value)
+                  })
+                }}
+                min="0"
+                max="16384"
+                size="6"
+              />
+              h
+              <Input
+                type="number"
+                value={save.getGuestPlaytimeMinutes(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestPlaytimeMinutes(guest, e.target.value)
+                  })
+                }}
+                min="0"
+                max="59"
+                size="3"
+              />
+              m
+            </label>
+            <label>
+              <span>time spent in multiplayer:</span>
+              <Input
+                type="number"
+                value={save.getGuestMultiPlayerTimeHours(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestMultiPlayerTimeHours(guest, e.target.value)
+                  })
+                }}
+                min="0"
+                max="16384"
+                size="6"
+              />
+              h
+              <Input
+                type="number"
+                value={save.getGuestMultiPlayerTimeMinutes(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestMultiPlayerTimeMinutes(guest, e.target.value)
+                  })
+                }}
+                min="0"
+                max="59"
+                size="3"
+              />
+              m
             </label>
           </Card>
 

@@ -141,6 +141,9 @@ export const CANVASED_GUEST_OFFSET = 16200
 /// size of canvased guest structure
 export const CANVASED_GUEST_SIZE = 232
 
+/// maximum number of canvased guests in
+export const CANVASED_GUEST_NUM = 30
+
 /// offset of name relative to beginning of guest data
 export const GUEST_NAME_OFFSET = 0
 
@@ -172,6 +175,12 @@ export const GUEST_GROTTO_COUNT_OFFSET = 69
 export const GUEST_WARDROBE_COUNT_OFFSET = 71
 export const GUEST_QUEST_GUEST_ALCHEMY_OFFSET = 72
 export const GUEST_COLOR_OFFSET = 79
+
+export const GUEST_PLAYTIME_HOURS = 56
+export const GUEST_PLAYTIME_MINUTES = 64
+
+export const GUEST_MULTIPLAYER_HOURS = 60
+export const GUEST_MULTIPLAYER_MINUTES = 16030
 
 export const GUEST_BIRTHDAY_OFFSET = 108
 
@@ -385,6 +394,185 @@ for (let i = 0; i < 2; i++) {
           color: "var(--mauve)",
         })
       }
+    }
+  }
+
+  // inn
+  {
+    for (let i = 0; i < NUM_CHARACTERS; i++) {
+      const guestOffset = slotOffset + CANVASED_GUEST_OFFSET + CANVASED_GUEST_SIZE * i
+
+      annotations.push({
+        name: `canvased guest ${i}`,
+        begin: guestOffset,
+        length: CANVASED_GUEST_SIZE,
+        color: "var(--lavender)",
+      })
+
+      annotations.push({
+        name: `name`,
+        begin: guestOffset + GUEST_NAME_OFFSET,
+        length: NAME_LENGTH,
+        color: "var(--red)",
+      })
+
+      annotations.push({
+        name: "vocation/location",
+        begin: guestOffset + GUEST_VOCATION_AND_LOCATION_OFFSET,
+        length: 1,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "index",
+        begin: guestOffset + GUEST_INDEX_OFFSET,
+        length: 4,
+        color: "var(--rosewater)",
+      })
+
+      for (const itemType of gameData.equipmentTypes) {
+        const equipmentOffset = guestOffset + GUEST_EQUIPMENT_OFFSET + (itemType - 1) * 2
+
+        annotations.push({
+          name: `equipped ${gameData.itemTypeNames[itemType]}`,
+          begin: equipmentOffset,
+          length: 2,
+          color: "var(--maroon)",
+        })
+      }
+
+      annotations.push({
+        name: "face",
+        begin: guestOffset + GUEST_FACE_OFFSET,
+        length: 1,
+        color: "var(--green)",
+      })
+
+      annotations.push({
+        name: "hairstyle",
+        begin: guestOffset + GUEST_HAIRSTYLE_OFFSET,
+        length: 1,
+        color: "var(--teal)",
+      })
+
+      annotations.push({
+        name: "appearance gender/color",
+        begin: guestOffset + GUEST_GENDER_COLORS_OFFSET,
+        length: 1,
+        color: "var(--sky)",
+      })
+      annotations.push({
+        name: "hair color",
+        begin: guestOffset + GUEST_HAIR_COLOR_OFFSET,
+        length: 1,
+        color: "var(--sapphire)",
+      })
+      annotations.push({
+        name: "body type w",
+        begin: guestOffset + GUEST_BODY_TYPE_W,
+        length: 2,
+        color: "var(--teal)",
+      })
+      annotations.push({
+        name: "body type h",
+        begin: guestOffset + GUEST_BODY_TYPE_H,
+        length: 1,
+        color: "var(--teal)",
+      })
+      annotations.push({
+        name: "alchemy count",
+        begin: guestOffset + GUEST_ALCHEMY_COUNT,
+        length: 2,
+        color: "var(--blue)",
+      })
+      annotations.push({
+        name: "victory count",
+        begin: guestOffset + GUEST_VICTORY_COUNT_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+      annotations.push({
+        name: "defeated monster completion",
+        begin: guestOffset + GUEST_MONSTER_COUNT_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "item completion",
+        begin: guestOffset + GUEST_ITEM_COUNT_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "accolade count",
+        begin: guestOffset + GUEST_ACCOLADE_COUNT_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+      annotations.push({
+        name: "grottos cleared",
+        begin: guestOffset + GUEST_GROTTO_COUNT_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "wardrobe completion",
+        begin: guestOffset + GUEST_WARDROBE_COUNT_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "alchemy performed",
+        begin: guestOffset + GUEST_QUEST_GUEST_ALCHEMY_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "color",
+        begin: guestOffset + GUEST_COLOR_OFFSET,
+        length: 1,
+        color: "var(--peach)",
+      })
+
+      annotations.push({
+        name: "birthday",
+        begin: guestOffset + GUEST_BIRTHDAY_OFFSET,
+        length: 4,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "speech style",
+        begin: guestOffset + GUEST_SPEECH_STYLE_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "age secret byte",
+        begin: guestOffset + GUEST_SECRET_AGE_OFFSET,
+        length: 1,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "title/origin data",
+        begin: guestOffset + GUEST_TITLE_ORIGIN_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "message",
+        begin: guestOffset + GUEST_MESSAGE_OFFSET,
+        length: GUEST_MESSAGE_LENGTH,
+        color: "var(--blue)",
+      })
     }
   }
 

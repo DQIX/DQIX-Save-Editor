@@ -115,7 +115,7 @@ export default props => {
             />
           ))}
         </ul>
-        <div className="edit-list">
+        {/* <div className="edit-list">
           <button
             onClick={e => {
               updateSave(save => {
@@ -125,7 +125,7 @@ export default props => {
           >
             add
           </button>
-        </div>
+        </div> */}
       </Card>
 
       <div className="character-editor">

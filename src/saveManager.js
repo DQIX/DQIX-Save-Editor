@@ -802,7 +802,7 @@ export default class SaveManager {
   }
 
   getCanvasedGuestIndex(n) {
-    return (this.getCanvasedGuest(n).readByte(layout.GUEST_INDEX_OFFSET) & 0xfffffffc) >> 2
+    return (this.getCanvasedGuest(n).readU32LE(layout.GUEST_INDEX_OFFSET) & 0xfffffffc) >> 2
   }
 
   getCanvasedGuestName(n) {
@@ -944,6 +944,57 @@ export default class SaveManager {
     this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xc07fffff) | ((v << 23) & 0x3f800000),
       layout.GUEST_QUEST_GUEST_ALCHEMY_OFFSET
+    )
+  }
+
+  getGuestPlaytimeHours(n) {
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_PLAYTIME_HOURS) & 0x3fff
+  }
+
+  setGuestPlaytimeHours(n, value) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_PLAYTIME_HOURS)
+
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0xc000) | (value & 0x3fff),
+      layout.GUEST_PLAYTIME_HOURS
+    )
+  }
+
+  getGuestPlaytimeMinutes(n) {
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_PLAYTIME_MINUTES) & 0x7f
+  }
+
+  setGuestPlaytimeMinutes(n, value) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_PLAYTIME_MINUTES)
+
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0xff80) | (value & 0x7f),
+      layout.GUEST_PLAYTIME_MINUTES
+    )
+  }
+
+  getGuestMultiPlayerTimeHours(n) {
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_MULTIPLAYER_HOURS) & 0x3fff
+  }
+
+  setGuestMultiPlayerTimeHours(n, value) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_MULTIPLAYER_HOURS)
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0xc000) | (value & 0x3fff),
+      layout.GUEST_MULTIPLAYER_HOURS
+    )
+  }
+
+  getGuestMultiPlayerTimeMinutes(n) {
+    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_PLAYTIME_MINUTES) & 0x3f80) >> 7
+  }
+
+  setGuestMultiPlayerTimeMinutes(n, value) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_PLAYTIME_MINUTES)
+
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0xc07f) | ((value << 7) & 0x3f80),
+      layout.GUEST_PLAYTIME_MINUTES
     )
   }
 

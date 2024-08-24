@@ -13,6 +13,7 @@ $grid-size: 232px;
   .guest-list {
     width: $grid-size;
     overflow: hidden;
+    flex-grow: 1;
 
     p {
       margin-bottom: 0;

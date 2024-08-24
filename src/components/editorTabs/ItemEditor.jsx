@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import "./ItemEditor.scss"
 
@@ -17,6 +17,14 @@ const ItemCard = props => {
       props.filter[item.item_type] &&
       item.name.toLowerCase().includes(props.filter.name.toLowerCase())
   )
+
+  useEffect(() => {
+    updateSave(save => {
+      items.forEach(item => {
+        save.setItemCount(item.id, 1)
+      })
+    })
+  })
 
   return items.length ? (
     <Card
@@ -64,8 +72,8 @@ export default props => {
     [gameData.ITEM_TYPE_WEAPON]: true,
     [gameData.ITEM_TYPE_SHIELD]: true,
     [gameData.ITEM_TYPE_ACCESSORY]: true,
-    [gameData.ITEM_TYPE_COMMON]: true,
-    [gameData.ITEM_TYPE_IMPORTANT]: true,
+    [gameData.ITEM_TYPE_COMMON]: false,
+    [gameData.ITEM_TYPE_IMPORTANT]: false,
   })
 
   return (
