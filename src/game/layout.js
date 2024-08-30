@@ -147,6 +147,8 @@ export const CANVASED_GUEST_NUM = 30
 /// offset of name relative to beginning of guest data
 export const GUEST_NAME_OFFSET = 0
 
+export const GUEST_HOLDING_GROTTO_OFFSET = 11
+
 /// offset of vocation and location in inn relative to beginning of guest data
 export const GUEST_VOCATION_AND_LOCATION_OFFSET = 12
 
@@ -180,7 +182,8 @@ export const GUEST_PLAYTIME_HOURS = 56
 export const GUEST_PLAYTIME_MINUTES = 64
 
 export const GUEST_MULTIPLAYER_HOURS = 60
-export const GUEST_MULTIPLAYER_MINUTES = 16030
+
+export const GUEST_HELD_GROTTO_OFFSET = 80
 
 export const GUEST_BIRTHDAY_OFFSET = 108
 

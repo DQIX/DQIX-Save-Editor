@@ -14,10 +14,14 @@ import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
 import GenderToggle from "./inputs/GenderToggle"
 import { VocationSelect } from "../atoms/IconSelect"
+import GrottoCard from "./inputs/GrottoCard"
+import Button from "../atoms/Button"
 
 export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
   let [guest, setGuest] = useState(2)
+
+  const heldGrotto = save.getGuestHeldGrotto(guest)
 
   return (
     <div className="inn-root">
@@ -422,6 +426,38 @@ export default props => {
               m
             </label>
           </Card>
+
+          <GrottoCard
+            labelFn={() => (
+              <p className="card-label">
+                held grotto:
+                <Button
+                  onClick={e => {
+                    updateSave(save => {
+                      save.setGuestHoldingGrotto(guest, !save.isGuestHoldingGrotto(guest))
+                      if (e.target.checked && !gameData.grottoKinds[heldGrotto.getKind()].valid) {
+                        heldGrotto.setKind(gameData.GROTTO_KIND_NORMAL)
+                      }
+                    })
+                  }}
+                >
+                  {save.isGuestHoldingGrotto(guest) ? "remove" : "add"}
+                </Button>
+              </p>
+            )}
+            disabled={!save.isGuestHoldingGrotto(guest)}
+            grotto={heldGrotto}
+            onChange={({ seed, rank, location }) => {
+              heldGrotto.setSeed(seed)
+              heldGrotto.setRank(rank)
+              heldGrotto.setLocation(location)
+            }}
+            updateGrotto={fn => {
+              updateSave(save => {
+                fn(save)
+              })
+            }}
+          />
 
           <AppearanceCards
             gender={save.getGuestGender(guest)}

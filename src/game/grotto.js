@@ -440,10 +440,13 @@ export default class Grotto {
   }
 
   getValidLocations() {
-    if (this.getKind() == gameData.GROTTO_KIND_LEGACY) {
-      return Array.from({ length: 150 }, (_, i) => i + 1)
-    } else {
-      return this._validLocations || this.createValidLocations()
+    switch (this.getKind()) {
+      case gameData.GROTTO_KIND_NORMAL:
+        return this._validLocations || this.createValidLocations()
+      case gameData.GROTTO_KIND_LEGACY:
+        return Array.from({ length: 150 }, (_, i) => i + 1)
+      default:
+        return []
     }
   }
 

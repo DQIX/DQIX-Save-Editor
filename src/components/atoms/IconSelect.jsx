@@ -75,7 +75,7 @@ export const GrottoStateSelect = props => {
       />
       <select ref={selectRef} value={props.id} onChange={props.onChange} disabled={props.disabled}>
         {gameData.grottoStates
-          .filter(c => c.valid || c == props.id)
+          .filter(c => c.valid || c.id == props.id)
           .map(v => (
             <option key={v.id} value={v.id}>
               {v.name}

@@ -5,10 +5,22 @@
   flex-direction: column;
   padding: 0;
 
+  &.disabled {
+    > div:not(:first-child) {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  }
+
   > .card-label:first-child {
-    margin: 0 0 0.5em 0;
+    margin: 0;
     padding: 0.4em 0 0.5em 1em;
     width: 100%;
+    > button {
+      margin: 0 1em 0 0;
+      padding: 0.4em 0.8em;
+      float: right;
+    }
   }
 
   > div {
@@ -85,12 +97,12 @@
       .maps {
         overflow-x: scroll;
         display: flex;
-        align-items: center;
         padding: 0 0 1em;
         height: 100%;
         div {
           margin-right: 1em;
           position: relative;
+          height: fit-content;
           cursor: pointer;
 
           small {

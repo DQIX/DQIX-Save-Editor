@@ -13,9 +13,13 @@ export default props => {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
-    <Card label={props.label} className="grotto-card">
+    <Card
+      label={props.label}
+      labelFn={props.labelFn}
+      className={`grotto-card ${props.disabled ? "disabled" : ""}`}
+    >
       <div className="name">
-        {props.label && <small>name</small>}
+        {(props.label || props.labelFn) && <small>name:</small>}
 
         <GrottoStateSelect
           id={props.grotto.getState()}
@@ -35,7 +39,7 @@ export default props => {
           }}
         >
           {data.grottoKinds
-            .filter(c => c.valid || c == props.grotto.getKind())
+            .filter(c => c.valid || c.id == props.grotto.getKind())
             .map((c, i) => (
               <option key={i} value={c.id}>
                 {c.name}
@@ -147,6 +151,7 @@ export default props => {
           <Input
             type="text"
             value={props.grotto.getDiscoveredBy()}
+            size="16"
             onChange={e => {
               props.updateGrotto(save => {
                 props.grotto.setDiscoveredBy(e.target.value)
@@ -159,6 +164,7 @@ export default props => {
           <Input
             type="text"
             value={props.grotto.getConqueredBy()}
+            size="16"
             onChange={e => {
               props.updateGrotto(save => {
                 props.grotto.setConqueredBy(e.target.value)

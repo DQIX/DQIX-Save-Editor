@@ -1201,6 +1201,29 @@ export default class SaveManager {
     return this.getCanvasedGuest(n).writeU16LE(value, layout.GUEST_BODY_TYPE_H)
   }
 
+  isGuestHoldingGrotto(n) {
+    return !!(this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_OFFSET) & 0x80)
+  }
+
+  setGuestHoldingGrotto(n, held) {
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_OFFSET)
+
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0x7f) | (held << 7),
+      layout.GUEST_HOLDING_GROTTO_OFFSET
+    )
+  }
+
+  getGuestHeldGrotto(n) {
+    //NOTE: see ./grotto.js for read/write for the grotto buffers
+    return new Grotto(
+      this.getCanvasedGuest(n).subarray(
+        layout.GUEST_HELD_GROTTO_OFFSET,
+        layout.GUEST_HELD_GROTTO_OFFSET + layout.GROTTO_DATA_SIZE
+      )
+    )
+  }
+
   /*************************************************************************************************
    *                                          inn methods                                          *
    *************************************************************************************************/
