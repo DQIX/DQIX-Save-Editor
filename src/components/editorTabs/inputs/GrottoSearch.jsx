@@ -1,9 +1,15 @@
 import { useState } from "react"
-import { getGrottoDetails, getGrottoName, getGrottoSeedsByNameData } from "../../../game/grotto"
+import {
+  getGrottoData,
+  getGrottoDetails,
+  getGrottoName,
+  getGrottoSeedsByNameData,
+} from "../../../game/grotto"
 import data from "../../../game/data"
 import "./GrottoSearch.scss"
 import Input from "../../atoms/Input"
 import Button from "../../atoms/Button"
+import MapThumb from "../../atoms/MapThumb"
 
 export default props => {
   const [seed, setSeed] = useState(props.seed)
@@ -81,10 +87,24 @@ export default props => {
           <tbody>
             {results.length != 0 ? (
               results.map(({ seed, rank }, i) => {
-                let details = getGrottoDetails(seed, rank)
+                const grottoData = getGrottoData(seed, rank)
 
                 return (
                   <tr key={i} className="search-result">
+                    <td>
+                      <Button
+                        onClick={e => {
+                          props.onChange &&
+                            props.onChange({
+                              seed,
+                              rank,
+                              location: grottoData.validLocations[0] || 5,
+                            })
+                        }}
+                      >
+                        select
+                      </Button>
+                    </td>
                     <td>
                       <p>
                         <span>{getGrottoName(seed, rank)}</span>
@@ -102,30 +122,26 @@ export default props => {
                     </td>
                     <td>
                       <span>
-                        <b>boss:</b> {data.grottoBossNames[details.boss]}
+                        <b>boss:</b> {data.grottoBossNames[grottoData.details.boss]}
                       </span>
                       <br />
                       <span>
-                        <b>type:</b> {data.grottoTypeNames[details.type]}
+                        <b>type:</b> {data.grottoTypeNames[grottoData.details.type]}
                       </span>
                       <br />
                       <span>
-                        <b>floors:</b> {details.floorCount}
+                        <b>floors:</b> {grottoData.details.floorCount}
                       </span>
                       <br />
                       <span>
-                        <b>monster rank:</b> {details.monsterRank}
+                        <b>monster rank:</b> {grottoData.details.monsterRank}
                       </span>
                       <br />
                     </td>
                     <td>
-                      <Button
-                        onClick={e => {
-                          props.onChange && props.onChange({ seed, rank, location: 5 })
-                        }}
-                      >
-                        select
-                      </Button>
+                      {grottoData.validLocations.map(loc => (
+                        <MapThumb map={loc} />
+                      ))}
                     </td>
                   </tr>
                 )

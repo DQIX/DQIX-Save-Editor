@@ -254,12 +254,14 @@ export function getGrottoDetails(seed, rank) {
 
   details.namePrefixIdx = seek2(tables.h, details.monsterRank, 5, rng) - 1
   details.nameSuffixIdx = seek2(tables.i, details.boss + 1, 4, rng) - 1
-  details[7] = seek2(tables.g, details.floorCount, 8, rng)
-  details.namePlaceIdx = tables.placeIndices[(details[7] - 1) * 5 + details.type]
+  const env = seek2(tables.g, details.floorCount, 8, rng)
+  details.namePlaceIdx = tables.placeIndices[(env - 1) * 5 + details.type]
 
   details.level = (details.boss + details.floorCount + details.monsterRank - 3) * 3
   details.level += rng.nextRem(11) - 5
   details.level = Math.max(1, Math.min(details.level, 99))
+
+  details.lastRng = rng.seed[0]
 
   return details
 }
@@ -285,14 +287,25 @@ export function getMapIdString(seed, rank) {
 
 const rankDivisions = [0x02, 0x38, 0x3d, 0x4c, 0x51, 0x65, 0x79, 0x8d, 0xa1, 0xb5, 0xc9, 0xdd]
 export const grottoLookup = {}
+export const grottoSeedSamples = {}
+window.grottoSeedSamples = grottoSeedSamples
 
 export function registerGrottos() {
   if (Object.keys(grottoLookup).length) return
 
-  for (const rank of rankDivisions) {
-    for (let seed = 0; seed < 0xffff; seed++) {
+  for (let seed = 0; seed < 0xffff; seed++) {
+    const sample = new Uint32Array(1)
+    sample[0] = u32Mul(seed, 1103515245) + 12345
+    sample[0] = u32Mul(sample[0], 1103515245)
+    sample[0] = ((sample[0] + 12345) >> 16) & 0x7fff
+
+    if (!grottoSeedSamples[sample]) grottoSeedSamples[sample] = []
+    grottoSeedSamples[sample].push(seed)
+
+    for (const rank of rankDivisions) {
       const details = getGrottoDetails(seed, rank)
 
+      // name lookup
       if (!grottoLookup[details.namePrefixIdx]) grottoLookup[details.namePrefixIdx] = {}
       if (!grottoLookup[details.namePrefixIdx][details.namePlaceIdx])
         grottoLookup[details.namePrefixIdx][details.namePlaceIdx] = {}
@@ -318,6 +331,63 @@ export function registerGrottos() {
 
 export function getGrottoSeedsByNameData(prefix, place, suffix, lvl) {
   return grottoLookup?.[prefix]?.[place]?.[suffix]?.[lvl] || []
+}
+
+export function getValidLocations(seed, rank) {
+  const validLocations = new Set()
+  const lowRankValidLocations = new Set()
+  const midRankValidLocations = new Set()
+  const highRankValidLocations = new Set()
+
+  const samples = grottoSeedSamples[seed]
+  if (!samples) {
+    return {
+      validLocations: [],
+      lowRankValidLocations: [],
+      midRankValidLocations: [],
+      highRankValidLocations: [],
+    }
+  }
+  const validRanks = new Set()
+  for (const sample of samples) {
+    const srng = new Rng(sample)
+
+    let n = srng.next()
+    for (let i = 2; i <= 248; i++) {
+      const validRank = Math.min(
+        248,
+        sample + (n % (Math.floor(sample / 10) * 2 + 1)) - Math.floor(sample / 10)
+      )
+
+      validRanks.add(validRank)
+    }
+
+    srng.next()
+    n = srng.next()
+
+    validLocations.add(rank <= 50 ? (n % 47) + 1 : rank > 80 ? (n % 150) + 1 : (n % 131) + 1)
+    lowRankValidLocations.add((n % 47) + 1)
+    midRankValidLocations.add((n % 131) + 1)
+    highRankValidLocations.add((n % 150) + 1)
+
+    if (rank == 2 && seed == 50) {
+      validLocations.add(5)
+      lowRankValidLocations.add(5)
+    }
+  }
+
+  return {
+    validLocations: [...validLocations].sort(),
+    lowRankValidLocations: [...lowRankValidLocations].sort(),
+    midRankValidLocations: [...midRankValidLocations].sort(),
+    highRankValidLocations: [...highRankValidLocations].sort(),
+  }
+}
+
+export function getGrottoData(seed, rank) {
+  const details = getGrottoDetails(seed, rank)
+
+  return { details, ...getValidLocations(seed, rank) }
 }
 
 export default class Grotto {
@@ -364,7 +434,7 @@ export default class Grotto {
   }
 
   createValidLocations() {
-    this._validLocations = []
+    this._validLocations = getValidLocations(this.getSeed(), this.getRank()).validLocations
 
     return this._validLocations
   }
@@ -413,8 +483,13 @@ export default class Grotto {
     const prev = this._buffer.readByte(layout.GROTTO_KIND_STATE_OFFSET)
 
     this._buffer.writeByte((prev & 0xe7) | ((kind << 3) & 0x18), layout.GROTTO_KIND_STATE_OFFSET)
-    this.setState(gameData.GROTTO_STATE_UNDISCOVERED)
 
+    this.setState(gameData.GROTTO_STATE_UNDISCOVERED)
+    this.setConqueredBy("")
+    this.setDiscoveredBy("")
+    this.setTreasurePlundered(0, false)
+    this.setTreasurePlundered(1, false)
+    this.setTreasurePlundered(2, false)
     switch (kind) {
       case gameData.GROTTO_KIND_NORMAL:
         {
@@ -427,7 +502,7 @@ export default class Grotto {
         {
           this.setLegacyBoss(3)
           this.setLegacyBossLevel(1)
-          this.setLegacyBossTurns(999)
+          this.setLegacyBossTurns(1000)
         }
         break
     }

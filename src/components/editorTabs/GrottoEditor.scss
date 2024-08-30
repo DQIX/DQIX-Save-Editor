@@ -26,6 +26,11 @@ $sidebar-width: calc($grid-size * 2 + 1em);
         border-left: 2px solid transparent;
         position: relative;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        > div {
+          margin-right: 0.5em;
+        }
         > span {
           float: right;
         }

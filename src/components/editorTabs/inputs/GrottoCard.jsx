@@ -196,20 +196,26 @@ export default props => {
         <div className="valid">
           <span>valid locations:</span>
           <div className="maps">
-            {props.grotto.getValidLocations().map(loc => {
-              return (
-                <div
-                  onClick={e =>
-                    props.updateGrotto(save => {
-                      props.grotto.setLocation(loc)
-                    })
-                  }
-                >
-                  <MapThumb map={loc} />
-                  <small>{loc.toString(16).padStart(2, "0")}</small>
-                </div>
-              )
-            })}
+            {props.grotto.getValidLocations().length ? (
+              props.grotto.getValidLocations().map(loc => {
+                return (
+                  <div
+                    onClick={e =>
+                      props.updateGrotto(save => {
+                        props.grotto.setLocation(loc)
+                      })
+                    }
+                  >
+                    <MapThumb map={loc} />
+                    <small>
+                      {loc} (0x{loc.toString(16).padStart(2, "0")})
+                    </small>
+                  </div>
+                )
+              })
+            ) : (
+              <small>no valid locations (map is not generable)</small>
+            )}
           </div>
         </div>
       </div>
@@ -238,8 +244,8 @@ export default props => {
               <Input
                 type="number"
                 value={props.grotto.getRank()}
-                min={0}
-                max={255}
+                min={2}
+                max={248}
                 size={4}
                 onChange={e => {
                   props.updateGrotto(save => {

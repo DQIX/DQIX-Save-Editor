@@ -7,6 +7,8 @@ import Card from "../atoms/Card"
 
 import "./GrottoEditor.scss"
 import GrottoCard from "./inputs/GrottoCard"
+import { GrottoStateIcon } from "../atoms/Icon"
+import data from "../../game/data"
 
 export default props => {
   const { save, updateSave } = useContext(SaveManagerContext)
@@ -20,6 +22,7 @@ export default props => {
         <ul>
           {Array.from({ length: save.getHeldGrottoCount() }).map((_, i) => (
             <li key={i} onClick={e => setGrotto(i)} className={i == selectedGrotto ? "active" : ""}>
+              <GrottoStateIcon icon={data.grottoStateTable[save.getGrotto(i).getState()].icon} />
               {save.getGrotto(i).getName()}
             </li>
           ))}
@@ -30,9 +33,9 @@ export default props => {
           grotto={grotto}
           onChange={({ seed, rank, location }) => {
             updateSave(save => {
-              grotto.setSeed(selectedGrotto, seed)
-              grotto.setRank(selectedGrotto, rank)
-              grotto.setLocation(selectedGrotto, location)
+              grotto.setSeed(seed)
+              grotto.setRank(rank)
+              grotto.setLocation(location)
             })
           }}
           updateGrotto={fn => {

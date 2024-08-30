@@ -75,18 +75,33 @@
       flex-grow: 1;
       overflow-x: hidden;
       padding-left: 1.5em;
-      width: 100%;
+      display: flex;
+      flex-direction: column;
+
       > span {
         border-bottom: 2px solid transparent;
       }
+
       .maps {
         overflow-x: scroll;
         display: flex;
+        align-items: center;
         padding: 0 0 1em;
+        height: 100%;
         div {
           margin-right: 1em;
           position: relative;
           cursor: pointer;
+
+          small {
+            transition: 0.1s ease-in-out;
+          }
+          &:hover {
+            small {
+              color: var(--font-color);
+            }
+          }
+
           small {
             position: absolute;
             bottom: -0.7em;
