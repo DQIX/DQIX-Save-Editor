@@ -321,6 +321,9 @@ export default props => {
                 <Input
                   type="number"
                   value={save.getCharacterExp(character, selectedVocation)}
+                  min={0}
+                  max={4294967295}
+                  size={12}
                   onChange={e => {
                     updateSave(save => {
                       save.setCharacterExp(character, selectedVocation, e.target.value)
@@ -349,7 +352,8 @@ export default props => {
             <div>
               {gameData.seeds.map((seed, i) => (
                 <label key={i}>
-                  <ItemIcon icon={seed.icon} /> {seed.name}
+                  {/* <ItemIcon icon={seed.icon} /> */}
+                  {seed.name}
                   <Input
                     type="number"
                     min={0}
@@ -421,6 +425,16 @@ export default props => {
             }}
             getCharacterBodyTypeH={() => {
               return save.getCharacterBodyTypeH(character)
+            }}
+            setCharacterBodyTypeW={w => {
+              updateSave(save => {
+                save.setCharacterBodyTypeW(character, w)
+              })
+            }}
+            setCharacterBodyTypeH={h => {
+              updateSave(save => {
+                save.setCharacterBodyTypeH(character, h)
+              })
             }}
             setCharacterBodyType={(w, h) => {
               updateSave(save => {

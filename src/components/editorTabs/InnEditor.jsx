@@ -433,7 +433,10 @@ export default props => {
                   onClick={e => {
                     updateSave(save => {
                       save.setGuestHoldingGrotto(guest, !save.isGuestHoldingGrotto(guest))
-                      if (e.target.checked && !gameData.grottoKinds[heldGrotto.getKind()].valid) {
+                      if (
+                        save.isGuestHoldingGrotto(guest) &&
+                        !gameData.grottoKinds[heldGrotto.getKind()].valid
+                      ) {
                         heldGrotto.setKind(gameData.GROTTO_KIND_NORMAL)
                       }
                     })
@@ -512,6 +515,16 @@ export default props => {
             }}
             getCharacterBodyTypeH={() => {
               return save.getGuestBodyTypeH(guest)
+            }}
+            setCharacterBodyTypeW={w => {
+              updateSave(save => {
+                save.setGuestBodyTypeW(guest, w)
+              })
+            }}
+            setCharacterBodyTypeH={h => {
+              updateSave(save => {
+                save.setGuestBodyTypeH(guest, h)
+              })
             }}
             setCharacterBodyType={(w, h) => {
               updateSave(save => {

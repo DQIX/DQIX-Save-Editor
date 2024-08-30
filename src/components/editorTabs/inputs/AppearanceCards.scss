@@ -31,19 +31,36 @@
   }
 }
 
+$color-size: 32px;
+
 .color-picker {
   > .card-label {
     margin-bottom: 0;
   }
 
+  &.colors {
+    display: flex;
+    flex-direction: column;
+  }
+
   div {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, $color-size);
     gap: 0em 0.5em;
-    width: fit-content;
+    &.color {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      > div {
+        grid-template-columns: repeat(4, $color-size);
+        gap: 0em 0.5em;
+        grid-template-rows: repeat(4, $color-size);
+      }
+    }
     label {
-      width: 32px;
-      height: 32px;
+      width: $color-size;
+      height: $color-size;
       border-radius: var(--border-radius);
       cursor: pointer;
       border: 2px solid transparent;
@@ -56,8 +73,8 @@
         cursor: pointer;
         appearance: none;
         background-color: black;
-        width: 24px;
-        height: 24px;
+        width: $color-size * 0.75;
+        height: $color-size * 0.75;
         position: absolute;
         top: 2px;
         left: 2px;

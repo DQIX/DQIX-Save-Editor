@@ -73,7 +73,7 @@ export default props => {
               />
             </Modal>
           </>
-        ) : (
+        ) : props.grotto.getKind() == data.GROTTO_KIND_LEGACY ? (
           <>
             <select
               value={props.grotto.getLegacyBoss()}
@@ -103,6 +103,8 @@ export default props => {
               size={3}
             />
           </>
+        ) : (
+          <></>
         )}
       </div>
       <div>
@@ -239,6 +241,7 @@ export default props => {
                 onChange={e => {
                   props.updateGrotto(save => {
                     props.grotto.setSeed(e.target.value)
+                    props.grotto.setLocation(props.grotto.getValidLocations()[0] || 5)
                   })
                 }}
               />
@@ -254,6 +257,7 @@ export default props => {
                 onChange={e => {
                   props.updateGrotto(save => {
                     props.grotto.setRank(e.target.value)
+                    props.grotto.setLocation(props.grotto.getValidLocations()[0] || 5)
                   })
                 }}
               />
@@ -265,7 +269,7 @@ export default props => {
               yab's tools
             </a>
           </>
-        ) : (
+        ) : props.grotto.getKind() == data.GROTTO_KIND_LEGACY ? (
           <>
             <small>turns:</small>
             <Input
@@ -281,6 +285,10 @@ export default props => {
               }}
             />
             <small> (values over 999 don't show in game)</small>
+          </>
+        ) : (
+          <>
+            <p></p>
           </>
         )}
       </div>

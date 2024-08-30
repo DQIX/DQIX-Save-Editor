@@ -29,7 +29,7 @@ const AppearanceRadio = props => {
 const ColorRadio = props => {
   const offset = props.offset || 0
   return (
-    <div style={props.style}>
+    <div style={props.style} className={props.className}>
       {props.colors.map((color, i) => (
         <label key={i + offset}>
           <input
@@ -142,14 +142,16 @@ export default props => {
         />
       </Card>
 
-      <Card label="character colour:" className="color-picker">
-        <ColorRadio
-          colors={gameData.colors}
-          checked={props.getCharacterColor()}
-          onChange={e => {
-            props.setCharacterColor(e.target.value)
-          }}
-        />
+      <Card label="character colour:" className="color-picker colors">
+        <div className="color">
+          <ColorRadio
+            colors={gameData.colors}
+            checked={props.getCharacterColor()}
+            onChange={e => {
+              props.setCharacterColor(e.target.value)
+            }}
+          />
+        </div>
       </Card>
 
       <Card label="body type:" className="body-type-editor">

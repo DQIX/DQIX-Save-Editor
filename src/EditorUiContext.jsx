@@ -21,7 +21,7 @@ export const tabs = [
   { name: "grottos", component: GrottoEditor },
   { name: "dlc", component: DlcEditor },
   { name: "misc", component: MiscEditor },
-  { name: "hex", component: HexEditor, disabled: false },
+  { name: "hex", component: HexEditor, disabled: true },
 ]
 
 const initialTab = 0
