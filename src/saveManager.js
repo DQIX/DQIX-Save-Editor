@@ -10,7 +10,7 @@ import gameData from "./game/data"
 
 import * as layout from "./game/layout"
 import HistoryBuffer from "./historyBuffer"
-import { registerGrottos } from "./game/grotto"
+import Grotto, { registerGrottos } from "./game/grotto"
 import { createValidCharacter, emptyCharacter } from "./game/character"
 
 export default class SaveManager {
@@ -1407,83 +1407,13 @@ export default class SaveManager {
     return this.getSaveLogBuffer().readByte(layout.HELD_GROTTO_COUNT_OFFSET)
   }
 
-  getGrottoBuffer(n) {
-    return this.getSaveLogBuffer().subarray(
-      layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n,
-      layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n + layout.GROTTO_DATA_SIZE
-    )
-  }
-
-  getGrottoSeed(n) {
-    return this.getGrottoBuffer(n).readU16LE(layout.GROTTO_SEED_OFFSET)
-  }
-
-  setGrottoSeed(n, seed) {
-    this.getGrottoBuffer(n).writeU16LE(seed, layout.GROTTO_SEED_OFFSET)
-  }
-
-  getGrottoRank(n) {
-    return this.getGrottoBuffer(n).readByte(layout.GROTTO_RANK_OFFSET)
-  }
-
-  setGrottoRank(n, rank) {
-    this.getGrottoBuffer(n).writeByte(rank, layout.GROTTO_RANK_OFFSET)
-  }
-
-  getGrottoLocation(n) {
-    return this.getGrottoBuffer(n).readByte(layout.GROTTO_LOCATION_OFFSET)
-  }
-
-  setGrottoLocation(n, location) {
-    this.getGrottoBuffer(n).writeByte(location, layout.GROTTO_LOCATION_OFFSET)
-  }
-
-  getGrottoDiscoveredBy(n) {
-    return this.getGrottoBuffer(n).readDqixString(
-      layout.GROTTO_DISCOVERED_BY_OFFSET,
-      layout.NAME_LENGTH
-    )
-  }
-
-  setGrottoDiscoveredBy(n, name) {
-    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
-
-    this.getGrottoBuffer(n).writeDqixString(name, layout.GROTTO_DISCOVERED_BY_OFFSET)
-  }
-
-  getGrottoConqueredBy(n) {
-    return this.getGrottoBuffer(n).readDqixString(
-      layout.GROTTO_CONQUERED_BY_OFFSET,
-      layout.NAME_LENGTH
-    )
-  }
-
-  setGrottoConqueredBy(n, name) {
-    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
-
-    this.getGrottoBuffer(n).writeDqixString(name, layout.GROTTO_CONQUERED_BY_OFFSET)
-  }
-
-  getGrottoTreasurePlundered(n, i) {
-    if (0 <= i && i < 3)
-      return !!(
-        this.getGrottoBuffer(n).readByte(layout.GROTTO_TREASURE_PLUNDERED_OFFSET) &
-        (1 << i)
+  getGrotto(n) {
+    //NOTE: see ./grotto.js for read/write for the grotto buffers
+    return new Grotto(
+      this.getSaveLogBuffer().subarray(
+        layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n,
+        layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n + layout.GROTTO_DATA_SIZE
       )
-
-    return false
-  }
-
-  setGrottoTreasurePlundered(n, i, value) {
-    if (!(0 <= i && i < 3)) return
-
-    const mask = 1 << i
-
-    const prev = this.getGrottoBuffer(n).readByte(layout.GROTTO_TREASURE_PLUNDERED_OFFSET)
-
-    this.getGrottoBuffer(n).writeByte(
-      (prev & ~mask) | (value ? mask : 0),
-      layout.GROTTO_TREASURE_PLUNDERED_OFFSET
     )
   }
 }

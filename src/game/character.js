@@ -40,6 +40,22 @@ const outfits = [
     vocations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     genders: [0, 1],
   },
+  /// Paradigmatic Puglist (F)
+  {
+    // prettier-ignore
+    equipment: {
+      [data.ITEM_TYPE_WEAPON]:    0xffff,
+      [data.ITEM_TYPE_SHIELD]:    0xffff,
+      [data.ITEM_TYPE_HEAD]:      0xffff,
+      [data.ITEM_TYPE_TORSO]:     13500, // strongsam
+      [data.ITEM_TYPE_ARM]:       0xffff,
+      [data.ITEM_TYPE_LEGS]:      16301, // slick slacks
+      [data.ITEM_TYPE_FEET]:      17401, // she-fu shoes
+      [data.ITEM_TYPE_ACCESSORY]: 0xffff,
+    },
+    vocations: [4],
+    genders: [1],
+  },
 ]
 
 /// generates a random character

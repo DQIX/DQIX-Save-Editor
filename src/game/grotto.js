@@ -1,4 +1,5 @@
 import gameData from "./data"
+import * as layout from "./layout"
 
 // https://stackoverflow.com/questions/6232939/is-there-a-way-to-correctly-multiply-two-32-bit-integers-in-javascript/6422061#6422061
 // multiplies 2 u32s with C semantics
@@ -277,20 +278,9 @@ export function getGrottoName(seed, rank) {
   )
 }
 
-export default class GrottoData {
-  constructor(seed, rank) {
-    this.seed = seed
-    this.rank = rank
-  }
-
-  /// single identifier that encapsulates a grotto without location
-  getMapIdString() {
-    return this.rank.toString(16).padStart(2, "0") + this.seed.toString(16).padStart(4, "0")
-  }
-
-  getDetails() {
-    return getGrottoDetails(this.seed, this.rank)
-  }
+/// single identifier that encapsulates a grotto without location
+export function getMapIdString(seed, rank) {
+  return rank.toString(16).padStart(2, "0") + seed.toString(16).padStart(4, "0")
 }
 
 const rankDivisions = [0x02, 0x38, 0x3d, 0x4c, 0x51, 0x65, 0x79, 0x8d, 0xa1, 0xb5, 0xc9, 0xdd]
@@ -326,14 +316,214 @@ export function registerGrottos() {
   }
 }
 
-export function getGrottoSeedsByDetails(details) {
-  return (
-    grottoLookup?.[details.namePrefixIdx]?.[details.namePlaceIdx]?.[details.nameSuffixIdx]?.[
-      details.level
-    ] || []
-  )
-}
-
 export function getGrottoSeedsByNameData(prefix, place, suffix, lvl) {
   return grottoLookup?.[prefix]?.[place]?.[suffix]?.[lvl] || []
+}
+
+export default class Grotto {
+  constructor(buffer) {
+    this._buffer = buffer
+
+    this._details = null
+    this._validLocations = null
+  }
+
+  getDetails() {
+    if (!this._details) {
+      this._details = getGrottoDetails(this.getSeed(), this.getRank())
+    }
+
+    return this._details
+  }
+
+  getName() {
+    switch (this.getKind()) {
+      case gameData.GROTTO_KIND_NORMAL: {
+        const details = this.getDetails()
+        return (
+          (gameData.grottoNamePrefixes[details.namePrefixIdx] || "unknown") +
+          " " +
+          (gameData.grottoNamePlaces[details.namePlaceIdx] || "unknown") +
+          " of " +
+          (gameData.grottoNameSuffixes[details.nameSuffixIdx] || "unknown") +
+          " lv. " +
+          (details.level || 1)
+        )
+      }
+      case gameData.GROTTO_KIND_LEGACY: {
+        return (
+          gameData.legacyBosses[this.getLegacyBoss() - 1].name +
+          "'s Map lv. " +
+          this.getLegacyBossLevel()
+        )
+      }
+      default: {
+        return "unknown map"
+      }
+    }
+  }
+
+  createValidLocations() {
+    this._validLocations = []
+
+    return this._validLocations
+  }
+
+  getValidLocations() {
+    if (this.getKind() == gameData.GROTTO_KIND_LEGACY) {
+      return Array.from({ length: 150 }, (_, i) => i + 1)
+    } else {
+      return this._validLocations || this.createValidLocations()
+    }
+  }
+
+  /// single identifier that encapsulates a grotto without location (for yab's tools link)
+  getMapIdString() {
+    return (
+      this.getRank().toString(16).padStart(2, "0") + this.getSeed().toString(16).padStart(4, "0")
+    )
+  }
+
+  getState() {
+    const b = this._buffer.readByte(layout.GROTTO_KIND_STATE_OFFSET) & 0x7
+    if (b & gameData.GROTTO_STATE_UNDISCOVERED) {
+      return gameData.GROTTO_STATE_UNDISCOVERED
+    } else if (b & gameData.GROTTO_STATE_DISCOVERED) {
+      return gameData.GROTTO_STATE_DISCOVERED
+    } else if (b & gameData.GROTTO_STATE_CLEARED) {
+      return gameData.GROTTO_STATE_CLEARED
+    } else {
+      return gameData.GROTTO_STATE_UNKNOWN
+    }
+  }
+
+  setState(state) {
+    const prev = this._buffer.readByte(layout.GROTTO_KIND_STATE_OFFSET)
+
+    this._buffer.writeByte((prev & 0xf8) | (state & 0x7), layout.GROTTO_KIND_STATE_OFFSET)
+  }
+
+  getKind() {
+    return (this._buffer.readByte(layout.GROTTO_KIND_STATE_OFFSET) >> 3) & 0x3
+  }
+
+  setKind(kind) {
+    this._details = null
+
+    const prev = this._buffer.readByte(layout.GROTTO_KIND_STATE_OFFSET)
+
+    this._buffer.writeByte((prev & 0xe7) | ((kind << 3) & 0x18), layout.GROTTO_KIND_STATE_OFFSET)
+    this.setState(gameData.GROTTO_STATE_UNDISCOVERED)
+
+    switch (kind) {
+      case gameData.GROTTO_KIND_NORMAL:
+        {
+          this.setSeed(50)
+          this.setRank(2)
+          this.setLocation(5)
+        }
+        break
+      case gameData.GROTTO_KIND_LEGACY:
+        {
+          this.setLegacyBoss(3)
+          this.setLegacyBossLevel(1)
+          this.setLegacyBossTurns(999)
+        }
+        break
+    }
+  }
+
+  getLegacyBoss() {
+    return this._buffer.readByte(layout.GROTTO_RANK_LEGACY_BOSS_OFFSET)
+  }
+
+  setLegacyBoss(b) {
+    this._buffer.writeByte(b, layout.GROTTO_RANK_LEGACY_BOSS_OFFSET)
+  }
+
+  getLegacyBossLevel() {
+    return this._buffer.readByte(layout.GROTTO_LEGACY_BOSS_LEVEL_OFFSET)
+  }
+
+  setLegacyBossLevel(lvl) {
+    lvl = Math.max(0, Math.min(999, lvl))
+    this._buffer.writeByte(lvl, layout.GROTTO_LEGACY_BOSS_LEVEL_OFFSET)
+  }
+
+  getLegacyBossTurns() {
+    console.log(this)
+    return this._buffer.readU16LE(layout.GROTTO_SEED_TURNS_OFFSET)
+  }
+
+  setLegacyBossTurns(turns) {
+    // turns = Math.max(0, Math.min(999, turns))
+    this._buffer.writeU16LE(turns, layout.GROTTO_SEED_TURNS_OFFSET)
+  }
+
+  getSeed() {
+    return this._buffer.readU16LE(layout.GROTTO_SEED_TURNS_OFFSET)
+  }
+
+  setSeed(seed) {
+    this._details = null
+    this._validLocations = null
+    this._buffer.writeU16LE(seed, layout.GROTTO_SEED_TURNS_OFFSET)
+  }
+
+  getRank() {
+    return this._buffer.readByte(layout.GROTTO_RANK_LEGACY_BOSS_OFFSET)
+  }
+
+  setRank(rank) {
+    this._details = null
+    this._validLocations = null
+    this._buffer.writeByte(rank, layout.GROTTO_RANK_LEGACY_BOSS_OFFSET)
+  }
+
+  getLocation() {
+    return this._buffer.readByte(layout.GROTTO_LOCATION_OFFSET)
+  }
+
+  setLocation(location) {
+    this._buffer.writeByte(location, layout.GROTTO_LOCATION_OFFSET)
+  }
+
+  getDiscoveredBy() {
+    return this._buffer.readDqixString(layout.GROTTO_DISCOVERED_BY_OFFSET, layout.NAME_LENGTH)
+  }
+
+  setDiscoveredBy(name) {
+    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
+
+    this._buffer.writeDqixString(name, layout.GROTTO_DISCOVERED_BY_OFFSET)
+  }
+
+  getConqueredBy() {
+    return this._buffer.readDqixString(layout.GROTTO_CONQUERED_BY_OFFSET, layout.NAME_LENGTH)
+  }
+
+  setConqueredBy(name) {
+    name = name.substr(0, layout.NAME_LENGTH).padEnd(layout.NAME_LENGTH, "\0")
+
+    this._buffer.writeDqixString(name, layout.GROTTO_CONQUERED_BY_OFFSET)
+  }
+
+  getTreasurePlundered(i) {
+    if (0 <= i && i < 3)
+      return !!(this._buffer.readByte(layout.GROTTO_TREASURE_PLUNDERED_OFFSET) & (1 << i))
+
+    return false
+  }
+
+  setTreasurePlundered(i, value) {
+    if (!(0 <= i && i < 3)) return
+
+    const mask = 1 << i
+
+    const prev = this._buffer.readByte(layout.GROTTO_TREASURE_PLUNDERED_OFFSET)
+    this._buffer.writeByte(
+      (prev & (0xff ^ mask)) | (value ? mask : 0),
+      layout.GROTTO_TREASURE_PLUNDERED_OFFSET
+    )
+  }
 }

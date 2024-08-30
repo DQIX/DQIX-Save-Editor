@@ -227,12 +227,14 @@ export const HELD_GROTTO_COUNT_MAX = 99
 /// offset of grotto array
 export const GROTTO_DATA_OFFSET = 24206
 
+export const GROTTO_KIND_STATE_OFFSET = 0
 export const GROTTO_DISCOVERED_BY_OFFSET = 1
 export const GROTTO_CONQUERED_BY_OFFSET = 11
 export const GROTTO_LOCATION_OFFSET = 21
 export const GROTTO_TREASURE_PLUNDERED_OFFSET = 22
-export const GROTTO_RANK_OFFSET = 23
-export const GROTTO_SEED_OFFSET = 26
+export const GROTTO_RANK_LEGACY_BOSS_OFFSET = 23
+export const GROTTO_LEGACY_BOSS_LEVEL_OFFSET = 24
+export const GROTTO_SEED_TURNS_OFFSET = 26
 
 /// size of each grotto's data
 export const GROTTO_DATA_SIZE = 28
@@ -394,6 +396,74 @@ for (let i = 0; i < 2; i++) {
           color: "var(--mauve)",
         })
       }
+    }
+  }
+
+  // grottos
+  {
+    for (let i = 0; i < HELD_GROTTO_COUNT_MAX; i++) {
+      const grottoOffset = slotOffset + GROTTO_DATA_OFFSET + GROTTO_DATA_SIZE * i
+
+      annotations.push({
+        name: `grotto ${i}`,
+        begin: grottoOffset,
+        length: GROTTO_DATA_SIZE,
+        color: "var(--lavender)",
+      })
+
+      annotations.push({
+        name: `kind/state`,
+        begin: grottoOffset + GROTTO_KIND_STATE_OFFSET,
+        length: 1,
+        color: "var(--peach)",
+      })
+
+      annotations.push({
+        name: `conquerer name`,
+        begin: grottoOffset + GROTTO_CONQUERED_BY_OFFSET,
+        length: NAME_LENGTH,
+        color: "var(--mauve)",
+      })
+
+      annotations.push({
+        name: `discoverer name`,
+        begin: grottoOffset + GROTTO_DISCOVERED_BY_OFFSET,
+        length: NAME_LENGTH,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: `location`,
+        begin: grottoOffset + GROTTO_LOCATION_OFFSET,
+        length: 1,
+        color: "var(--green)",
+      })
+      annotations.push({
+        name: `treasure plundered`,
+        begin: grottoOffset + GROTTO_TREASURE_PLUNDERED_OFFSET,
+        length: 1,
+        color: "var(--green)",
+      })
+      annotations.push({
+        name: `rank/legacy boss`,
+        begin: grottoOffset + GROTTO_RANK_LEGACY_BOSS_OFFSET,
+        length: 1,
+        color: "var(--teal)",
+      })
+
+      annotations.push({
+        name: `legacy boss level`,
+        begin: grottoOffset + GROTTO_LEGACY_BOSS_LEVEL_OFFSET,
+        length: 1,
+        color: "var(--sapphire)",
+      })
+
+      annotations.push({
+        name: `seed/turns`,
+        begin: grottoOffset + GROTTO_SEED_TURNS_OFFSET,
+        length: 2,
+        color: "var(--sapphire)",
+      })
     }
   }
 

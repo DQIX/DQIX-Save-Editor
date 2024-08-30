@@ -18,13 +18,13 @@ const ItemCard = props => {
       item.name.toLowerCase().includes(props.filter.name.toLowerCase())
   )
 
-  useEffect(() => {
-    updateSave(save => {
-      items.forEach(item => {
-        save.setItemCount(item.id, 1)
-      })
-    })
-  })
+  // useEffect(() => {
+  //   updateSave(save => {
+  //     items.forEach(item => {
+  //       save.setItemCount(item.id, 1)
+  //     })
+  //   })
+  // })
 
   return items.length ? (
     <Card
@@ -72,8 +72,8 @@ export default props => {
     [gameData.ITEM_TYPE_WEAPON]: true,
     [gameData.ITEM_TYPE_SHIELD]: true,
     [gameData.ITEM_TYPE_ACCESSORY]: true,
-    [gameData.ITEM_TYPE_COMMON]: false,
-    [gameData.ITEM_TYPE_IMPORTANT]: false,
+    [gameData.ITEM_TYPE_COMMON]: true,
+    [gameData.ITEM_TYPE_IMPORTANT]: true,
   })
 
   return (

@@ -25,6 +25,7 @@ $sidebar-width: calc($grid-size * 2 + 1em);
         transition: 0.1s ease-in-out background-color;
         border-left: 2px solid transparent;
         position: relative;
+        cursor: pointer;
         > span {
           float: right;
         }
@@ -54,11 +55,15 @@ $sidebar-width: calc($grid-size * 2 + 1em);
     margin-left: calc(1em + $sidebar-width);
     display: grid;
     grid-template-columns: repeat(auto-fill, $grid-size);
-    grid-template-rows: $grid-size * 0.3 repeat(auto-fill, $grid-size);
+    grid-template-rows: repeat(auto-fill, $grid-size);
     grid-auto-flow: dense;
     grid-auto-rows: $grid-size;
     gap: 1em;
     justify-content: center;
+
+    > .info {
+      grid-row: span 2;
+    }
 
     > .name {
       display: flex;

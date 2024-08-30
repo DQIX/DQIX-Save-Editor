@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import gameData from "../../game/data"
 
-import { ItemIcon, VocationIcon } from "../atoms/Icon"
+import { ItemIcon, VocationIcon, GrottoStateIcon } from "../atoms/Icon"
 import "./IconSelect.scss"
 
 export const ItemSelect = props => {
@@ -56,6 +56,31 @@ export const VocationSelect = props => {
             {v.name}
           </option>
         ))}
+      </select>
+    </label>
+  )
+}
+
+export const GrottoStateSelect = props => {
+  const selected = gameData.grottoStateTable[props.id]
+  const selectRef = useRef(null)
+
+  return (
+    <label className="icon-select grotto-state-select" onClick={e => selectRef.current.click()}>
+      <GrottoStateIcon
+        icon={selected?.icon}
+        style={{
+          opacity: selected ? 1 : 0,
+        }}
+      />
+      <select ref={selectRef} value={props.id} onChange={props.onChange} disabled={props.disabled}>
+        {gameData.grottoStates
+          .filter(c => c.valid || c == props.id)
+          .map(v => (
+            <option key={v.id} value={v.id}>
+              {v.name}
+            </option>
+          ))}
       </select>
     </label>
   )

@@ -5210,6 +5210,37 @@ const seeds = [
   { id: 6, name: "magical might",   icon: 796 },
 ]
 
+const GROTTO_KIND_NORMAL = 1
+const GROTTO_KIND_LEGACY = 2
+
+// prettier-ignore
+const grottoKinds = [
+  { id: 0,                  name: "unknown 0" },
+  { id: GROTTO_KIND_NORMAL, name: "normal",   valid: true },
+  { id: GROTTO_KIND_LEGACY, name: "legacy",   valid: true },
+  { id: 3,                  name: "unknown 3" },
+]
+
+const GROTTO_STATE_UNKNOWN = 0
+const GROTTO_STATE_UNDISCOVERED = 1
+const GROTTO_STATE_DISCOVERED = 2
+const GROTTO_STATE_CLEARED = 4
+
+// prettier-ignore
+const grottoStates = [
+  { id: GROTTO_STATE_UNKNOWN,      icon: 0, name: "unknown",      valid: false },
+  { id: GROTTO_STATE_UNDISCOVERED, icon: 1, name: "undiscovered", valid: true  },
+  { id: GROTTO_STATE_DISCOVERED,   icon: 2, name: "discovered",   valid: true  },
+  { id: GROTTO_STATE_CLEARED,      icon: 3, name: "cleared",      valid: true  },
+]
+
+const grottoStateTable = {
+  [GROTTO_STATE_UNKNOWN]: grottoStates[0],
+  [GROTTO_STATE_UNDISCOVERED]: grottoStates[1],
+  [GROTTO_STATE_DISCOVERED]: grottoStates[2],
+  [GROTTO_STATE_CLEARED]: grottoStates[3],
+}
+
 const grottoNamePrefixes = [
   "Clay",
   "Rock",
@@ -5500,6 +5531,24 @@ const defaultNames = [
   ],
 ]
 
+// prettier-ignore
+// NOTE: index this by `id - 1`
+const legacyBosses = [
+  { id: 1,  name: "Dragonlord"   },
+  { id: 2,  name: "Malroth"      },
+  { id: 3,  name: "Baramos"      },
+  { id: 4,  name: "Zoma"         },
+  { id: 5,  name: "Psaro"        },
+  { id: 6,  name: "Estark"       },
+  { id: 7,  name: "Nimzo"        },
+  { id: 8,  name: "Murdaw"       },
+  { id: 9,  name: "Mortamor"     },
+  { id: 10, name: "Nokturnus"    },
+  { id: 11, name: "Orgodemir"    },
+  { id: 12, name: "Dhoulmagus"   },
+  { id: 13, name: "Rhapthorne"   },
+]
+
 export default {
   ITEM_TYPE_COMMON,
   ITEM_TYPE_IMPORTANT,
@@ -5600,11 +5649,24 @@ export default {
 
   seeds,
 
+  GROTTO_STATE_UNKNOWN,
+  GROTTO_STATE_UNDISCOVERED,
+  GROTTO_STATE_DISCOVERED,
+  GROTTO_STATE_CLEARED,
+  grottoStates,
+  grottoStateTable,
+
+  GROTTO_KIND_NORMAL,
+  GROTTO_KIND_LEGACY,
+  grottoKinds,
+
   grottoNamePrefixes,
   grottoNamePlaces,
   grottoNameSuffixes,
   grottoBossNames,
   grottoTypeNames,
+
+  legacyBosses,
 
   defaultNames,
 }

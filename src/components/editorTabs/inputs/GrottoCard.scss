@@ -1,0 +1,101 @@
+.grotto-card {
+  grid-row: span 2;
+  grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+
+  > .card-label:first-child {
+    margin: 0 0 0.5em 0;
+    padding: 0.4em 0 0.5em 1em;
+    width: 100%;
+  }
+
+  > div {
+    width: 100%;
+    padding: 0.9em;
+    position: relative;
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--surface-bg);
+    }
+    > small:first-child {
+      position: absolute;
+      top: -0.7em;
+      left: 0.5em;
+      padding: 0 0.5em;
+      background-color: var(--card-bg-color);
+    }
+
+    label,
+    .kind {
+      margin-right: 1em;
+    }
+  }
+
+  .name {
+    display: flex;
+    align-items: center;
+
+    > span {
+      margin: 0 0.3em;
+    }
+
+    > button {
+      margin: 0;
+      padding: 0.4em 0.8em;
+      margin-left: 1.5em;
+    }
+  }
+
+  .locations {
+    flex-grow: 1;
+    display: flex;
+
+    > div {
+      display: inline-block;
+      > span,
+      > label {
+        margin: 0 0 0.9em 0;
+        display: inline-block;
+      }
+    }
+
+    .current {
+      border-right: 1px solid var(--surface-bg);
+      padding: 0 1.5em 0em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      > label {
+        text-wrap: nowrap;
+      }
+    }
+
+    .valid {
+      flex-grow: 1;
+      overflow-x: hidden;
+      padding-left: 1.5em;
+      width: 100%;
+      > span {
+        border-bottom: 2px solid transparent;
+      }
+      .maps {
+        overflow-x: scroll;
+        display: flex;
+        padding: 0 0 1em;
+        div {
+          margin-right: 1em;
+          position: relative;
+          cursor: pointer;
+          small {
+            position: absolute;
+            bottom: -0.7em;
+            width: 100%;
+            text-align: center;
+            left: 0;
+          }
+        }
+      }
+    }
+  }
+}

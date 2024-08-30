@@ -2,7 +2,7 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>Features/Todo (65/93)</h2></summary>
+<details><summary><h2>features/todo (77/105)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -15,11 +15,11 @@ A save editor for dragon quest ix
   - [x] eye color
   - [x] height
   - [x] width
+  - [x] color
 - [x] current vocation
 - [x] vocation exp stuff
   - [x] revocations
   - [x] seeds
-  - [ ] sync exp, lvl, and skill points? maybe?
 - [x] equipment
 - [x] held items
 - [x] name
@@ -48,7 +48,7 @@ A save editor for dragon quest ix
     - [x] skin color
     - [x] height
     - [x] width
-  - [ ] color
+    - [x] color
   - [x] vocation
   - [x] battle records
     - [x] battle victories
@@ -62,7 +62,7 @@ A save editor for dragon quest ix
     - [x] wardrobe
     - [x] item list
     - [x] alchenomicon
-  - [ ] play time
+  - [x] play time
   - [ ] map
   - [ ] level/revocations
   - [x] profile
@@ -105,14 +105,17 @@ A save editor for dragon quest ix
 - [x] treasures
   - [ ] name preview?
 - [x] discoverer/conquerer
+- [ ] location
+  - [x] current
+  - [ ] valid location list
 - [ ] add/remove
 - [ ] normal
   - [x] info
   - [ ] map preview
   - [ ] grotto search
-- [ ] legacy
-  - [ ] turns
-  - [ ] boss
+- [x] legacy
+  - [x] turns
+  - [x] boss
 
 </details>
 
@@ -168,7 +171,7 @@ A save editor for dragon quest ix
 - `src/game/data.js` contains game data info including items, equipment, appearance data, etc
 - `src/game/grotto.js` contains a partial implementation of the grotto generation algorithms
 - `src/game/layout.js` contains known values of where various things in the save file are, if you find something else please feel free to open an issue or pr
-- `src/saveManager.js` contains an implementation of reading and writing various data from the save file
+- `src/saveManager.js` contains an implementation of reading and writing various data from the save file, except for grottos which is done in `src/game/grotto.js`
 
 ## Credits
 

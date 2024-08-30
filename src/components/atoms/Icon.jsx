@@ -3,6 +3,7 @@ import vocationIcons from "../../assets/vocationIcons.png"
 import appearanceIcons from "../../assets/appearanceIcons-transparent.png"
 import questStatusIcons from "../../assets/questStatusIcons.png"
 import genderIcons from "../../assets/genderIcons.png"
+import grottoStateIcons from "../../assets/grottoStateIcons.png"
 
 export const ItemIcon = props => (
   <div
@@ -89,6 +90,26 @@ export const GenderIcon = props => {
         backgroundImage: `url(${genderIcons})`,
         backgroundPosition: `-0px -${28 * scale * Math.floor(props.icon)}px`,
         backgroundSize: `${28 * scale}px ${56 * scale}px`,
+        ...props.style,
+      }}
+    ></div>
+  )
+}
+
+export const GrottoStateIcon = props => {
+  const scale = 0.8
+
+  return (
+    <div
+      className="icon"
+      style={{
+        width: scale * 22 + "px",
+        height: scale * 22 + "px",
+        display: "inline-block",
+        verticalAlign: "top",
+        backgroundImage: `url(${grottoStateIcons})`,
+        backgroundPosition: `-0px -${22 * scale * props.icon}px`,
+        backgroundSize: `${22 * scale}px ${88 * scale}px`,
         ...props.style,
       }}
     ></div>

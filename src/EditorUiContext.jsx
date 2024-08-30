@@ -24,7 +24,7 @@ export const tabs = [
   { name: "hex", component: HexEditor, disabled: false },
 ]
 
-const initialTab = 2
+const initialTab = 4
 
 const initialTheme =
   localStorage.getItem("theme") ||
