@@ -1,6 +1,5 @@
 import { useContext, useState } from "react"
 import { SaveManagerContext } from "../../SaveManagerContext"
-import SaveManager from "../../saveManager"
 
 import gameData from "../../game/data"
 
@@ -9,7 +8,6 @@ import "./InnEditor.scss"
 import Card from "../atoms/Card"
 import Input from "../atoms/Input"
 import TimeInput from "../atoms/TimeInput"
-import { VocationIcon } from "../atoms/Icon"
 import EquipmentCard from "./inputs/EquipmentCard"
 import AppearanceCards from "./inputs/AppearanceCards"
 import GenderToggle from "./inputs/GenderToggle"
@@ -19,7 +17,7 @@ import Button from "../atoms/Button"
 
 export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
-  let [guest, setGuest] = useState(2)
+  let [guest, setGuest] = useState(0)
 
   const heldGrotto = save.getGuestHeldGrotto(guest)
 

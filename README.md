@@ -2,7 +2,7 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>features/todo (77/105)</h2></summary>
+<details><summary><h2>features/todo (82/106 + 5)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -63,7 +63,7 @@ A save editor for dragon quest ix
     - [x] item list
     - [x] alchenomicon
   - [x] play time
-  - [ ] map
+  - [x] map
   - [ ] level/revocations
   - [x] profile
     - [x] location
@@ -71,7 +71,7 @@ A save editor for dragon quest ix
     - [x] title
     - [x] speech style
     - [x] message
-  - [ ] gender
+  - [ ] gender (3?)
 - [x] inn rank
 - [ ] import/export
 
@@ -105,17 +105,17 @@ A save editor for dragon quest ix
 - [x] treasures
   - [ ] name preview?
 - [x] discoverer/conquerer
-- [ ] location
+- [x] location
   - [x] current
-  - [ ] valid location list
-- [ ] add/remove
-- [ ] normal
+  - [x] valid location list
+- [x] normal
   - [x] info
-  - [ ] map preview
-  - [ ] grotto search
+  - [x] grotto search
 - [x] legacy
   - [x] turns
   - [x] boss
+- [ ] add/remove
+- [ ] import/export
 
 </details>
 
@@ -144,6 +144,7 @@ A save editor for dragon quest ix
 - [x] zoom locations
 - [ ] player profile
 - [x] save location
+- [ ] fountain group
 
 </details>
 
@@ -157,8 +158,8 @@ A save editor for dragon quest ix
 <details><summary><h3>stretch:</h3></summary>
 
 - [ ] allow marking quests in progress?
+- [ ] grotto map preview
 - [ ] unsafe mode?
-- [ ] fountain group
 - [ ] pals past and present
 - [ ] world things (chests, item respawns)
 

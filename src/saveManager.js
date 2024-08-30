@@ -86,7 +86,7 @@ export default class SaveManager {
   }
 
   async loadDemo() {
-    const response = await fetch("demo.sav")
+    const response = await fetch("demoSaves/demo.sav")
     if (!response.ok) {
       return null
     }
