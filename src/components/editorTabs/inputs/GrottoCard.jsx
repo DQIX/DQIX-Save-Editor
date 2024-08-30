@@ -151,7 +151,6 @@ export default props => {
           <Input
             type="text"
             value={props.grotto.getDiscoveredBy()}
-            size="16"
             onChange={e => {
               props.updateGrotto(save => {
                 props.grotto.setDiscoveredBy(e.target.value)
@@ -164,7 +163,6 @@ export default props => {
           <Input
             type="text"
             value={props.grotto.getConqueredBy()}
-            size="16"
             onChange={e => {
               props.updateGrotto(save => {
                 props.grotto.setConqueredBy(e.target.value)
