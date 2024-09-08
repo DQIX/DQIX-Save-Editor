@@ -21,10 +21,10 @@ export const tabs = [
   { name: "grottos", component: GrottoEditor },
   { name: "dlc", component: DlcEditor },
   { name: "misc", component: MiscEditor },
-  { name: "hex", component: HexEditor, disabled: true },
+  { name: "hex", component: HexEditor, disabled: false },
 ]
 
-const initialTab = 4
+const initialTab = 2
 
 const initialTheme =
   localStorage.getItem("theme") ||

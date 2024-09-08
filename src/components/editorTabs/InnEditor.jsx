@@ -90,14 +90,6 @@ export default props => {
                 })
               }}
             />
-            <VocationSelect
-              id={save.getGuestVocation(guest)}
-              onChange={e => {
-                updateSave(save => {
-                  save.setGuestVocation(guest, e.target.value)
-                })
-              }}
-            />
 
             <Input
               type="text"
@@ -225,6 +217,48 @@ export default props => {
               })
             }}
           />
+
+          <Card label="vocation:" className="level">
+            <VocationSelect
+              id={save.getGuestVocation(guest)}
+              onChange={e => {
+                updateSave(save => {
+                  save.setGuestVocation(guest, e.target.value)
+                })
+              }}
+            />
+            <label>
+              <span>level:</span>
+              <Input
+                type="number"
+                min="1"
+                max="99"
+                size="4"
+                value={save.getGuestLevel(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestLevel(guest, e.target.value)
+                  })
+                }}
+              />
+            </label>
+            <br />
+            <label>
+              <span>revocations:</span>
+              <Input
+                type="number"
+                min="0"
+                max="10"
+                size="4"
+                value={save.getGuestRevocations(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestRevocations(guest, e.target.value)
+                  })
+                }}
+              />
+            </label>
+          </Card>
 
           <Card label="records:" className="records">
             <label>

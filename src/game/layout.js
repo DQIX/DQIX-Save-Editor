@@ -151,6 +151,7 @@ export const GUEST_HOLDING_GROTTO_OFFSET = 11
 
 /// offset of vocation and location in inn relative to beginning of guest data
 export const GUEST_VOCATION_AND_LOCATION_OFFSET = 12
+export const GUEST_LEVEL_OFFSET = 13
 
 /// offset of the index of the guest (0 if invalid), pretty sure this is the order of guests canvased
 export const GUEST_INDEX_OFFSET = 16
@@ -168,21 +169,21 @@ export const GUEST_HAIR_COLOR_OFFSET = 47
 export const GUEST_BODY_TYPE_W = 50
 export const GUEST_BODY_TYPE_H = 52
 
+export const GUEST_PLAYTIME_HOURS = 56
 export const GUEST_ALCHEMY_COUNT = 57
+export const GUEST_MULTIPLAYER_HOURS = 60
 export const GUEST_VICTORY_COUNT_OFFSET = 61
+export const GUEST_PLAYTIME_MINUTES = 64
 export const GUEST_MONSTER_COUNT_OFFSET = 65
 export const GUEST_ITEM_COUNT_OFFSET = 66
 export const GUEST_ACCOLADE_COUNT_OFFSET = 68
 export const GUEST_GROTTO_COUNT_OFFSET = 69
 export const GUEST_WARDROBE_COUNT_OFFSET = 71
 export const GUEST_QUEST_GUEST_ALCHEMY_OFFSET = 72
+
+export const GUEST_REVOCATION_OFFSET = 78
+
 export const GUEST_COLOR_OFFSET = 79
-
-export const GUEST_PLAYTIME_HOURS = 56
-export const GUEST_PLAYTIME_MINUTES = 64
-
-export const GUEST_MULTIPLAYER_HOURS = 60
-
 export const GUEST_HELD_GROTTO_OFFSET = 80
 
 export const GUEST_BIRTHDAY_OFFSET = 108

@@ -1092,6 +1092,30 @@ export default class SaveManager {
     )
   }
 
+  getGuestLevel(n) {
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_LEVEL_OFFSET) & 0x7f
+  }
+
+  setGuestLevel(n, lvl) {
+    lvl = Math.max(1, Math.min(99, lvl))
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_LEVEL_OFFSET)
+    this.getCanvasedGuest(n).writeByte((prev & 0x80) | (lvl & 0x7f), layout.GUEST_LEVEL_OFFSET)
+  }
+
+  getGuestRevocations(n) {
+    return (this.getCanvasedGuest(n).readByte(layout.GUEST_REVOCATION_OFFSET) & 0x1e) >> 1
+  }
+
+  setGuestRevocations(n, revocations) {
+    revocations = Math.max(0, Math.min(10, revocations))
+
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_REVOCATION_OFFSET)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0xe1) | ((revocations << 1) & 0x1e),
+      layout.GUEST_REVOCATION_OFFSET
+    )
+  }
+
   getGuestEquipment(n, type) {
     if (type <= 0 || type > gameData.ITEM_TYPE_ACCESSORY) {
       return null

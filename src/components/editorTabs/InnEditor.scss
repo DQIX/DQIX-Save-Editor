@@ -141,4 +141,18 @@ $grid-size: 232px;
       }
     }
   }
+
+  .level {
+    label {
+      margin: 0 0 6px 0;
+      width: 100%;
+      &:not(:first-of-type) {
+        display: inline-flex;
+        justify-content: space-between;
+        span {
+          width: 60%;
+        }
+      }
+    }
+  }
 }
