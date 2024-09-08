@@ -5,8 +5,9 @@
   box-shadow: 0 4px 8px rgba(#000, 0.2);
 
   > .card-label {
-    margin: 0 0 0.5em -1em;
+    margin: 0 0 8px -1em;
     padding: 0 0 0.5em 1em;
+    height: 36px;
     color: var(--alt-text-color);
     font-weight: bold;
     border-bottom: 1px solid var(--surface-bg);

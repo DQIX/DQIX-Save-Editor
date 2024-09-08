@@ -1430,6 +1430,13 @@ export default class SaveManager {
     return this.getSaveLogBuffer().readByte(layout.HELD_GROTTO_COUNT_OFFSET)
   }
 
+  setHeldGrottoCount(count) {
+    const prev = this.getSaveLogBuffer().readByte(layout.HELD_GROTTO_COUNT_OFFSET)
+    if (prev < layout.HELD_GROTTO_COUNT_MAX) {
+      this.getSaveLogBuffer().writeByte(count, layout.HELD_GROTTO_COUNT_OFFSET)
+    }
+  }
+
   getGrotto(n) {
     //NOTE: see ./grotto.js for read/write for the grotto buffers
     return new Grotto(
@@ -1438,5 +1445,47 @@ export default class SaveManager {
         layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n + layout.GROTTO_DATA_SIZE
       )
     )
+  }
+
+  removeGrotto(n) {
+    const scooted = this.getSaveLogBuffer()
+      .subarray(
+        layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * (n + 1),
+        layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * this.getHeldGrottoCount()
+      )
+      .cloneInner()
+    this.getSaveLogBuffer()
+      .subarray(
+        layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n,
+        layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * this.getHeldGrottoCount()
+      )
+      .writeBuffer(scooted, 0)
+
+    this.setHeldGrottoCount(this.getHeldGrottoCount() - 1)
+  }
+
+  tryAddNewGrotto() {
+    const heldCount = this.getHeldGrottoCount()
+    if (heldCount >= layout.HELD_GROTTO_COUNT_MAX) {
+      return
+    }
+
+    this.setHeldGrottoCount(heldCount + 1)
+    this.getGrotto(heldCount).setKind(gameData.GROTTO_KIND_NORMAL)
+  }
+
+  importGrotto(str) {
+    const heldCount = this.getHeldGrottoCount()
+    if (heldCount >= layout.HELD_GROTTO_COUNT_MAX) {
+      return
+    }
+
+    this.setHeldGrottoCount(heldCount + 1)
+    const bytes = new Uint8Array(str.length / 2)
+    for (let i = 0; i < bytes.byteLength; i++) {
+      bytes[i] = parseInt(str.substr(i * 2, 2), 16)
+    }
+
+    this.getGrotto(heldCount)._buffer.writeBuffer(Buffer.from(bytes), 0)
   }
 }

@@ -12,8 +12,8 @@ import Button from "../../atoms/Button"
 import MapThumb from "../../atoms/MapThumb"
 
 export default props => {
-  const [seed, setSeed] = useState(props.seed)
-  const [rank, setRank] = useState(props.rank)
+  const seed = props.seed
+  const rank = props.rank
 
   const details = getGrottoDetails(seed, rank)
 

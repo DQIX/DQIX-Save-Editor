@@ -1,9 +1,9 @@
 .grotto-search {
-  height: 100%;
   position: relative;
+  min-width: 960px;
+  min-height: 480px;
   display: flex;
   flex-direction: column;
-
   .search-input {
     margin-bottom: 1em;
     p:last-child {
@@ -25,7 +25,9 @@
       border-collapse: collapse;
     }
     .search-result {
-      border-bottom: 0.5px solid var(--alt-text-color);
+      &:not(:last-child) {
+        border-bottom: 0.5px solid var(--alt-text-color);
+      }
       td {
         padding: 1em;
       }
@@ -33,7 +35,10 @@
   }
 }
 
-.card {
+.card:has(.grotto-search) {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   .grotto-search {
     height: calc(100% - 4em);
   }

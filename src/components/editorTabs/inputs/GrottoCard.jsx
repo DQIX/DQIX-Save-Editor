@@ -2,6 +2,7 @@ import { useState } from "react"
 import Button from "../../atoms/Button"
 import Card from "../../atoms/Card"
 import Modal from "../../atoms/Modal"
+import Textarea from "../../atoms/Textarea"
 import "./GrottoCard.scss"
 import GrottoSearch from "./GrottoSearch"
 import Input from "../../atoms/Input"
@@ -10,7 +11,8 @@ import data from "../../../game/data"
 import { GrottoStateSelect } from "../../atoms/IconSelect"
 
 export default props => {
-  const [modalOpen, setModalOpen] = useState(false)
+  const [searchModalOpen, setSearchModalOpen] = useState(false)
+  const [exportModalOpen, setExportModalOpen] = useState(false)
 
   return (
     <Card
@@ -51,24 +53,25 @@ export default props => {
             <span>{props.grotto.getName()}</span>
             <Button
               onClick={e => {
-                setModalOpen(true)
+                setSearchModalOpen(true)
               }}
             >
               search
             </Button>
             <Modal
-              open={modalOpen}
+              open={searchModalOpen}
               label="search grottos:"
               onClose={e => {
-                setModalOpen(false)
+                setSearchModalOpen(false)
               }}
             >
               <GrottoSearch
+                key={props.grotto.getMapIdString()}
                 seed={props.grotto.getSeed()}
                 rank={props.grotto.getRank()}
                 onChange={e => {
                   props.onChange(e)
-                  setModalOpen(false)
+                  setSearchModalOpen(false)
                 }}
               />
             </Modal>
@@ -106,6 +109,30 @@ export default props => {
         ) : (
           <></>
         )}
+        <Button
+          className="export-btn"
+          onClick={e => {
+            setExportModalOpen(true)
+          }}
+        >
+          export
+        </Button>
+        <Modal
+          open={exportModalOpen}
+          label="copy grotto string:"
+          onClose={e => {
+            setExportModalOpen(false)
+          }}
+        >
+          <Textarea value={props.grotto.exportString()}></Textarea>
+          <Button
+            onClick={e => {
+              setExportModalOpen(false)
+            }}
+          >
+            Ok
+          </Button>
+        </Modal>
       </div>
       <div>
         <small>treasures plundered:</small>

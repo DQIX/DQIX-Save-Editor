@@ -5,11 +5,11 @@ $transition-time: 0.2s;
 
 .modal {
   position: fixed;
-  left: $margin-w;
-  top: $margin-h;
-  width: calc(100% - $margin-w * 2);
-  height: calc(100% - $margin-h * 2);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 100000;
+  max-height: 80vh;
 
   opacity: 1;
   pointer-events: auto;
@@ -28,7 +28,7 @@ $transition-time: 0.2s;
   }
 
   &.closed {
-    top: 120px;
+    top: 40%;
     opacity: 0;
     pointer-events: none;
   }
@@ -38,7 +38,7 @@ $transition-time: 0.2s;
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(#000, 0.2);
+  background-color: rgba(#000, 0.4);
   width: 100%;
   height: 100%;
   z-index: 99999;

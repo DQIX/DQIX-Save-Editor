@@ -37,15 +37,11 @@
       padding: 0 0.5em;
       background-color: var(--card-bg-color);
     }
-
-    label,
-    .kind {
-      margin-right: 1em;
-    }
   }
 
   .name {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
     align-items: center;
 
     > span {
@@ -55,7 +51,13 @@
     > button {
       margin: 0;
       padding: 0.4em 0.8em;
-      margin-left: 1.5em;
+      margin-left: 0.5em;
+      justify-self: end;
+    }
+
+    label,
+    .kind {
+      margin-right: 0.5em;
     }
   }
 

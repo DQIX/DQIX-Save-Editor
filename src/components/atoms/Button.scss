@@ -6,4 +6,9 @@ button {
   border-radius: var(--border-radius);
   color: var(--on-accent-color);
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
 }

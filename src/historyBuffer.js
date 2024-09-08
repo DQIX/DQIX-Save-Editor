@@ -27,6 +27,10 @@ export default class HistoryBuffer {
     }
   }
 
+  toArray() {
+    return Array.from(this._buffer)
+  }
+
   get buffer() {
     return this._buffer
   }

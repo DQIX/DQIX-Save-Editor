@@ -3,117 +3,117 @@ $row-height: 30px;
 .hex-root {
   padding: 1em 1em 1em;
   display: flex;
-}
 
-.info {
-  margin-left: 1em;
-  flex-grow: 1;
-  min-width: fit-content;
-}
-
-.hex-editor {
-  padding: 0 0 0 1em;
-  height: calc(100vh - 2em - var(--navbar-height));
-  width: fit-content;
-
-  display: flex;
-  flex-direction: column;
-
-  > div:not(:first-child) {
-    overflow-y: scroll;
-    padding-bottom: 1em;
-    width: 100%;
+  .info {
+    margin-left: 1em;
+    flex-grow: 1;
+    min-width: fit-content;
   }
 
-  .row {
-    width: max-content;
-    height: $row-height;
-    text-wrap: nowrap;
-    pointer-events: none;
-  }
+  .hex-editor {
+    padding: 0 0 0 1em;
+    height: calc(100vh - 2em - var(--navbar-height));
+    width: fit-content;
 
-  .header {
-    position: sticky;
-    top: 0;
-    background-color: var(--card-bg-color);
-    z-index: 1;
-    margin: 0 0 0 -1em;
-    padding: 0.4em 1em 0.5em;
-    color: var(--alt-text-color);
-    font-weight: bold;
-    border-bottom: 1px solid var(--surface-bg);
-    height: auto;
-  }
+    display: flex;
+    flex-direction: column;
 
-  .header,
-  .offset {
-    input,
-    span {
-      color: var(--accent-color);
+    > div:not(:first-child) {
+      overflow-y: scroll;
+      padding-bottom: 1em;
+      width: 100%;
+    }
+
+    .row {
+      width: max-content;
+      height: $row-height;
+      text-wrap: nowrap;
+      pointer-events: none;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: var(--card-bg-color);
+      z-index: 1;
+      margin: 0 0 0 -1em;
+      padding: 0.4em 1em 0.5em;
+      color: var(--alt-text-color);
       font-weight: bold;
-    }
-  }
-
-  .offset {
-    width: 100px;
-  }
-
-  .hex,
-  .ascii,
-  .offset {
-    display: inline-block;
-    margin-right: 0.5em;
-
-    input,
-    span {
-      padding: 0;
-      background-color: transparent;
-      font-family: "Fira Code", "Courier New", Courier, monospace;
-      font-size: 1.1em;
-      pointer-events: auto;
+      border-bottom: 1px solid var(--surface-bg);
+      height: auto;
     }
 
-    input {
-      width: 30px;
-      height: 30px;
-      // width: calc(2ch + 6px);
-      padding: 1px;
-      border: 2px solid transparent;
-      &:focus,
-      &.selected {
-        border: 2px solid var(--accent-color);
+    .header,
+    .offset {
+      input,
+      span {
+        color: var(--accent-color);
+        font-weight: bold;
       }
     }
-    span {
-      width: 1ch;
-      margin: 0;
+
+    .offset {
+      width: 100px;
+    }
+
+    .hex,
+    .ascii,
+    .offset {
+      display: inline-block;
+      margin-right: 0.5em;
+
+      input,
+      span {
+        padding: 0;
+        background-color: transparent;
+        font-family: "Fira Code", "Courier New", Courier, monospace;
+        font-size: 1.1em;
+        pointer-events: auto;
+      }
+
+      input {
+        width: 30px;
+        height: 30px;
+        // width: calc(2ch + 6px);
+        padding: 1px;
+        border: 2px solid transparent;
+        &:focus,
+        &.selected {
+          border: 2px solid var(--accent-color);
+        }
+      }
+      span {
+        width: 1ch;
+        margin: 0;
+      }
+    }
+
+    .annotation {
+      margin-left: calc(100px + 0.5em);
+      pointer-events: none;
+      opacity: 0.25;
+      &.selected {
+        opacity: 0.35;
+      }
     }
   }
 
-  .annotation {
-    margin-left: calc(100px + 0.5em);
-    pointer-events: none;
-    opacity: 0.25;
-    &.selected {
-      opacity: 0.35;
-    }
-  }
-}
+  .info {
+    td {
+      padding: 0.1em 1em 0.1em 0;
+      &:first-child {
+        text-align: right;
+        font-weight: bold;
+      }
 
-.info {
-  td {
-    padding: 0.1em 1em 0.1em 0;
-    &:first-child {
-      text-align: right;
-      font-weight: bold;
-    }
+      &:last-child {
+        font-family: "Fira Code", "Courier New", Courier, monospace;
+      }
 
-    &:last-child {
-      font-family: "Fira Code", "Courier New", Courier, monospace;
-    }
-
-    div {
-      margin-right: 0.4em;
+      div {
+        margin-right: 0.4em;
+      }
     }
   }
 }

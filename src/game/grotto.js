@@ -421,8 +421,9 @@ export default class Grotto {
         )
       }
       case gameData.GROTTO_KIND_LEGACY: {
+        console.log(this)
         return (
-          gameData.legacyBosses[this.getLegacyBoss() - 1].name +
+          (gameData.legacyBosses[this.getLegacyBoss() - 1]?.name || "unknown") +
           "'s Map lv. " +
           this.getLegacyBossLevel()
         )
@@ -455,6 +456,13 @@ export default class Grotto {
     return (
       this.getRank().toString(16).padStart(2, "0") + this.getSeed().toString(16).padStart(4, "0")
     )
+  }
+
+  exportString() {
+    return this._buffer
+      .toArray()
+      .map(n => n.toString(16).padStart(2, "0"))
+      .join("")
   }
 
   getState() {

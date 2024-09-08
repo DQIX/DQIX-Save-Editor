@@ -526,7 +526,7 @@ const headEquipment = [
   { id: 12429, alchemy_index: -1,  item_type: ITEM_TYPE_HEAD,      icon: 251,      name: "Holy hat",                   },
   { id: 12402, alchemy_index: -1,  item_type: ITEM_TYPE_HEAD,      icon: 252,      name: "Hermetic hat",               },
   { id: 12401, alchemy_index: -1,  item_type: ITEM_TYPE_HEAD,      icon: 253,      name: "Hocus hat",                  },
-  { id: 12600, alchemy_index: 344, item_type: ITEM_TYPE_HEAD,      icon: 254,      name: "Tricy turban",               },
+  { id: 12600, alchemy_index: 344, item_type: ITEM_TYPE_HEAD,      icon: 254,      name: "Tricky turban",              },
   { id: 12700, alchemy_index: 345, item_type: ITEM_TYPE_HEAD,      icon: 255,      name: "Thief's turban",             },
   { id: 12701, alchemy_index: -1,  item_type: ITEM_TYPE_HEAD,      icon: 256,      name: "Disturbin' turban",          },
   { id: 12807, alchemy_index: 346, item_type: ITEM_TYPE_HEAD,      icon: 257,      name: "Malleable mask",             },

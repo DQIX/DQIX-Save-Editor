@@ -1,5 +1,5 @@
-$grid-size: 200px;
-$sidebar-width: calc($grid-size * 2 + 1em);
+$grid-size: 232px;
+$sidebar-width: calc($grid-size * 1.5 + 1em);
 
 .grotto-root {
   padding: 1em;
@@ -10,7 +10,7 @@ $sidebar-width: calc($grid-size * 2 + 1em);
 
     > ul {
       box-sizing: content-box;
-      height: calc(100% - 3em);
+      height: calc(100% - 124px);
       margin: 0;
       overflow-y: scroll;
       overflow-x: hidden;
@@ -28,12 +28,26 @@ $sidebar-width: calc($grid-size * 2 + 1em);
         cursor: pointer;
         display: flex;
         align-items: center;
+
         > div {
           margin-right: 0.5em;
         }
-        > span {
-          float: right;
+
+        > a {
+          position: absolute;
+          right: 1em;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.1s ease-in-out;
+          &:hover {
+            background-color: var(--accent-fade);
+          }
         }
+
         &:hover {
           background-color: var(--accent-fade);
         }
@@ -53,6 +67,21 @@ $sidebar-width: calc($grid-size * 2 + 1em);
           // }
         }
       }
+    }
+
+    .edit-list {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      left: 0;
+      padding: 1em;
+      background-color: var(--card-bg-color);
+      border-top: 1px solid var(--surface-bg);
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 1em;
+      height: 64px;
     }
   }
 
