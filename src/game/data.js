@@ -2692,6 +2692,26 @@ const guestOrigins = {
   [300]: "somewhere nice",
 }
 
+// prettier-ignore
+const guestLocations = [
+  {id: 0,  name: "where? (0)",           valid: false, },
+  {id: 1,  name: "where? (1)",           valid: false, },
+  {id: 2,  name: "level 1 (left)",       valid: true,  },
+  {id: 3,  name: "level 2 (left)",       valid: true,  },
+  {id: 4,  name: "level 2 (right)",      valid: true,  },
+  {id: 5,  name: "level 3 (left)",       valid: true,  },
+  {id: 6,  name: "level 3 (right)",      valid: true,  },
+  {id: 7,  name: "where? (7)",           valid: false, },
+  {id: 8,  name: "where? (8)",           valid: false, },
+  {id: 9,  name: "royal suites (right)", valid: true,  },
+  {id: 10, name: "royal suites (left)",  valid: true,  },
+  {id: 11, name: "where? (11)",          valid: false, },
+  {id: 12, name: "where? (12)",          valid: false, },
+  {id: 13, name: "where? (13)",          valid: false, },
+  {id: 14, name: "where? (14)",          valid: false, },
+  {id: 15, name: "where? (15)",          valid: false, },
+]
+
 const speechStyles = [
   "♂ Chirpy Boy",
   "♀ Cute Girl",
@@ -5630,6 +5650,7 @@ export default {
   bodyTypes,
 
   titles,
+  guestLocations,
   speechStyles,
   guestOrigins,
 

@@ -147,11 +147,11 @@ export const CANVASED_GUEST_NUM = 30
 /// offset of name relative to beginning of guest data
 export const GUEST_NAME_OFFSET = 0
 
-export const GUEST_HOLDING_GROTTO_OFFSET = 11
+export const GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET = 11
 
 /// offset of vocation and location in inn relative to beginning of guest data
 export const GUEST_VOCATION_AND_LOCATION_OFFSET = 12
-export const GUEST_LEVEL_OFFSET = 13
+export const GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET = 13
 
 /// offset of the index of the guest (0 if invalid), pretty sure this is the order of guests canvased
 export const GUEST_INDEX_OFFSET = 16

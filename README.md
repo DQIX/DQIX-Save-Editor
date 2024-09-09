@@ -2,7 +2,7 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>features/todo (82/106 + 5)</h2></summary>
+<details><summary><h2>features/todo (88/108 + 7)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -24,8 +24,6 @@ A save editor for dragon quest ix
 - [x] held items
 - [x] name
 - [x] gender
-- [ ] party/standby move
-- [ ] import/export
 
 </details>
 
@@ -38,7 +36,7 @@ A save editor for dragon quest ix
 
 <details><summary><h3>inn:</h3></summary>
 
-- [ ] lodged characters profiles
+- [ ] guest data:
   - [x] name
   - [x] appearance
     - [x] face
@@ -64,13 +62,16 @@ A save editor for dragon quest ix
     - [x] alchenomicon
   - [x] play time
   - [x] map
-  - [ ] level/revocations
+  - [x] level
+  - [x] revocations
   - [x] profile
     - [x] location
     - [x] birthday
     - [x] title
     - [x] speech style
     - [x] message
+  - [x] check-in date
+  - [x] location
   - [ ] gender (3?)
 - [x] inn rank
 - [ ] import/export
@@ -114,8 +115,8 @@ A save editor for dragon quest ix
 - [x] legacy
   - [x] turns
   - [x] boss
-- [ ] add/remove
-- [ ] import/export
+- [x] add/remove
+- [x] import/export
 
 </details>
 
@@ -152,6 +153,7 @@ A save editor for dragon quest ix
 
 - [x] auto detection of quick/confessed save
 - [x] undo/redo history
+- [ ] fix number input weirdness
 
 </details>
 
@@ -162,6 +164,8 @@ A save editor for dragon quest ix
 - [ ] unsafe mode?
 - [ ] pals past and present
 - [ ] world things (chests, item respawns)
+- [ ] party/standby move
+- [ ] import/export party characters
 
 </details>
 

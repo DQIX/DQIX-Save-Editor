@@ -136,6 +136,9 @@ $grid-size: 232px;
       display: inline-flex;
       width: 100%;
       margin-bottom: 6px;
+      input {
+        max-width: 40%;
+      }
       span {
         width: 60%;
       }
@@ -152,6 +155,18 @@ $grid-size: 232px;
         span {
           width: 60%;
         }
+      }
+    }
+  }
+
+  .lodgings {
+    label {
+      margin-right: 4px;
+    }
+    small {
+      display: block;
+      &:not(:first-of-type) {
+        margin-top: 1em;
       }
     }
   }

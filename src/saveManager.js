@@ -805,6 +805,68 @@ export default class SaveManager {
     return (this.getCanvasedGuest(n).readU32LE(layout.GUEST_INDEX_OFFSET) & 0xfffffffc) >> 2
   }
 
+  getGuestLocation(n) {
+    return (
+      (this.getCanvasedGuest(n).readByte(layout.GUEST_VOCATION_AND_LOCATION_OFFSET) & 0xf0) >> 4
+    )
+  }
+
+  setGuestLocation(n, loc) {
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_VOCATION_AND_LOCATION_OFFSET)
+
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0x0f) | ((loc << 4) & 0xf0),
+      layout.GUEST_VOCATION_AND_LOCATION_OFFSET
+    )
+  }
+
+  getGuestCheckInDay(n) {
+    return (
+      (this.getCanvasedGuest(n).readU16LE(layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET) & 0xf800) >>
+      11
+    )
+  }
+
+  setGuestCheckInDay(n, day) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET)
+
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0x7ff) | ((day << 11) & 0xf800),
+      layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET
+    )
+  }
+
+  getGuestCheckInMonth(n) {
+    return (
+      (this.getCanvasedGuest(n).readU16LE(layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET) & 0x780) >>
+      7
+    )
+  }
+
+  setGuestCheckInMonth(n, month) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET)
+
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0xf87f) | ((month << 7) & 0x780),
+      layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET
+    )
+  }
+
+  getGuestCheckInYear(n) {
+    return (
+      2000 +
+      (this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET) & 0x7f)
+    )
+  }
+
+  setGuestCheckInYear(n, year) {
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0x80) | ((year - 2000) & 0x7f),
+      layout.GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET
+    )
+  }
+
   getCanvasedGuestName(n) {
     return this.getCanvasedGuest(n).readDqixString(layout.GUEST_NAME_OFFSET, layout.NAME_LENGTH)
   }
@@ -1093,13 +1155,16 @@ export default class SaveManager {
   }
 
   getGuestLevel(n) {
-    return this.getCanvasedGuest(n).readByte(layout.GUEST_LEVEL_OFFSET) & 0x7f
+    return this.getCanvasedGuest(n).readByte(layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET) & 0x7f
   }
 
   setGuestLevel(n, lvl) {
     lvl = Math.max(1, Math.min(99, lvl))
-    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_LEVEL_OFFSET)
-    this.getCanvasedGuest(n).writeByte((prev & 0x80) | (lvl & 0x7f), layout.GUEST_LEVEL_OFFSET)
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET)
+    this.getCanvasedGuest(n).writeByte(
+      (prev & 0x80) | (lvl & 0x7f),
+      layout.GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET
+    )
   }
 
   getGuestRevocations(n) {
@@ -1226,15 +1291,17 @@ export default class SaveManager {
   }
 
   isGuestHoldingGrotto(n) {
-    return !!(this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_OFFSET) & 0x80)
+    return !!(
+      this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET) & 0x80
+    )
   }
 
   setGuestHoldingGrotto(n, held) {
-    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_OFFSET)
+    const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET)
 
     this.getCanvasedGuest(n).writeByte(
       (prev & 0x7f) | (held << 7),
-      layout.GUEST_HOLDING_GROTTO_OFFSET
+      layout.GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET
     )
   }
 

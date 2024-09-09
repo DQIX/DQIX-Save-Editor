@@ -218,6 +218,75 @@ export default props => {
             }}
           />
 
+          <Card label="lodgings:" className="lodgings">
+            <small>location: </small>
+            <label>
+              <select
+                value={save.getGuestLocation(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestLocation(guest, e.target.value)
+                  })
+                }}
+              >
+                {gameData.guestLocations
+                  .filter(loc => loc.valid || save.getGuestLocation(guest) == loc.id)
+                  .map((loc, i) => (
+                    <option key={i} value={loc.id}>
+                      {loc.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <br />
+            <small>check-in date: </small>
+            <label>
+              d:
+              <Input
+                type="number"
+                value={save.getGuestCheckInDay(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestCheckInDay(guest, e.target.value)
+                  })
+                }}
+                min="1"
+                max="31"
+                size="3"
+              />
+            </label>
+            <label>
+              m:
+              <Input
+                type="number"
+                value={save.getGuestCheckInMonth(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestCheckInMonth(guest, e.target.value)
+                  })
+                }}
+                min="1"
+                max="12"
+                size="3"
+              />
+            </label>
+            <label>
+              y:
+              <Input
+                type="number"
+                value={save.getGuestCheckInYear(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestCheckInYear(guest, e.target.value)
+                  })
+                }}
+                min="2000"
+                max="2128"
+                size="4"
+              />
+            </label>
+          </Card>
+
           <Card label="vocation:" className="level">
             <VocationSelect
               id={save.getGuestVocation(guest)}
