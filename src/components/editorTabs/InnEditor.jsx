@@ -218,117 +218,6 @@ export default props => {
             }}
           />
 
-          <Card label="lodgings:" className="lodgings">
-            <small>location: </small>
-            <label>
-              <select
-                value={save.getGuestLocation(guest)}
-                onChange={e => {
-                  updateSave(save => {
-                    save.setGuestLocation(guest, e.target.value)
-                  })
-                }}
-              >
-                {gameData.guestLocations
-                  .filter(loc => loc.valid || save.getGuestLocation(guest) == loc.id)
-                  .map((loc, i) => (
-                    <option key={i} value={loc.id}>
-                      {loc.name}
-                    </option>
-                  ))}
-              </select>
-            </label>
-            <br />
-            <small>check-in date: </small>
-            <label>
-              d:
-              <Input
-                type="number"
-                value={save.getGuestCheckInDay(guest)}
-                onChange={e => {
-                  updateSave(save => {
-                    save.setGuestCheckInDay(guest, e.target.value)
-                  })
-                }}
-                min="1"
-                max="31"
-                size="3"
-              />
-            </label>
-            <label>
-              m:
-              <Input
-                type="number"
-                value={save.getGuestCheckInMonth(guest)}
-                onChange={e => {
-                  updateSave(save => {
-                    save.setGuestCheckInMonth(guest, e.target.value)
-                  })
-                }}
-                min="1"
-                max="12"
-                size="3"
-              />
-            </label>
-            <label>
-              y:
-              <Input
-                type="number"
-                value={save.getGuestCheckInYear(guest)}
-                onChange={e => {
-                  updateSave(save => {
-                    save.setGuestCheckInYear(guest, e.target.value)
-                  })
-                }}
-                min="2000"
-                max="2128"
-                size="4"
-              />
-            </label>
-          </Card>
-
-          <Card label="vocation:" className="level">
-            <VocationSelect
-              id={save.getGuestVocation(guest)}
-              onChange={e => {
-                updateSave(save => {
-                  save.setGuestVocation(guest, e.target.value)
-                })
-              }}
-            />
-            <label>
-              <span>level:</span>
-              <Input
-                type="number"
-                min="1"
-                max="99"
-                size="4"
-                value={save.getGuestLevel(guest)}
-                onChange={e => {
-                  updateSave(save => {
-                    save.setGuestLevel(guest, e.target.value)
-                  })
-                }}
-              />
-            </label>
-            <br />
-            <label>
-              <span>revocations:</span>
-              <Input
-                type="number"
-                min="0"
-                max="10"
-                size="4"
-                value={save.getGuestRevocations(guest)}
-                onChange={e => {
-                  updateSave(save => {
-                    save.setGuestRevocations(guest, e.target.value)
-                  })
-                }}
-              />
-            </label>
-          </Card>
-
           <Card label="records:" className="records">
             <label>
               <span>battle victories:</span>
@@ -525,6 +414,117 @@ export default props => {
                 size="3"
               />
               m
+            </label>
+          </Card>
+
+          <Card label="lodgings:" className="lodgings">
+            <small>location: </small>
+            <label>
+              <select
+                value={save.getGuestLocation(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestLocation(guest, e.target.value)
+                  })
+                }}
+              >
+                {gameData.guestLocations
+                  .filter(loc => loc.valid || save.getGuestLocation(guest) == loc.id)
+                  .map((loc, i) => (
+                    <option key={i} value={loc.id}>
+                      {loc.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <br />
+            <small>check-in date: </small>
+            <label>
+              d:
+              <Input
+                type="number"
+                value={save.getGuestCheckInDay(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestCheckInDay(guest, e.target.value)
+                  })
+                }}
+                min="1"
+                max="31"
+                size="3"
+              />
+            </label>
+            <label>
+              m:
+              <Input
+                type="number"
+                value={save.getGuestCheckInMonth(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestCheckInMonth(guest, e.target.value)
+                  })
+                }}
+                min="1"
+                max="12"
+                size="3"
+              />
+            </label>
+            <label>
+              y:
+              <Input
+                type="number"
+                value={save.getGuestCheckInYear(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestCheckInYear(guest, e.target.value)
+                  })
+                }}
+                min="2000"
+                max="2128"
+                size="4"
+              />
+            </label>
+          </Card>
+
+          <Card label="vocation:" className="level">
+            <VocationSelect
+              id={save.getGuestVocation(guest)}
+              onChange={e => {
+                updateSave(save => {
+                  save.setGuestVocation(guest, e.target.value)
+                })
+              }}
+            />
+            <label>
+              <span>level:</span>
+              <Input
+                type="number"
+                min="1"
+                max="99"
+                size="4"
+                value={save.getGuestLevel(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestLevel(guest, e.target.value)
+                  })
+                }}
+              />
+            </label>
+            <br />
+            <label>
+              <span>revocations:</span>
+              <Input
+                type="number"
+                min="0"
+                max="10"
+                size="4"
+                value={save.getGuestRevocations(guest)}
+                onChange={e => {
+                  updateSave(save => {
+                    save.setGuestRevocations(guest, e.target.value)
+                  })
+                }}
+              />
             </label>
           </Card>
 

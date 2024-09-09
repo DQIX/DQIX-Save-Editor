@@ -181,6 +181,9 @@ export const GUEST_GROTTO_COUNT_OFFSET = 69
 export const GUEST_WARDROBE_COUNT_OFFSET = 71
 export const GUEST_QUEST_GUEST_ALCHEMY_OFFSET = 72
 
+/// title as shown on the top of the screen
+export const GUEST_TITLE_TOP_OFFSET = 76
+
 export const GUEST_REVOCATION_OFFSET = 78
 
 export const GUEST_COLOR_OFFSET = 79
@@ -192,6 +195,7 @@ export const GUEST_SPEECH_STYLE_OFFSET = 110
 
 export const GUEST_SECRET_AGE_OFFSET = 111
 
+/// title as shown when talking and origin
 export const GUEST_TITLE_ORIGIN_OFFSET = 113
 
 export const GUEST_MESSAGE_OFFSET = 116

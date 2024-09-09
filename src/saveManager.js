@@ -1078,6 +1078,12 @@ export default class SaveManager {
       (prev & 0xffc007ff) | (((title << 3) & 0x3ff8) << 8),
       layout.GUEST_TITLE_ORIGIN_OFFSET
     )
+
+    const prev1 = this.getCanvasedGuest(n).readU16LE(layout.GUEST_TITLE_TOP_OFFSET)
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev1 & 0xf800) | (title & 0x7ff),
+      layout.GUEST_TITLE_TOP_OFFSET
+    )
   }
 
   getCanvasedGuestOrigin(n) {
