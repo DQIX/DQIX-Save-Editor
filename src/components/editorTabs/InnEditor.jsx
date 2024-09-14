@@ -21,11 +21,17 @@ export default props => {
 
   const heldGrotto = save.getGuestHeldGrotto(guest)
 
+  const guestIdxs = Array.from({ length: 30 }, (_, i) => ({
+    idx: save.getCanvasedGuestIndex(i),
+    guest: i,
+  })).filter(guest => guest.idx != 0)
+
   return (
     <div className="inn-root">
       <div className="sidebar">
-        <Card label="inn level:" className="instance">
+        <Card label="inn info:" className="instance">
           <label>
+            level:{" "}
             <Input
               type="number"
               min={0}
@@ -39,23 +45,30 @@ export default props => {
               }}
             />
           </label>
+          {gameData.guestLocations
+            .filter(loc => loc.valid)
+            .map(loc => (
+              <small>
+                {loc.name}:{" "}
+                {guestIdxs.reduce((a, c) => a + (save.getGuestLocation(c.guest) == loc.id), 0)}/
+                {loc.size}
+              </small>
+            ))}
         </Card>
-        <Card label="canvased guests:" className="guest-list canvased-guests">
+        <Card
+          label={`canvased guests: (${guestIdxs.length}/30)`}
+          className="guest-list canvased-guests"
+        >
           <ul>
-            {Array.from({ length: 30 }, (_, i) => ({
-              idx: save.getCanvasedGuestIndex(i),
-              guest: i,
-            }))
-              .filter(guest => guest.idx != 0)
-              .map((x, i) => (
-                <li
-                  key={i}
-                  className={x.guest == guest ? "active" : ""}
-                  onClick={_ => setGuest(x.guest)}
-                >
-                  {save.getCanvasedGuestName(x.guest) || "(unnamed)"}
-                </li>
-              ))}
+            {guestIdxs.map((x, i) => (
+              <li
+                key={i}
+                className={x.guest == guest ? "active" : ""}
+                onClick={_ => setGuest(x.guest)}
+              >
+                {save.getCanvasedGuestName(x.guest) || "(unnamed)"}
+              </li>
+            ))}
           </ul>
           {/* <div className="edit-list">
             <button

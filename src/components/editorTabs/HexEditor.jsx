@@ -43,13 +43,19 @@ const Row = props => {
               type="text"
               value={b.toString(16).padStart(2, "0")}
               onChange={e => {
-                //TODO: write
+                const n = parseInt(e.target.value, 16)
+                if (isNaN(n)) {
+                  return
+                }
+
+                if (0 <= n && n <= 255) {
+                  props.onChange && props.onChange(props.i + i, n)
+                }
               }}
               onFocus={e => {
                 props.select && props.select(props.i + i)
               }}
               size={2}
-              maxLength={2}
               className={props.i + i === props.selected ? "selected" : ""}
             />
           )
@@ -58,7 +64,8 @@ const Row = props => {
       <div className="ascii">
         {Array.from({ length: props.length }, (_, i) => {
           const b = props.buffer[props.i + i]
-          return <span key={i}>{toHexChar(b) || "."}</span>
+          // return <span key={i}>{toHexChar(b) || "."}</span>
+          return <span key={i}>{(b && b != 0xff && stringTables.encode[b]) || "."}</span>
         })}
       </div>
     </div>
@@ -66,7 +73,7 @@ const Row = props => {
 }
 
 export default props => {
-  let { save } = useContext(SaveManagerContext)
+  let { save, updateSave } = useContext(SaveManagerContext)
 
   let [selected, setSelected] = useState(null)
 
@@ -177,6 +184,11 @@ export default props => {
                     height: 30,
                   }}
                   buffer={save.buffer.buffer}
+                  onChange={(offset, value) => {
+                    updateSave(save => {
+                      save.buffer.writeByte(value, offset)
+                    })
+                  }}
                   length={rowLen}
                   i={i * rowLen}
                   select={i => setSelected(i)}

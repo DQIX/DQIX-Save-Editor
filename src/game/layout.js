@@ -156,6 +156,9 @@ export const GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET = 13
 /// offset of the index of the guest (0 if invalid), pretty sure this is the order of guests canvased
 export const GUEST_INDEX_OFFSET = 16
 
+/// guest id
+export const GUEST_ID_OFFSET = 20
+
 export const GUEST_EQUIPMENT_OFFSET = 26
 
 export const GUEST_FACE_OFFSET = 30
@@ -495,9 +498,23 @@ for (let i = 0; i < 2; i++) {
       })
 
       annotations.push({
+        name: `holding grotto + check-in year`,
+        begin: guestOffset + GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET,
+        length: 1,
+        color: "var(--red)",
+      })
+
+      annotations.push({
         name: "vocation/location",
         begin: guestOffset + GUEST_VOCATION_AND_LOCATION_OFFSET,
         length: 1,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
+        name: "level/check-in day+month",
+        begin: guestOffset + GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET,
+        length: 2,
         color: "var(--blue)",
       })
 
@@ -506,6 +523,13 @@ for (let i = 0; i < 2; i++) {
         begin: guestOffset + GUEST_INDEX_OFFSET,
         length: 4,
         color: "var(--rosewater)",
+      })
+
+      annotations.push({
+        name: `guest ID`,
+        begin: guestOffset + GUEST_ID_OFFSET,
+        length: 6,
+        color: "var(--red)",
       })
 
       for (const itemType of gameData.equipmentTypes) {
@@ -639,6 +663,13 @@ for (let i = 0; i < 2; i++) {
       })
 
       annotations.push({
+        name: "title top",
+        begin: guestOffset + GUEST_TITLE_TOP_OFFSET,
+        length: 2,
+        color: "var(--blue)",
+      })
+
+      annotations.push({
         name: "title/origin data",
         begin: guestOffset + GUEST_TITLE_ORIGIN_OFFSET,
         length: 2,
@@ -717,25 +748,50 @@ for (let i = 0; i < 2; i++) {
     }
   }
 
-  // // items
-  // FIXME: needs validation
-  // {
-  //   for (const [id, table] of Object.entries(gameData.itemTables)) {
-  //     annotations.push({
-  //       name: `${gameData.itemTypeNames[id]} bag ids`,
-  //       begin: slotOffset + itemOffsets[id].idOffset,
-  //       length: table.length * 2,
-  //       color: "var(--mauve)",
-  //     })
+  // items
+  {
+    for (const [id, table] of Object.entries(gameData.itemTables)) {
+      annotations.push({
+        name: `${gameData.itemTypeNames[id]} bag ids`,
+        begin: slotOffset + itemOffsets[id].idOffset,
+        length: table.length * 2,
+        color: "var(--mauve)",
+      })
 
-  //     annotations.push({
-  //       name: `${gameData.itemTypeNames[id]} bag counts`,
-  //       begin: slotOffset + itemOffsets[id].countOffset,
-  //       length: table.length * 2,
-  //       color: "var(--mauve)",
-  //     })
-  //   }
-  // }
+      annotations.push({
+        name: `${gameData.itemTypeNames[id]} bag counts`,
+        begin: slotOffset + itemOffsets[id].countOffset,
+        length: table.length,
+        color: "var(--red)",
+      })
+    }
+  }
+
+  // quests
+  {
+    annotations.push({
+      name: `"quest statuses`,
+      begin: slotOffset + QUEST_STATUS_OFFSET,
+      length: gameData.quests.length * 0.5,
+      color: "var(--sky)",
+    })
+
+    annotations.push({
+      name: `quest cleared bitflag`,
+      begin: slotOffset + QUEST_CLEARED_OFFSET,
+      length: gameData.quests.length / 8,
+      color: "var(--teal)",
+    })
+
+    for (const q of gameData.quests) {
+      annotations.push({
+        name: `"${q.name}" time`,
+        begin: slotOffset + QUEST_TIMES_OFFSET + q.id * 4,
+        length: 4,
+        color: "var(--green)",
+      })
+    }
+  }
 
   // dlc
   {
@@ -881,7 +937,7 @@ for (let i = 0; i < 2; i++) {
     annotations.push({
       name: "visited locations bitflags",
       begin: slotOffset + VISITED_LOCATIONS_OFFSET,
-      length: 2,
+      length: 3,
       color: "var(--blue)",
     })
   }
@@ -891,22 +947,30 @@ for (let i = 0; i < 2; i++) {
     annotations.push({
       name: "checksum A",
       begin: slotOffset + CHECKSUM_A_OFFSET,
-      length: 1,
+      length: 4,
       color: "var(--flamingo)",
     })
 
     annotations.push({
       name: "checksum B",
       begin: slotOffset + CHECKSUM_B_OFFSET,
-      length: 1,
+      length: 4,
       color: "var(--flamingo)",
     })
   }
 }
 
+// system
 annotations.push({
   name: "magic number",
   begin: 0,
   length: 15,
   color: "var(--blue)",
+})
+
+annotations.push({
+  name: "is intermission",
+  begin: IS_QUICK_SAVE_OFFSET,
+  length: 1,
+  color: "var(--lavender)",
 })

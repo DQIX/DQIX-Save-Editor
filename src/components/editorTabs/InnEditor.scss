@@ -8,6 +8,15 @@ $grid-size: 232px;
     flex-direction: column;
     gap: 1em;
     width: $grid-size;
+    .instance {
+      label {
+        display: block;
+        margin-bottom: 0.5em;
+      }
+      small {
+        display: block;
+      }
+    }
   }
 
   .guest-list {

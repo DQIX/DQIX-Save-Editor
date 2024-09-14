@@ -6,7 +6,7 @@ import Input from "../atoms/Input"
 
 import gameData from "../../game/data"
 import "./QuestEditor.scss"
-import { QuestStatusIcon } from "../atoms/Icon"
+import Button from "../atoms/Button"
 
 const TimeInput = props => {
   const year = 2000 + (props.value & 0x7f)
@@ -115,6 +115,20 @@ export default props => {
           />
           dlc
         </label>
+        <br />
+        <Button
+          onClick={e => {
+            updateSave(save => {
+              for (const q of gameData.quests) {
+                if (q.dlc) {
+                  save.setDlcQuestUnlocked(q.id, true)
+                }
+              }
+            })
+          }}
+        >
+          unlock all
+        </Button>
         {/* <p>{save.getQuestCompletionCount()}</p> */}
         <p>
           <small>

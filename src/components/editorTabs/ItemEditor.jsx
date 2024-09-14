@@ -21,7 +21,7 @@ const ItemCard = props => {
   // useEffect(() => {
   //   updateSave(save => {
   //     items.forEach(item => {
-  //       save.setItemCount(item.id, 1)
+  //       save.setItemCount(item.id, 50)
   //     })
   //   })
   // })
