@@ -61,19 +61,33 @@ export default class SaveManager {
       //FIXME
       this.getChecksums(i)
       const a = crc32.buf(
-        this.saveSlots[i].subarray(layout.CHECKSUM_A_DATA_OFFSET, layout.CHECKSUM_A_DATA_END),
+        this.saveSlots[i].buffer.subarray(
+          layout.CHECKSUM_A_DATA_OFFSET,
+          layout.CHECKSUM_A_DATA_END
+        ),
         0
       )
       const b = crc32.buf(
-        this.saveSlots[i].subarray(layout.CHECKSUM_B_DATA_OFFSET, layout.CHECKSUM_B_DATA_END),
+        this.saveSlots[i].buffer.subarray(
+          layout.CHECKSUM_B_DATA_OFFSET,
+          layout.CHECKSUM_B_DATA_END
+        ),
+        0
+      )
+      const c = crc32.buf(
+        this.saveSlots[i].buffer.subarray(
+          layout.CHECKSUM_C_DATA_OFFSET,
+          layout.CHECKSUM_C_DATA_END
+        ),
         0
       )
 
       // NOTE: crc-32 returns an int instead of a uint
       const srcA = this.saveSlots[i].readI32LE(layout.CHECKSUM_A_OFFSET)
       const srcB = this.saveSlots[i].readI32LE(layout.CHECKSUM_B_OFFSET)
+      const srcC = this.saveSlots[i].readI32LE(layout.CHECKSUM_C_OFFSET)
 
-      if (a != srcA || b != srcB) {
+      if (a != srcA || b != srcB || c != srcC) {
         return false
       }
     }
@@ -99,6 +113,7 @@ export default class SaveManager {
       let newChecksums = this.makeChecksums(i)
       this.saveSlots[i].writeI32LE(newChecksums[0], layout.CHECKSUM_A_OFFSET)
       this.saveSlots[i].writeI32LE(newChecksums[1], layout.CHECKSUM_B_OFFSET)
+      this.saveSlots[i].writeI32LE(newChecksums[2], layout.CHECKSUM_C_OFFSET)
     }
 
     const el = document.createElement("a")
@@ -124,6 +139,13 @@ export default class SaveManager {
         this.saveSlots[slot].buffer.subarray(
           layout.CHECKSUM_B_DATA_OFFSET,
           layout.CHECKSUM_B_DATA_END
+        ),
+        0
+      ),
+      crc32.buf(
+        this.saveSlots[slot].buffer.subarray(
+          layout.CHECKSUM_C_DATA_OFFSET,
+          layout.CHECKSUM_C_DATA_END
         ),
         0
       ),
@@ -1436,6 +1458,59 @@ export default class SaveManager {
   setDqvcItemExpiryTime(time) {
     return this.getSaveLogBuffer().writeU32LE(time, layout.DQVC_ITEMS_EXPIRY_TIME_OFFSET)
   }
+
+  /*************************************************************************************************
+   *                                         record methods                                        *
+   *************************************************************************************************/
+
+  getBattleVictories() {
+    return this.getSaveLogBuffer().readU32LE(layout.BATTLE_VICTORIES_OFFSET) & 0xffffff
+  }
+  setBattleVictories(n) {}
+  getAlchemyCount() {
+    return this.getSaveLogBuffer().readI32LE(layout.ALCHEMY_PERFORMED_OFFSET)
+  }
+  setAlchemyCount(n) {}
+
+  getAccoladeCount() {
+    return 0
+  }
+  setAccoladeCount(n) {}
+
+  getQuestsCompleted() {
+    return 0
+  }
+  setQuestsCompleted(n) {}
+
+  getGrottosCompleted() {
+    return 0
+  }
+  setGrottosCompleted(n) {}
+
+  getGuestsCanvased() {
+    return 0
+  }
+  setGuestsCanvased(n) {}
+
+  getMonsterCompletion() {
+    return 0
+  }
+  setMonsterCompletion() {}
+
+  getWardrobeCompletion() {
+    return 0
+  }
+  setWardrobeCompletion() {}
+
+  getItemCompletion() {
+    return 0
+  }
+  setItemCompletion() {}
+
+  getAlchenomiconCompletion() {
+    return 0
+  }
+  setAlchenomiconCompletion() {}
 
   /*************************************************************************************************
    *                                         quest methods                                         *

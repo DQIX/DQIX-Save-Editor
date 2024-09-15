@@ -10,12 +10,19 @@ export const CHECKSUM_A_OFFSET = 16
 export const CHECKSUM_A_DATA_OFFSET = 20
 export const CHECKSUM_A_DATA_END = 36
 
+export const CHECKSUM_C_OFFSET = 36
+export const CHECKSUM_C_DATA_OFFSET = 40
+export const CHECKSUM_C_DATA_END = 132
+
 export const CHECKSUM_B_OFFSET = 132
 export const CHECKSUM_B_DATA_OFFSET = 136
 export const CHECKSUM_B_DATA_END = 28644
 
 /// byte for if the save slot is a quick save
 export const IS_QUICK_SAVE_OFFSET = 20
+
+/// first bit is 1 if the save exists
+export const SAVE_EXISTS_OFFSET = 21
 
 export const SAVE_AREA = 11476
 
@@ -250,6 +257,14 @@ export const GROTTO_SEED_TURNS_OFFSET = 26
 /// size of each grotto's data
 export const GROTTO_DATA_SIZE = 28
 
+export const ALCHEMY_PERFORMED_OFFSET = 15016 // int?
+export const BATTLE_VICTORIES_OFFSET = 16032
+
+export const BATTLE_FLEE_OFFSET = 16076
+export const BATTLE_FLEE_SUCCESS_OFFSET = 16080
+export const BATTLES_OFFSET = 16084
+export const BATTLE_LOSSES_OFFSET = 16088
+
 export const annotations = []
 
 for (let i = 0; i < 2; i++) {
@@ -271,6 +286,13 @@ for (let i = 0; i < 2; i++) {
         begin: characterOffset,
         length: CHARACTER_SIZE,
         color: "var(--lavender)",
+      })
+
+      annotations.push({
+        name: `color`,
+        begin: characterOffset + CHARACTER_COLOR_OFFSET,
+        length: 1,
+        color: "var(--yellow)",
       })
 
       annotations.push({
@@ -957,6 +979,13 @@ for (let i = 0; i < 2; i++) {
       length: 4,
       color: "var(--flamingo)",
     })
+
+    annotations.push({
+      name: "checksum C",
+      begin: slotOffset + CHECKSUM_C_OFFSET,
+      length: 4,
+      color: "var(--flamingo)",
+    })
   }
 }
 
@@ -973,4 +1002,11 @@ annotations.push({
   begin: IS_QUICK_SAVE_OFFSET,
   length: 1,
   color: "var(--lavender)",
+})
+
+annotations.push({
+  name: "save exists",
+  begin: SAVE_EXISTS_OFFSET,
+  length: 1,
+  color: "var(--peach)",
 })
