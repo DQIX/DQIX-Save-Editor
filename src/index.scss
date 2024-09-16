@@ -120,3 +120,28 @@ p {
   top: calc(var(--navbar-height) + 1em);
   height: calc(100vh - var(--navbar-height) - 2em);
 }
+
+table {
+  border-spacing: 0;
+  thead {
+    position: sticky;
+    top: 0;
+    background-color: var(--card-bg-color);
+    z-index: 1;
+  }
+  th {
+    text-align-last: left;
+    border-bottom: 1px solid var(--surface-bg);
+  }
+  tr {
+    &:nth-child(even) {
+      background-color: rgba(#fff, 0.05);
+    }
+  }
+
+  td,
+  th {
+    padding: 8px 1em;
+    text-wrap: nowrap;
+  }
+}

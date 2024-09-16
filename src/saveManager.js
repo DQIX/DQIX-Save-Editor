@@ -1513,6 +1513,57 @@ export default class SaveManager {
   setAlchenomiconCompletion() {}
 
   /*************************************************************************************************
+   *                                        monster methods                                        *
+   *************************************************************************************************/
+
+  getMonsterData(m) {
+    return this.getSaveLogBuffer().subarray(
+      layout.DEFEATED_MONSTER_DATA_OFFSET + m * 4,
+      layout.DEFEATED_MONSTER_DATA_OFFSET + m * 4 + 4
+    )
+  }
+
+  getMonsterDefeatCount(m) {
+    return this.getMonsterData(m).readU16LE(0) & 0x3ff
+  }
+
+  setMonsterDefeatCount(m, n) {
+    const prev = this.getMonsterData(m).readU16LE(0)
+    n = Math.max(0, Math.min(999, n))
+    this.getMonsterData(m).writeU16LE((prev & 0xfc00) | (n & 0x3ff), 0)
+  }
+
+  getMonsterCommonDropCount(m) {
+    return (this.getMonsterData(m).readU32LE(0) & 0x3f800) >> 11
+  }
+
+  setMonsterCommonDropCount(m, n) {
+    const prev = this.getMonsterData(m).readU32LE(0)
+    n = Math.max(0, Math.min(99, n))
+    this.getMonsterData(m).writeU32LE((prev & 0xfffc07ff) | ((n << 11) & 0x3f800), 0)
+  }
+
+  getMonsterRareDropCount(m) {
+    return (this.getMonsterData(m).readU32LE(0) & 0x1fc0000) >> 18
+  }
+
+  setMonsterRareDropCount(m, n) {
+    const prev = this.getMonsterData(m).readU32LE(0)
+    n = Math.max(0, Math.min(99, n))
+    this.getMonsterData(m).writeU32LE((prev & 0xfe03ffff) | ((n << 18) & 0x1fc0000), 0)
+  }
+
+  getMonsterUsedEyeForTrouble(m) {
+    return !!(this.getMonsterData(m).readByte(1) & 0x4)
+  }
+
+  setMonsterUsedEyeForTrouble(m, b) {
+    const prev = this.getMonsterData(m).readByte(1)
+    b = b ? 1 : 0
+    this.getMonsterData(m).writeByte((prev & 0xf3) | (b << 2), 1)
+  }
+
+  /*************************************************************************************************
    *                                         quest methods                                         *
    *************************************************************************************************/
 

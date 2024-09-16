@@ -5,6 +5,7 @@ import Card from "../atoms/Card"
 
 import "./RecordsEditor.scss"
 import Input from "../atoms/Input"
+import data from "../../game/data"
 
 export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
@@ -133,22 +134,113 @@ export default props => {
             </a>
           ))}
         </div>
-        <div className="tab-content">
+        <>
           {(() => {
             switch (tab) {
               case 0:
-                return <p>monsters</p>
+                return (
+                  <div className="monsters-tab tab-content">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>name</th>
+                          <th>kills</th>
+                          <th>drop a</th>
+                          <th>drop b</th>
+                          <th>eye for trouble</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.monsters.map((m, i) => (
+                          <tr key={i}>
+                            <td>{m}</td>
+                            <td>
+                              <Input
+                                type="number"
+                                value={save.getMonsterDefeatCount(i)}
+                                onChange={e => {
+                                  updateSave(save => {
+                                    save.setMonsterDefeatCount(i, e.target.value)
+                                  })
+                                }}
+                                min="0"
+                                max="999"
+                                size="4"
+                              />
+                            </td>
+                            <td>
+                              <Input
+                                type="number"
+                                value={save.getMonsterCommonDropCount(i)}
+                                onChange={e => {
+                                  updateSave(save => {
+                                    save.setMonsterCommonDropCount(i, e.target.value)
+                                  })
+                                }}
+                                min="0"
+                                max="99"
+                                size="3"
+                              />
+                            </td>
+                            <td>
+                              <Input
+                                type="number"
+                                value={save.getMonsterRareDropCount(i)}
+                                onChange={e => {
+                                  updateSave(save => {
+                                    save.setMonsterRareDropCount(i, e.target.value)
+                                  })
+                                }}
+                                min="0"
+                                max="99"
+                                size="3"
+                              />
+                            </td>
+                            <td>
+                              <Input
+                                type="checkbox"
+                                checked={save.getMonsterUsedEyeForTrouble(i)}
+                                onChange={e => {
+                                  updateSave(save => {
+                                    save.setMonsterUsedEyeForTrouble(i, e.target.checked)
+                                  })
+                                }}
+                              />
+                            </td>
+                            {/* <td>{save.getMonsterData(i).readU32LE(0) & 0xfe000000}</td> */}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )
               case 1:
-                return <p>wardrobe</p>
+                return (
+                  <div className="wardrobe-tab tab-content">
+                    <p>wardrobe</p>
+                  </div>
+                )
               case 2:
-                return <p>items</p>
+                return (
+                  <div className="items-tab tab-content">
+                    <p>items</p>
+                  </div>
+                )
               case 3:
-                return <p>alchenomicon</p>
+                return (
+                  <div className="alchenomicon-tab tab-content">
+                    <p>alchenomicon</p>
+                  </div>
+                )
               case 4:
-                return <p>accolades</p>
+                return (
+                  <div className="accolades-tab tab-content">
+                    <p>accolades</p>
+                  </div>
+                )
             }
           })()}
-        </div>
+        </>
       </Card>
     </div>
   )

@@ -92,11 +92,24 @@ A save editor for dragon quest ix
 
 - [ ] items found
 - [ ] wardrobe completion
-- [ ] monster list
+- [x] monster list
+  - [x] defeat count
+  - [x] rare drop
+  - [x] common drop
+  - [x] eye for trouble
 - [ ] alchenomicon
 - [ ] accolades
-- [ ] deaths
-- [ ] first completion record (or under misc?)
+- [ ] stats
+  - [ ] visible
+    - [ ] battle victories
+    - [ ] times alchemy performed
+    - [ ] accolades earnt
+    - [ ] quests completed
+    - [ ] grottos completed
+    - [ ] guests canvased
+  - [ ] hidden
+    - [ ] deaths
+    - [ ] herbs used
 
 </details>
 
@@ -140,7 +153,6 @@ A save editor for dragon quest ix
 - [x] gold
 - [x] mini medals
 - [x] unlockable vocations
-- [ ] stats
 - [ ] first clear
 - [x] zoom locations
 - [ ] player profile

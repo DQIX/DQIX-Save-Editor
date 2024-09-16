@@ -265,6 +265,16 @@ export const BATTLE_FLEE_SUCCESS_OFFSET = 16080
 export const BATTLES_OFFSET = 16084
 export const BATTLE_LOSSES_OFFSET = 16088
 
+/// each monster data is a u32 with the format
+/// ddddddddddecccccccrrrrrrr-------
+/// where:
+/// d: the number of times the monster has been defeated
+/// e: if eye for trouble has been used
+/// c: the number of times the common drop has been stolen/dropped
+/// r: the number of times the rare drop has been stolen/dropped
+/// -: seems to always be 0
+export const DEFEATED_MONSTER_DATA_OFFSET = 13784
+
 export const annotations = []
 
 for (let i = 0; i < 2; i++) {
@@ -792,7 +802,7 @@ for (let i = 0; i < 2; i++) {
   // quests
   {
     annotations.push({
-      name: `"quest statuses`,
+      name: `quest statuses`,
       begin: slotOffset + QUEST_STATUS_OFFSET,
       length: gameData.quests.length * 0.5,
       color: "var(--sky)",
@@ -811,6 +821,18 @@ for (let i = 0; i < 2; i++) {
         begin: slotOffset + QUEST_TIMES_OFFSET + q.id * 4,
         length: 4,
         color: "var(--green)",
+      })
+    }
+  }
+
+  // records
+  {
+    for (let i = 0; i < gameData.monsters.length; i++) {
+      annotations.push({
+        name: `defeated ${gameData.monsters[i]} data`,
+        begin: slotOffset + DEFEATED_MONSTER_DATA_OFFSET + i * 4,
+        length: 4,
+        color: "var(--mauve)",
       })
     }
   }

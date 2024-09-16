@@ -27,42 +27,5 @@ $sidebar-width: 184px;
       padding-bottom: 1em;
       flex-grow: 1;
     }
-
-    table {
-      border-spacing: 0;
-      //   margin-left: -1em;
-      //   width: calc(100% + 2em);
-      thead {
-        position: sticky;
-        top: 0;
-        background-color: var(--card-bg-color);
-        z-index: 1;
-      }
-
-      th {
-        text-align-last: left;
-        padding: 4px 1em;
-      }
-      td {
-        padding: 8px 1em;
-      }
-      tr {
-        &:nth-child(even) {
-          background-color: rgba(#fff, 0.05);
-        }
-      }
-
-      td,
-      th {
-        text-wrap: nowrap;
-
-        &:first-child {
-          padding-left: 1em;
-        }
-        &:last-child {
-          padding-right: 1em;
-        }
-      }
-    }
   }
 }
