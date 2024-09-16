@@ -1467,6 +1467,7 @@ export default class SaveManager {
     return this.getSaveLogBuffer().readU32LE(layout.BATTLE_VICTORIES_OFFSET) & 0xffffff
   }
   setBattleVictories(n) {}
+
   getAlchemyCount() {
     return this.getSaveLogBuffer().readI32LE(layout.ALCHEMY_PERFORMED_OFFSET)
   }
@@ -1495,22 +1496,22 @@ export default class SaveManager {
   getMonsterCompletion() {
     return 0
   }
-  setMonsterCompletion() {}
 
   getWardrobeCompletion() {
-    return 0
+    return Math.floor(
+      (((this.getSaveLogBuffer().readU16LE(layout.WARDROBE_COLLECTED_COUNT_OFFSET) & 0x1ffc) >> 2) /
+        gameData.wardrobeItems.length) *
+        100
+    )
   }
-  setWardrobeCompletion() {}
 
   getItemCompletion() {
     return 0
   }
-  setItemCompletion() {}
 
   getAlchenomiconCompletion() {
     return 0
   }
-  setAlchenomiconCompletion() {}
 
   /*************************************************************************************************
    *                                        monster methods                                        *
@@ -1561,6 +1562,36 @@ export default class SaveManager {
     const prev = this.getMonsterData(m).readByte(1)
     b = b ? 1 : 0
     this.getMonsterData(m).writeByte((prev & 0xf3) | (b << 2), 1)
+  }
+
+  /*************************************************************************************************
+   *                                        wardrobe methods                                       *
+   *************************************************************************************************/
+
+  isWardrobeItemFound(id) {
+    return !!(
+      this.getSaveLogBuffer().readByte(layout.WARDROBE_FOUND_OFFSET + Math.floor(id / 8)) &
+      (1 << id % 8)
+    )
+  }
+
+  setWardrobeItemFound(id, found) {
+    const prev = this.getSaveLogBuffer().readByte(layout.WARDROBE_FOUND_OFFSET + Math.floor(id / 8))
+
+    this.getSaveLogBuffer().writeByte(
+      ((prev & 0xff) ^ (1 << id % 8)) | (found << id % 8),
+      layout.WARDROBE_FOUND_OFFSET + Math.floor(id / 8)
+    )
+
+    const prev1 = this.getSaveLogBuffer().readU16LE(layout.WARDROBE_COLLECTED_COUNT_OFFSET)
+    const sum = gameData.wardrobeItems.reduce((a, c) => {
+      return a + this.isWardrobeItemFound(c.wardrobeIdx)
+    }, 0)
+
+    this.getSaveLogBuffer().writeU16LE(
+      (prev1 & 0xe003) | ((sum << 2) & 0x1ffc),
+      layout.WARDROBE_COLLECTED_COUNT_OFFSET
+    )
   }
 
   /*************************************************************************************************

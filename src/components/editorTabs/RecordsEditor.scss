@@ -78,5 +78,15 @@ $sidebar-width: 400px;
         margin: 0;
       }
     }
+
+    .wardrobe-tab {
+      th:nth-child(2) {
+        width: 30%;
+      }
+
+      .icon {
+        margin-right: 8px;
+      }
+    }
   }
 }

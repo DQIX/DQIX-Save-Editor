@@ -6,11 +6,12 @@ import Card from "../atoms/Card"
 import "./RecordsEditor.scss"
 import Input from "../atoms/Input"
 import data from "../../game/data"
+import { ItemIcon } from "../atoms/Icon"
 
 export default props => {
   let { save, updateSave } = useContext(SaveManagerContext)
 
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(1)
   const tabs = ["monsters", "wardrobe", "items", "alchenomicon", "accolades"]
 
   return (
@@ -144,7 +145,7 @@ export default props => {
                       <thead>
                         <tr>
                           <th>name</th>
-                          <th>kills</th>
+                          <th>defeated</th>
                           <th>drop a</th>
                           <th>drop b</th>
                           <th>eye for trouble</th>
@@ -217,7 +218,62 @@ export default props => {
               case 1:
                 return (
                   <div className="wardrobe-tab tab-content">
-                    <p>wardrobe</p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>name</th>
+                          <th>found</th>
+                          <th>name</th>
+                          <th>found</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Array.from({ length: data.wardrobeItems.length / 2 }).map((_, i) => (
+                          <tr key={i}>
+                            <td>
+                              <ItemIcon icon={data.wardrobeItems[i * 2 + 0].icon} />
+                              {data.wardrobeItems[i * 2 + 0].name}
+                            </td>
+                            <td>
+                              <Input
+                                type="checkbox"
+                                checked={save.isWardrobeItemFound(
+                                  data.wardrobeItems[i * 2 + 0].wardrobeIdx
+                                )}
+                                onChange={e => {
+                                  updateSave(save => {
+                                    save.setWardrobeItemFound(
+                                      data.wardrobeItems[i * 2 + 0].wardrobeIdx,
+                                      e.target.checked
+                                    )
+                                  })
+                                }}
+                              />
+                            </td>
+                            <td>
+                              <ItemIcon icon={data.wardrobeItems[i * 2 + 1].icon} />
+                              {data.wardrobeItems[i * 2 + 1].name}
+                            </td>
+                            <td>
+                              <Input
+                                type="checkbox"
+                                checked={save.isWardrobeItemFound(
+                                  data.wardrobeItems[i * 2 + 1].wardrobeIdx
+                                )}
+                                onChange={e => {
+                                  updateSave(save => {
+                                    save.setWardrobeItemFound(
+                                      data.wardrobeItems[i * 2 + 1].wardrobeIdx,
+                                      e.target.checked
+                                    )
+                                  })
+                                }}
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )
               case 2:

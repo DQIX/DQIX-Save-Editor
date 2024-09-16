@@ -259,6 +259,7 @@ export const GROTTO_DATA_SIZE = 28
 
 export const ALCHEMY_PERFORMED_OFFSET = 15016 // int?
 export const BATTLE_VICTORIES_OFFSET = 16032
+export const WARDROBE_COLLECTED_COUNT_OFFSET = 16046
 
 export const BATTLE_FLEE_OFFSET = 16076
 export const BATTLE_FLEE_SUCCESS_OFFSET = 16080
@@ -274,6 +275,8 @@ export const BATTLE_LOSSES_OFFSET = 16088
 /// r: the number of times the rare drop has been stolen/dropped
 /// -: seems to always be 0
 export const DEFEATED_MONSTER_DATA_OFFSET = 13784
+
+export const WARDROBE_FOUND_OFFSET = 12122
 
 export const annotations = []
 
