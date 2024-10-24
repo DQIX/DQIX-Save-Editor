@@ -2,7 +2,12 @@
 
 A save editor for dragon quest ix
 
-<details><summary><h2>features/todo (88/108 + 7)</h2></summary>
+## Looking for maintainers
+
+I can no longer work on this, if you're interested in taking ownership of it, please dm me.
+The editor as it stands is basically complete, however I cannot resolve any future issues, and there are a few things yet to be added.
+
+<details><summary><h2>features/todo (116/131 + 10)</h2></summary>
 
 <details><summary><h3>party</h3></summary>
 
@@ -73,8 +78,11 @@ A save editor for dragon quest ix
   - [x] check-in date
   - [x] location
   - [ ] gender (3?)
+  - [x] id
 - [x] inn rank
-- [ ] import/export
+- [x] import/export
+- [x] delete
+- [x] export self
 
 </details>
 
@@ -90,23 +98,23 @@ A save editor for dragon quest ix
 
 <details><summary><h3>records:</h3></summary>
 
-- [ ] items found
-- [ ] wardrobe completion
+- [x] items found
+- [x] wardrobe completion
 - [x] monster list
   - [x] defeat count
   - [x] rare drop
   - [x] common drop
   - [x] eye for trouble
 - [ ] alchenomicon
-- [ ] accolades
+- [x] accolades
 - [ ] stats
-  - [ ] visible
-    - [ ] battle victories
-    - [ ] times alchemy performed
-    - [ ] accolades earnt
-    - [ ] quests completed
-    - [ ] grottos completed
-    - [ ] guests canvased
+  - [x] visible
+    - [x] battle victories
+    - [x] times alchemy performed
+    - [x] accolades earnt
+    - [x] quests completed
+    - [x] grottos completed
+    - [x] guests canvased
   - [ ] hidden
     - [ ] deaths
     - [ ] herbs used
@@ -117,7 +125,6 @@ A save editor for dragon quest ix
 
 - [x] treasure map list
 - [x] treasures
-  - [ ] name preview?
 - [x] discoverer/conquerer
 - [x] location
   - [x] current
@@ -140,7 +147,7 @@ A save editor for dragon quest ix
     - [x] past listing presets
   - [x] message
   - [x] message expiry date
-  - [ ] stock expiry date
+  - [ ] stock expiry date (?)
 - [x] historical characters
 - [x] unlock all dlc
 
@@ -155,9 +162,14 @@ A save editor for dragon quest ix
 - [x] unlockable vocations
 - [ ] first clear
 - [x] zoom locations
-- [ ] player profile
+- [x] player profile
+  - [x] location
+  - [x] birthday
+  - [x] title
+  - [x] speech style
+  - [x] message
 - [x] save location
-- [ ] fountain group
+- [x] id
 
 </details>
 
@@ -165,7 +177,12 @@ A save editor for dragon quest ix
 
 - [x] auto detection of quick/confessed save
 - [x] undo/redo history
+- [ ] accept save files with headers/footers
 - [ ] fix number input weirdness
+- [ ] fix large table performance
+- [x] show invalid player ids
+- [x] guest age bug?
+- [x] guest royal suites bug?
 
 </details>
 
@@ -177,7 +194,10 @@ A save editor for dragon quest ix
 - [ ] pals past and present
 - [ ] world things (chests, item respawns)
 - [ ] party/standby move
-- [ ] import/export party characters
+  - [ ] import/export party characters
+- [ ] grotto plundered item names?
+- [ ] fountain group
+- [ ] guest npc style? (character model type = 0)
 
 </details>
 

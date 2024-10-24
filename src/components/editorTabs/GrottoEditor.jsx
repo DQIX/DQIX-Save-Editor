@@ -97,34 +97,42 @@ export default props => {
         </div>
       </Card>
       <div className="grotto-editor">
-        <GrottoCard
-          grotto={grotto}
-          onChange={({ seed, rank, location }) => {
-            updateSave(save => {
-              grotto.setSeed(seed)
-              grotto.setRank(rank)
-              grotto.setLocation(location)
-            })
-          }}
-          updateGrotto={fn => {
-            updateSave(save => {
-              fn(save)
-            })
-          }}
-        />
+        {selectedGrotto >= save.getHeldGrottoCount() ? (
+          <div className="none-found">
+            no grottos :( <br /> try adding or importing one
+          </div>
+        ) : (
+          <>
+            <GrottoCard
+              grotto={grotto}
+              onChange={({ seed, rank, location }) => {
+                updateSave(save => {
+                  grotto.setSeed(seed)
+                  grotto.setRank(rank)
+                  grotto.setLocation(location)
+                })
+              }}
+              updateGrotto={fn => {
+                updateSave(save => {
+                  fn(save)
+                })
+              }}
+            />
 
-        <Card label="info:" className="info">
-          {grotto.getKind() == data.GROTTO_KIND_NORMAL ? (
-            <>
-              <span>boss: {data.grottoBossNames[grotto.getDetails().boss]}</span> <br />
-              <span>type: {data.grottoTypeNames[grotto.getDetails().type]}</span> <br />
-              <span>floors: {grotto.getDetails().floorCount}</span> <br />
-              <span>monster rank: {grotto.getDetails().monsterRank}</span> <br />
-            </>
-          ) : (
-            "no known info :)"
-          )}
-        </Card>
+            <Card label="info:" className="info">
+              {grotto.getKind() == data.GROTTO_KIND_NORMAL ? (
+                <>
+                  <span>boss: {data.grottoBossNames[grotto.getDetails().boss]}</span> <br />
+                  <span>type: {data.grottoTypeNames[grotto.getDetails().type]}</span> <br />
+                  <span>floors: {grotto.getDetails().floorCount}</span> <br />
+                  <span>monster rank: {grotto.getDetails().monsterRank}</span> <br />
+                </>
+              ) : (
+                "no known info :)"
+              )}
+            </Card>
+          </>
+        )}
       </div>
     </div>
   )

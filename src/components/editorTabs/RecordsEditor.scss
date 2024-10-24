@@ -66,13 +66,13 @@ $sidebar-width: 400px;
       height: calc(100vh - var(--navbar-height) - 2.9em - 36px);
       overflow-y: scroll;
       table {
+        width: 100%;
         thead {
           padding-top: 0.5em;
           th:last-child {
             width: 100%;
           }
         }
-        width: 100%;
       }
       p {
         margin: 0;

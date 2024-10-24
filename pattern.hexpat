@@ -1,3 +1,5 @@
+///NOTE: this is very incomplete, imhex currently isn't robust enough to handle this without crashing constantly.
+
 enum Vocation : u8 {
   Guardian      = 0,
   Warrior       = 1,

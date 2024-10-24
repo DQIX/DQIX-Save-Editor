@@ -14,6 +14,7 @@ const WRITE_TYPE_U32LE = 5
 const WRITE_TYPE_DQIX_STRING = 6
 const WRITE_TYPE_ASCII_STRING = 7
 const WRITE_TYPE_BUFFER = 8
+const WRITE_TYPE_BIG_U64LE = 9
 
 export default class HistoryBuffer {
   constructor(buffer, history, parentBuffer) {
@@ -87,6 +88,10 @@ export default class HistoryBuffer {
         {
           value.copy(this.parentBuffer, action.offset)
         }
+        break
+
+      case WRITE_TYPE_BIG_U64LE:
+        this.parentBuffer.writeBigUInt64LE(value, action.offset)
         break
 
       default:
@@ -165,6 +170,10 @@ export default class HistoryBuffer {
     return this.buffer.readUint32LE(offset)
   }
 
+  readBigU64LE(offset) {
+    return this.buffer.readBigUInt64LE(offset)
+  }
+
   readDqixString(offset, length, noTrim) {
     return readDqixStringFromBuffer(this.subarray(offset, offset + length).buffer, noTrim)
   }
@@ -214,6 +223,15 @@ export default class HistoryBuffer {
       type: WRITE_TYPE_U32LE,
       offset: offset + this.buffer.byteOffset,
       prev: this.readU32LE(offset),
+      value,
+    })
+  }
+
+  writeBigU64LE(value, offset) {
+    this.pushAction({
+      type: WRITE_TYPE_BIG_U64LE,
+      offset: offset + this.buffer.byteOffset,
+      prev: this.readBigU64LE(offset),
       value,
     })
   }

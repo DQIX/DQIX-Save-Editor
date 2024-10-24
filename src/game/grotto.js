@@ -421,7 +421,6 @@ export default class Grotto {
         )
       }
       case gameData.GROTTO_KIND_LEGACY: {
-        console.log(this)
         return (
           (gameData.legacyBosses[this.getLegacyBoss() - 1]?.name || "unknown") +
           "'s Map lv. " +
@@ -537,7 +536,6 @@ export default class Grotto {
   }
 
   getLegacyBossTurns() {
-    console.log(this)
     return this._buffer.readU16LE(layout.GROTTO_SEED_TURNS_OFFSET)
   }
 

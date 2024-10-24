@@ -108,16 +108,16 @@ export const PARTY_COUNT_OFFSET = 7577
 /// items are stored in 2 contiguous arrays, one of the ids which are u16s and one of the counts which are u8s
 // prettier-ignore
 export const itemOffsets = {
-  [gameData.ITEM_TYPE_COMMON]:    { idOffset: 7664,  countOffset: 7968,  needsPacking: true },
-  [gameData.ITEM_TYPE_IMPORTANT]: { idOffset: 11164, countOffset: 11352, needsPacking: true },
-  [gameData.ITEM_TYPE_WEAPON]:    { idOffset: 8120,  countOffset: 10136 },
-  [gameData.ITEM_TYPE_SHIELD]:    { idOffset: 8664,  countOffset: 10408 },
-  [gameData.ITEM_TYPE_TORSO]:     { idOffset: 8760,  countOffset: 10456 },
-  [gameData.ITEM_TYPE_HEAD]:      { idOffset: 9336,  countOffset: 10744 },
-  [gameData.ITEM_TYPE_ARM]:       { idOffset: 9624,  countOffset: 10888 },
-  [gameData.ITEM_TYPE_FEET]:      { idOffset: 9784,  countOffset: 10968 },
-  [gameData.ITEM_TYPE_LEGS]:      { idOffset: 9144,  countOffset: 10648 },
-  [gameData.ITEM_TYPE_ACCESSORY]: { idOffset: 10008, countOffset: 11080 },
+  [gameData.ITEM_TYPE_COMMON]:    { idOffset: 7664,  countOffset: 7968,  isWardrobe: false },
+  [gameData.ITEM_TYPE_IMPORTANT]: { idOffset: 11164, countOffset: 11352, isWardrobe: false },
+  [gameData.ITEM_TYPE_WEAPON]:    { idOffset: 8120,  countOffset: 10136, isWardrobe: true },
+  [gameData.ITEM_TYPE_SHIELD]:    { idOffset: 8664,  countOffset: 10408, isWardrobe: true },
+  [gameData.ITEM_TYPE_TORSO]:     { idOffset: 8760,  countOffset: 10456, isWardrobe: true },
+  [gameData.ITEM_TYPE_HEAD]:      { idOffset: 9336,  countOffset: 10744, isWardrobe: true },
+  [gameData.ITEM_TYPE_ARM]:       { idOffset: 9624,  countOffset: 10888, isWardrobe: true },
+  [gameData.ITEM_TYPE_FEET]:      { idOffset: 9784,  countOffset: 10968, isWardrobe: true },
+  [gameData.ITEM_TYPE_LEGS]:      { idOffset: 9144,  countOffset: 10648, isWardrobe: true },
+  [gameData.ITEM_TYPE_ACCESSORY]: { idOffset: 10008, countOffset: 11080, isWardrobe: true },
 }
 
 export const GOLD_ON_HAND_OFFSET = 11448
@@ -159,6 +159,9 @@ export const GUEST_HOLDING_GROTTO_CHECK_IN_YEAR_OFFSET = 11
 /// offset of vocation and location in inn relative to beginning of guest data
 export const GUEST_VOCATION_AND_LOCATION_OFFSET = 12
 export const GUEST_LEVEL_CHECK_IN_DAY_MONTH_OFFSET = 13
+
+// NOTE: broadly unexplored...
+export const GUEST_RENDER_STYLE_OFFSET = 15
 
 /// offset of the index of the guest (0 if invalid), pretty sure this is the order of guests canvased
 export const GUEST_INDEX_OFFSET = 16
@@ -215,6 +218,8 @@ export const GUEST_MESSAGE_LENGTH = 57
 /// offset of the inn level (only 0x7)
 export const INN_LEVEL_OFFSET = 23172
 
+export const PLAYER_ID_OFFSET = 11520
+
 /// offset of special guest bitflags
 export const SPECIAL_GUEST_OFFSET = 11528
 
@@ -229,11 +234,6 @@ export const DQVC_MESSAGE_LENGTH = 510
 
 export const DQVC_MESSAGE_EXPIRY_TIME_OFFSET = 28096
 export const DQVC_ITEMS_EXPIRY_TIME_OFFSET = 28084
-
-/// offset of quest status array, each element is 4 bits of data
-export const QUEST_STATUS_OFFSET = 12300
-export const QUEST_CLEARED_OFFSET = 12536
-export const QUEST_TIMES_OFFSET = 12564
 
 /// offset of count of quests cleared
 export const QUEST_CLEAR_COUNT_OFFSET = 16035
@@ -257,14 +257,13 @@ export const GROTTO_SEED_TURNS_OFFSET = 26
 /// size of each grotto's data
 export const GROTTO_DATA_SIZE = 28
 
-export const ALCHEMY_PERFORMED_OFFSET = 15016 // int?
-export const BATTLE_VICTORIES_OFFSET = 16032
-export const WARDROBE_COLLECTED_COUNT_OFFSET = 16046
+export const ITEM_FOUND_OFFSET = 12240
+export const WARDROBE_FOUND_OFFSET = 12122
 
-export const BATTLE_FLEE_OFFSET = 16076
-export const BATTLE_FLEE_SUCCESS_OFFSET = 16080
-export const BATTLES_OFFSET = 16084
-export const BATTLE_LOSSES_OFFSET = 16088
+/// offset of quest status array, each element is 4 bits of data
+export const QUEST_STATUS_OFFSET = 12300
+export const QUEST_CLEARED_OFFSET = 12536
+export const QUEST_TIMES_OFFSET = 12564
 
 /// each monster data is a u32 with the format
 /// ddddddddddecccccccrrrrrrr-------
@@ -276,7 +275,34 @@ export const BATTLE_LOSSES_OFFSET = 16088
 /// -: seems to always be 0
 export const DEFEATED_MONSTER_DATA_OFFSET = 13784
 
-export const WARDROBE_FOUND_OFFSET = 12122
+export const ALCHEMY_PERFORMED_OFFSET = 15016 // int?
+export const ALCHENOMICON_DATA_OFFSET = 15020
+
+export const ACCOLADE_UNLOCK_DATA_OFFSET = 15964
+
+export const BATTLE_VICTORIES_OFFSET = 16032
+
+export const GROTTOS_CLEARED_OFFSET = 16037
+
+export const ACCOLADE_COUNT_OFFSET = 16040
+export const GUESTS_CANVASED_OFFSET = 16041
+export const ALCHENOMICON_COUNT_OFFSET = 16042
+export const DEFEATED_MONSTER_COUNT_OFFSET = 16044
+export const ITEMS_COLLECTED_COUNT_OFFSET = 16045
+export const WARDROBE_COLLECTED_COUNT_OFFSET = 16046
+
+export const BATTLE_FLEE_OFFSET = 16076 // idk not public TODO: add this
+export const BATTLE_FLEE_SUCCESS_OFFSET = 16080
+export const BATTLES_OFFSET = 16084
+export const BATTLE_LOSSES_OFFSET = 16088
+
+export const PROFILE_BIRTHDAY_OFFSET = 26980
+export const PROFILE_SPEECH_STYLE_OFFSET = 26982
+export const PROFILE_SECRET_AGE_OFFSET = 26983
+export const PROFILE_TITLE_ORIGIN_OFFSET = 26985
+
+export const PROFILE_MESSAGE_LENGTH = 57
+export const PROFILE_MESSAGE_OFFSET = 26988
 
 export const annotations = []
 
@@ -613,7 +639,7 @@ for (let i = 0; i < 2; i++) {
       annotations.push({
         name: "body type h",
         begin: guestOffset + GUEST_BODY_TYPE_H,
-        length: 1,
+        length: 2,
         color: "var(--teal)",
       })
       annotations.push({

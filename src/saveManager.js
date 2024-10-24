@@ -11,7 +11,14 @@ import gameData from "./game/data"
 import * as layout from "./game/layout"
 import HistoryBuffer from "./historyBuffer"
 import Grotto, { registerGrottos } from "./game/grotto"
-import { createValidCharacter, emptyCharacter } from "./game/character"
+import {
+  createValidCharacter,
+  createValidGuest,
+  emptyCharacter,
+  emptyGuest,
+  generateId,
+} from "./game/character"
+import { getHourFromTime, timeFromDateObject } from "./game/time"
 
 export default class SaveManager {
   /*************************************************************************************************
@@ -612,7 +619,7 @@ export default class SaveManager {
     const offset = layout.itemOffsets[itemType]
 
     let idx = 0xffff
-    //NOTE: linear search isn't ideal here, maybe make this a hashmap created in the constructor?
+    //FIXME: linear search isn't ideal here, maybe make this a hashmap created in the constructor?
     for (let i = 0; i < gameData.itemTables[itemType].length; i++) {
       if (this.getSaveLogBuffer().readU16LE(offset.idOffset + 2 * i) == id) {
         idx = i
@@ -653,8 +660,15 @@ export default class SaveManager {
     } else {
       this.getSaveLogBuffer().writeU16LE(id, offset.idOffset + 2 * idx)
     }
+    if (count > 0) {
+      if (offset.isWardrobe) {
+        this.setWardrobeItemFound(gameData.items[id].wardrobeIdx, true)
+      } else {
+        this.setItemFound(gameData.items[id].itemIdx, true)
+      }
+    }
 
-    if (offset.needsPacking) {
+    if (!offset.isWardrobe) {
       this.packItems(itemType)
     }
   }
@@ -810,10 +824,128 @@ export default class SaveManager {
   }
 
   /*************************************************************************************************
+   *                                         profile methods                                       *
+   *************************************************************************************************/
+
+  isPlayerIdValid(id) {
+    for (let i = 0; i < 30; i++) {
+      if (this.getCanvasedGuestIndex(i) != 0 && this.getCanvasedGuestId(i) == id) return false
+    }
+
+    return true
+  }
+
+  getPlayerId() {
+    return this.getSaveLogBuffer().readBigU64LE(layout.PLAYER_ID_OFFSET) & 0xffffffffffffn
+  }
+
+  setPlayerId(id) {
+    const prev = this.getSaveLogBuffer().readBigU64LE(layout.PLAYER_ID_OFFSET)
+
+    this.getSaveLogBuffer().writeBigU64LE(
+      (prev & 0xffff000000000000n) | (id & 0xffffffffffffn),
+      layout.PLAYER_ID_OFFSET
+    )
+  }
+
+  getProfileOrigin() {
+    return (this.getSaveLogBuffer().readU16LE(layout.PROFILE_TITLE_ORIGIN_OFFSET) & 0x7fe) >> 1
+  }
+
+  setProfileOrigin(origin) {
+    const prev = this.getSaveLogBuffer().readU16LE(layout.PROFILE_TITLE_ORIGIN_OFFSET)
+
+    this.getSaveLogBuffer().writeU16LE(
+      (prev & 0xf801) | ((origin << 1) & 0x7fe),
+      layout.PROFILE_TITLE_ORIGIN_OFFSET
+    )
+  }
+
+  getProfileBirthday() {
+    return this.getSaveLogBuffer().readI32LE(layout.PROFILE_BIRTHDAY_OFFSET)
+  }
+
+  setProfileBirthday(birthday) {
+    this.getSaveLogBuffer().writeI32LE(birthday, layout.PROFILE_BIRTHDAY_OFFSET)
+  }
+
+  isProfileAgeSecret() {
+    return !(this.getSaveLogBuffer().readByte(layout.PROFILE_SECRET_AGE_OFFSET) & 0x80)
+  }
+
+  setProfileAgeSecret(secret) {
+    const prev = this.getSaveLogBuffer().readByte(layout.PROFILE_SECRET_AGE_OFFSET)
+
+    this.getSaveLogBuffer().writeByte(
+      (prev & 0x7f) | (secret ? 0 : 0x80),
+      layout.PROFILE_SECRET_AGE_OFFSET
+    )
+  }
+
+  getProfileTitle() {
+    let title =
+      ((this.getSaveLogBuffer().readU32LE(layout.PROFILE_TITLE_ORIGIN_OFFSET) >> 8) & 0x3ff8) >> 3
+
+    //NOTE: not totally sure if this should be done this way but i can't figure out any reason for it being different
+    if (700 < title && title < 800) title = 700
+    if (900 <= title && title < 1000) title -= 100
+
+    return title
+  }
+
+  setProfileTitle(title) {
+    const prev = this.getSaveLogBuffer().readU32LE(layout.PROFILE_TITLE_ORIGIN_OFFSET)
+
+    this.getSaveLogBuffer().writeU32LE(
+      (prev & 0xffc007ff) | (((title << 3) & 0x3ff8) << 8),
+      layout.PROFILE_TITLE_ORIGIN_OFFSET
+    )
+  }
+
+  //FIXME: idk, gender is hard, there's like 3 here i think
+  // speech style changes this too because why not
+  getProfileGender() {
+    return this.getCharacterGender(this.getStandbyCount())
+  }
+
+  getProfileSpeechStyle() {
+    return (this.getSaveLogBuffer().readU16LE(layout.PROFILE_SPEECH_STYLE_OFFSET) & 0x1e0) >> 5
+  }
+
+  setProfileSpeechStyle(style) {
+    const prev = this.getSaveLogBuffer().readU16LE(layout.PROFILE_SPEECH_STYLE_OFFSET)
+
+    this.getSaveLogBuffer().writeU16LE(
+      (prev & 0xfe1f) | ((style << 5) & 0x1e0),
+      layout.PROFILE_SPEECH_STYLE_OFFSET
+    )
+  }
+
+  getProfileMessage() {
+    return this.getSaveLogBuffer().readDqixString(
+      layout.PROFILE_MESSAGE_OFFSET,
+      layout.PROFILE_MESSAGE_LENGTH
+    )
+  }
+
+  setProfileMessage(message) {
+    message = message
+      .substr(0, layout.PROFILE_MESSAGE_LENGTH)
+      .padEnd(layout.PROFILE_MESSAGE_LENGTH, "\0")
+
+    this.getSaveLogBuffer().writeDqixString(message, layout.PROFILE_MESSAGE_OFFSET)
+  }
+
+  /*************************************************************************************************
    *                                    canvased guest methods                                     *
    *************************************************************************************************/
 
   getCanvasedGuest(n) {
+    //HACK: i'm just as disgusted with this as you are, see `exportSelfAsGuest`
+    if (n == -1 && this.selfGuestBuffer) {
+      return this.selfGuestBuffer
+    }
+
     const offset = layout.CANVASED_GUEST_OFFSET + n * layout.CANVASED_GUEST_SIZE
 
     return this.getSaveLogBuffer().subarray(offset, offset + layout.CANVASED_GUEST_SIZE)
@@ -823,8 +955,269 @@ export default class SaveManager {
     return this.getSaveLogBuffer().readByte(layout.CURRENT_GUESTS_CANVASED_OFFSET)
   }
 
+  setCanvasedGuestCount(n) {
+    this.getSaveLogBuffer().writeByte(n, layout.CURRENT_GUESTS_CANVASED_OFFSET)
+  }
+
+  isGuestIdValid(id) {
+    if (id == this.getPlayerId()) return false
+
+    return this.isPlayerIdValid()
+  }
+
+  exportSelfAsGuest(grottoIdx) {
+    //NOTE: see `getCanvasedGuest`
+    this.selfGuestBuffer = new HistoryBuffer(Buffer.from(emptyGuest))
+
+    this.setCanvasedGuestId(-1, this.getPlayerId())
+
+    const playerIdx = this.getStandbyCount()
+    this.setCanvasedGuestName(-1, this.getCharacterName(playerIdx))
+    this.setGuestGender(-1, this.getCharacterGender(playerIdx))
+    const vocation = this.getCharacterVocation(playerIdx)
+    this.setGuestVocation(-1, vocation)
+
+    this.setGuestFace(-1, this.getCharacterFace(playerIdx))
+    this.setGuestHairstyle(-1, this.getCharacterHairstyle(playerIdx))
+    this.setGuestEyeColor(-1, this.getCharacterEyeColor(playerIdx))
+    this.setGuestHairColor(-1, this.getCharacterHairColor(playerIdx))
+    this.setGuestSkinColor(-1, this.getCharacterSkinColor(playerIdx))
+    this.setGuestBodyTypeW(-1, this.getCharacterBodyTypeW(playerIdx))
+    this.setGuestBodyTypeH(-1, this.getCharacterBodyTypeH(playerIdx))
+    this.setGuestColor(-1, this.getCharacterColor(playerIdx))
+    for (const type of gameData.equipmentTypes) {
+      this.setGuestEquipment(-1, type, this.getCharacterEquipment(playerIdx, type))
+    }
+
+    this.setGuestLevel(-1, this.getCharacterLevel(playerIdx, vocation))
+    this.setGuestRevocations(-1, this.getCharacterRevocations(playerIdx, vocation))
+
+    this.setGuestBirthday(-1, this.getProfileBirthday())
+    this.setGuestAgeSecret(-1, this.isProfileAgeSecret())
+    this.setCanvasedGuestTitle(-1, this.getProfileTitle())
+    this.setCanvasedGuestSpeechStyle(-1, this.getProfileSpeechStyle())
+    this.setCanvasedGuestOrigin(-1, this.getProfileOrigin())
+    this.setGuestMessage(-1, this.getProfileMessage())
+
+    this.setGuestBattleVictories(-1, this.getBattleVictories())
+    this.setGuestAlchemyCount(-1, this.getAlchemyCount())
+    this.setGuestAccoladeCount(-1, this.getAccoladeCount())
+    this.setGuestQuestsCompleted(-1, this.getQuestCompletionCount())
+    this.setGuestGrottosCompleted(-1, this.getGrottosCompleted())
+    this.setGuestGuestsCanvased(-1, this.getCanvasedGuestCount() + 1)
+    this.setGuestMonsterCompletion(-1, this.getMonsterCompletion())
+    this.setGuestWardrobeCompletion(-1, this.getWardrobeCompletion())
+    this.setGuestItemCompletion(-1, this.getItemCompletion())
+    this.setGuestAlchenomiconCompletion(-1, this.getAlchenomiconCompletion())
+
+    const playtime = this.getPlaytime()
+    this.setGuestPlaytimeHours(-1, playtime[0])
+    this.setGuestPlaytimeMinutes(-1, playtime[1])
+    const mPlaytime = this.getMultiplayerTime()
+    this.setGuestMultiPlayerTimeHours(-1, mPlaytime[0])
+    this.setGuestMultiPlayerTimeMinutes(-1, mPlaytime[1])
+
+    if (grottoIdx != -1) {
+      const grotto = this.getGrotto(grottoIdx)._buffer
+      this.getGuestHeldGrotto(-1)._buffer.writeBuffer(grotto._buffer, 0)
+      this.setGuestHoldingGrotto(-1, true)
+    }
+
+    this.fixGuest(-1)
+
+    const str = [...this.selfGuestBuffer._buffer].map(n => n.toString(16).padStart(2, "0")).join("")
+
+    this.selfGuestBuffer = null
+
+    return str
+  }
+
+  addNewCanvasedGuest() {
+    if (this.getCanvasedGuestCount() >= 30) {
+      return
+    }
+
+    let idx = 0
+    while (this.getCanvasedGuestIndex(idx) != 0 && ++idx <= 30);
+    if (idx > 30) return
+
+    this.setCanvasedGuestIndex(idx, this.getCanvasedGuestCount() + 1)
+
+    const guest = createValidGuest()
+
+    let id = generateId()
+    while (!this.isGuestIdValid(id)) id = generateId()
+    this.setCanvasedGuestId(idx, id)
+
+    this.setCanvasedGuestName(idx, guest.name)
+    this.setGuestGender(idx, guest.gender)
+    this.setGuestVocation(idx, guest.vocation)
+    this.setGuestFace(idx, guest.face)
+    this.setGuestHairstyle(idx, guest.hairstyle)
+    this.setGuestEyeColor(idx, guest.eyeColor)
+    this.setGuestHairColor(idx, guest.hairColor)
+    this.setGuestSkinColor(idx, guest.skinColor)
+    this.setGuestBodyTypeW(idx, guest.bodyType.width)
+    this.setGuestBodyTypeH(idx, guest.bodyType.height)
+    this.setGuestColor(idx, guest.color)
+    for (const [type, item] of Object.entries(guest.equipment)) {
+      this.setGuestEquipment(idx, type, item)
+    }
+
+    this.setGuestLevel(idx, guest.level)
+    this.setGuestRevocations(idx, guest.revocations)
+
+    this.setGuestBirthday(idx, timeFromDateObject(guest.birthday))
+    this.setGuestAgeSecret(idx, guest.agePrivate)
+    this.setCanvasedGuestTitle(idx, guest.title)
+    this.setCanvasedGuestSpeechStyle(idx, guest.speech)
+    this.setCanvasedGuestOrigin(idx, guest.origin)
+
+    this.setGuestBattleVictories(idx, guest.victories)
+    this.setGuestAlchemyCount(idx, guest.alchemy)
+    this.setGuestAccoladeCount(idx, guest.accolades)
+    this.setGuestQuestsCompleted(idx, guest.quests)
+    this.setGuestGrottosCompleted(idx, guest.grottos)
+    this.setGuestGuestsCanvased(idx, guest.guests)
+    this.setGuestMonsterCompletion(idx, guest.monster)
+    this.setGuestWardrobeCompletion(idx, guest.wardrobe)
+    this.setGuestItemCompletion(idx, guest.items)
+    this.setGuestAlchenomiconCompletion(idx, guest.alchenomicon)
+
+    this.setGuestPlaytimeHours(idx, guest.playTime.hours)
+    this.setGuestPlaytimeMinutes(idx, guest.playTime.minutes)
+    this.setGuestMultiPlayerTimeHours(idx, guest.multiplayerTime.hours)
+    this.setGuestMultiPlayerTimeMinutes(idx, guest.multiplayerTime.minutes)
+
+    const now = new Date()
+    this.setGuestCheckInDay(idx, now.getDate())
+    this.setGuestCheckInMonth(idx, now.getMonth() + 1)
+    this.setGuestCheckInYear(idx, now.getFullYear())
+
+    this.fixGuest(idx)
+
+    this.bumpGuests()
+    this.setGuestLocation(idx, 2)
+
+    this.setCanvasedGuestCount(this.getCanvasedGuestCount() + 1)
+    this.setGuestsCanvased(this.getGuestsCanvased() + 1)
+
+    return idx
+  }
+
+  fixGuest(n) {
+    // make render style Normal
+    this.setGuestRenderStyle(
+      n,
+      gameData.GUEST_RENDER_STYLE_3D | gameData.GUEST_RENDER_STYLE_UNKNOWN_A
+    )
+
+    {
+      // no clue why it needs this but without it the age calc bugs out
+      const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_TITLE_ORIGIN_OFFSET)
+      this.getCanvasedGuest(n).writeByte(prev & 0xfe, layout.GUEST_TITLE_ORIGIN_OFFSET)
+    }
+
+    {
+      // without this transferring out of the royal suites deletes the character
+      const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_SECRET_AGE_OFFSET)
+      this.getCanvasedGuest(n).writeByte((prev & 0xc3) | 0x1e, layout.GUEST_SECRET_AGE_OFFSET)
+    }
+  }
+
+  importGuest(str) {
+    if (this.getCanvasedGuestCount() >= 30) {
+      return
+    }
+
+    let idx = 0
+    while (this.getCanvasedGuestIndex(idx) != 0 && ++idx <= 30);
+    if (idx > 30) return
+
+    const bytes = new Uint8Array(str.length / 2)
+    for (let i = 0; i < bytes.byteLength; i++) {
+      bytes[i] = parseInt(str.substr(i * 2, 2), 16)
+    }
+
+    this.getCanvasedGuest(idx).writeBuffer(Buffer.from(bytes), 0)
+
+    this.setCanvasedGuestIndex(idx, this.getCanvasedGuestCount() + 1)
+
+    const now = new Date()
+    this.setGuestCheckInDay(idx, now.getDate())
+    this.setGuestCheckInMonth(idx, now.getMonth() + 1)
+    this.setGuestCheckInYear(idx, now.getFullYear())
+
+    this.bumpGuests()
+    this.setGuestLocation(idx, 2)
+
+    this.setCanvasedGuestCount(this.getCanvasedGuestCount() + 1)
+    this.setGuestsCanvased(this.getGuestsCanvased() + 1)
+
+    return idx
+  }
+
+  removeGuest(idx) {
+    // "empty" guest, actually contains some real data but its taken from the save file directly
+    //prettier-ignore
+    this.getCanvasedGuest(idx).writeBuffer(Buffer.from(emptyGuest), 0)
+
+    this.setCanvasedGuestCount(this.getCanvasedGuestCount() - 1)
+  }
+
+  bumpGuests() {
+    const guestIdxs = Array.from({ length: 30 }, (_, i) => ({
+      idx: this.getCanvasedGuestIndex(i),
+      guest: i,
+    }))
+      .filter(guest => guest.idx != 0)
+      .sort((a, b) => b.idx - a.idx) //intentional reverse
+      .map(g => g.guest)
+
+    const locs = {}
+
+    for (const g of guestIdxs) {
+      if (gameData.guestLocations[this.getGuestLocation(g)].royal) continue
+
+      if (!locs[this.getGuestLocation(g)]) {
+        locs[this.getGuestLocation(g)] = 0
+      }
+
+      if (
+        locs[this.getGuestLocation(g)] + 1 >=
+        gameData.guestLocations[this.getGuestLocation(g)].size
+      ) {
+        this.setGuestLocation(g, this.getGuestLocation(g) + 1)
+      }
+
+      locs[this.getGuestLocation(g)]++
+    }
+  }
+
   getCanvasedGuestIndex(n) {
     return (this.getCanvasedGuest(n).readU32LE(layout.GUEST_INDEX_OFFSET) & 0xfffffffc) >> 2
+  }
+
+  setCanvasedGuestIndex(n, idx) {
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_INDEX_OFFSET)
+
+    this.getCanvasedGuest(n).writeU32LE(
+      (prev & 0x3) | ((idx << 2) & 0xfffffffc),
+      layout.GUEST_INDEX_OFFSET
+    )
+  }
+
+  getGuestRenderStyle(n) {
+    return this.getCanvasedGuest(n).readU16LE(layout.GUEST_RENDER_STYLE_OFFSET) & 0x3ff
+  }
+
+  setGuestRenderStyle(n, flags) {
+    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_RENDER_STYLE_OFFSET)
+
+    this.getCanvasedGuest(n).writeU16LE(
+      (prev & 0xfc00) | (flags & 0x3ff),
+      layout.GUEST_RENDER_STYLE_OFFSET
+    )
   }
 
   getGuestLocation(n) {
@@ -889,6 +1282,19 @@ export default class SaveManager {
     )
   }
 
+  getCanvasedGuestId(n) {
+    return this.getCanvasedGuest(n).readBigU64LE(layout.GUEST_ID_OFFSET) & 0xffffffffffffn
+  }
+
+  setCanvasedGuestId(n, id) {
+    const prev = this.getCanvasedGuest(n).readBigU64LE(layout.GUEST_ID_OFFSET)
+
+    this.getCanvasedGuest(n).writeBigU64LE(
+      (prev & 0xffff000000000000n) | (id & 0xffffffffffffn),
+      layout.GUEST_ID_OFFSET
+    )
+  }
+
   getCanvasedGuestName(n) {
     return this.getCanvasedGuest(n).readDqixString(layout.GUEST_NAME_OFFSET, layout.NAME_LENGTH)
   }
@@ -913,13 +1319,13 @@ export default class SaveManager {
   }
 
   getGuestAlchemyCount(n) {
-    return (this.getCanvasedGuest(n).readU16LE(layout.GUEST_ALCHEMY_COUNT) & 0x3fffc0) >> 6
+    return (this.getCanvasedGuest(n).readU32LE(layout.GUEST_ALCHEMY_COUNT) & 0x3fffc0) >> 6
   }
 
   setGuestAlchemyCount(n, v) {
-    const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_ALCHEMY_COUNT)
+    const prev = this.getCanvasedGuest(n).readU32LE(layout.GUEST_ALCHEMY_COUNT)
 
-    this.getCanvasedGuest(n).writeU16LE(
+    this.getCanvasedGuest(n).writeU32LE(
       (prev & 0xffc0003f) | ((v << 6) & 0x3fffc0),
       layout.GUEST_ALCHEMY_COUNT
     )
@@ -958,7 +1364,7 @@ export default class SaveManager {
   setGuestGrottosCompleted(n, v) {
     const prev = this.getCanvasedGuest(n).readU16LE(layout.GUEST_GROTTO_COUNT_OFFSET)
 
-    this.getSaveLogBuffer().writeU16LE((prev & 0x3) | (v << 2), layout.GUEST_GROTTO_COUNT_OFFSET)
+    this.getCanvasedGuest(n).writeU16LE((prev & 0x3) | (v << 2), layout.GUEST_GROTTO_COUNT_OFFSET)
   }
 
   getGuestGuestsCanvased(n) {
@@ -1297,7 +1703,7 @@ export default class SaveManager {
     return this.getCanvasedGuest(n).readByte(layout.GUEST_COLOR_OFFSET) & 0x0f
   }
 
-  setGuestColor(n, value) {
+  setGuestColor(n, c) {
     const prev = this.getCanvasedGuest(n).readByte(layout.GUEST_COLOR_OFFSET)
     this.getCanvasedGuest(n).writeByte((prev & 0xf0) | (c & 0x0f), layout.GUEST_COLOR_OFFSET)
   }
@@ -1471,30 +1877,59 @@ export default class SaveManager {
   getAlchemyCount() {
     return this.getSaveLogBuffer().readI32LE(layout.ALCHEMY_PERFORMED_OFFSET)
   }
-  setAlchemyCount(n) {}
+  setAlchemyCount(n) {
+    return this.getSaveLogBuffer().writeI32LE(n, layout.ALCHEMY_PERFORMED_OFFSET)
+  }
 
   getAccoladeCount() {
-    return 0
+    return this.getSaveLogBuffer().readU16LE(layout.ACCOLADE_COUNT_OFFSET) & 0x1ff
   }
-  setAccoladeCount(n) {}
+
+  setAccoladeCount(n) {
+    console.log(n)
+    const prev = this.getSaveLogBuffer().readU16LE(layout.ACCOLADE_COUNT_OFFSET)
+
+    this.getSaveLogBuffer().writeU16LE((prev & 0xfe00) | (n & 0x1ff), layout.ACCOLADE_COUNT_OFFSET)
+  }
 
   getQuestsCompleted() {
-    return 0
+    return this.getSaveLogBuffer().readByte(layout.QUEST_CLEAR_COUNT_OFFSET)
   }
-  setQuestsCompleted(n) {}
+
+  setQuestsCompleted(n) {
+    return this.getSaveLogBuffer().writeByte(n, layout.QUEST_CLEAR_COUNT_OFFSET)
+  }
 
   getGrottosCompleted() {
-    return 0
+    return (this.getSaveLogBuffer().readU32LE(layout.GROTTOS_CLEARED_OFFSET) & 0xfffc0) >> 6
   }
-  setGrottosCompleted(n) {}
+
+  setGrottosCompleted(n) {
+    const prev = this.getSaveLogBuffer().readU32LE(layout.GROTTOS_CLEARED_OFFSET)
+
+    this.getSaveLogBuffer().writeU32LE(
+      (prev & 0xfff0003f) | ((n << 6) & 0xfffc0),
+      layout.GROTTOS_CLEARED_OFFSET
+    )
+  }
 
   getGuestsCanvased() {
-    return 0
+    return this.getSaveLogBuffer().readU32LE(layout.TOTAL_GUESTS_CANVASED_OFFSET) & 0x7fffffff
   }
-  setGuestsCanvased(n) {}
+
+  setGuestsCanvased(n) {
+    this.getSaveLogBuffer().writeU32LE(n & 0x7fffffff, layout.TOTAL_GUESTS_CANVASED_OFFSET)
+
+    const prev = this.getSaveLogBuffer().readU16LE(layout.GUESTS_CANVASED_OFFSET)
+    this.getSaveLogBuffer().writeU16LE((prev & 0x8001) | (n << 1), layout.GUESTS_CANVASED_OFFSET)
+  }
 
   getMonsterCompletion() {
-    return 0
+    return Math.floor(
+      ((this.getSaveLogBuffer().readU16LE(layout.DEFEATED_MONSTER_COUNT_OFFSET) & 0x1ff) /
+        gameData.monsters.length) *
+        100
+    )
   }
 
   getWardrobeCompletion() {
@@ -1506,11 +1941,19 @@ export default class SaveManager {
   }
 
   getItemCompletion() {
-    return 0
+    return Math.floor(
+      (((this.getSaveLogBuffer().readU16LE(layout.ITEMS_COLLECTED_COUNT_OFFSET) & 0x3fe) >> 1) /
+        gameData.standardItems.length) *
+        100
+    )
   }
 
   getAlchenomiconCompletion() {
-    return 0
+    return Math.floor(
+      (((this.getSaveLogBuffer().readU16LE(layout.ALCHENOMICON_COUNT_OFFSET) & 0xff80) >> 7) /
+        gameData.alchenomiconItems.length) *
+        100
+    )
   }
 
   /*************************************************************************************************
@@ -1532,6 +1975,19 @@ export default class SaveManager {
     const prev = this.getMonsterData(m).readU16LE(0)
     n = Math.max(0, Math.min(999, n))
     this.getMonsterData(m).writeU16LE((prev & 0xfc00) | (n & 0x3ff), 0)
+
+    const prev1 = this.getSaveLogBuffer().readU16LE(layout.DEFEATED_MONSTER_COUNT_OFFSET)
+    if (n == 0 && prev & (0x3ff != 0)) {
+      this.getSaveLogBuffer().writeU16LE(
+        (prev1 & 0xfe00) | ((prev1 & 0x1ff) - 1),
+        layout.DEFEATED_MONSTER_COUNT_OFFSET
+      )
+    } else if (n != 0 && prev & (0x3ff == 0)) {
+      this.getSaveLogBuffer().writeU16LE(
+        (prev1 & 0xfe00) | ((prev1 & 0x1ff) + 1),
+        layout.DEFEATED_MONSTER_COUNT_OFFSET
+      )
+    }
   }
 
   getMonsterCommonDropCount(m) {
@@ -1579,7 +2035,7 @@ export default class SaveManager {
     const prev = this.getSaveLogBuffer().readByte(layout.WARDROBE_FOUND_OFFSET + Math.floor(id / 8))
 
     this.getSaveLogBuffer().writeByte(
-      ((prev & 0xff) ^ (1 << id % 8)) | (found << id % 8),
+      (prev & ~(1 << id % 8)) | ((found ? 1 : 0) << id % 8),
       layout.WARDROBE_FOUND_OFFSET + Math.floor(id / 8)
     )
 
@@ -1591,6 +2047,36 @@ export default class SaveManager {
     this.getSaveLogBuffer().writeU16LE(
       (prev1 & 0xe003) | ((sum << 2) & 0x1ffc),
       layout.WARDROBE_COLLECTED_COUNT_OFFSET
+    )
+  }
+
+  /*************************************************************************************************
+   *                                          item methods                                         *
+   *************************************************************************************************/
+
+  isItemFound(id) {
+    return !!(
+      this.getSaveLogBuffer().readByte(layout.ITEM_FOUND_OFFSET + Math.floor(id / 8)) &
+      (1 << id % 8)
+    )
+  }
+
+  setItemFound(id, found) {
+    const prev = this.getSaveLogBuffer().readByte(layout.ITEM_FOUND_OFFSET + Math.floor(id / 8))
+
+    this.getSaveLogBuffer().writeByte(
+      (prev & ~(1 << id % 8)) | ((found ? 1 : 0) << id % 8),
+      layout.ITEM_FOUND_OFFSET + Math.floor(id / 8)
+    )
+
+    const prev1 = this.getSaveLogBuffer().readU16LE(layout.ITEMS_COLLECTED_COUNT_OFFSET)
+    const sum = gameData.standardItems.reduce((a, c) => {
+      return a + this.isItemFound(c.itemIdx)
+    }, 0)
+
+    this.getSaveLogBuffer().writeU16LE(
+      (prev1 & 0xfc01) | ((sum << 1) & 0x3fe),
+      layout.ITEMS_COLLECTED_COUNT_OFFSET
     )
   }
 
@@ -1677,6 +2163,35 @@ export default class SaveManager {
   }
 
   /*************************************************************************************************
+   *                                        accolade methods                                       *
+   *************************************************************************************************/
+
+  isAccoladeUnlocked(id) {
+    return (
+      this.getSaveLogBuffer().readByte(layout.ACCOLADE_UNLOCK_DATA_OFFSET + Math.floor(id / 8)) &
+      (1 << id % 8)
+    )
+  }
+
+  setAccoladeUnlocked(id, unlocked) {
+    const prev = this.getSaveLogBuffer().readByte(
+      layout.ACCOLADE_UNLOCK_DATA_OFFSET + Math.floor(id / 8)
+    )
+
+    this.getSaveLogBuffer().writeByte(
+      (prev & ~(1 << id % 8)) | (unlocked << id % 8),
+      layout.ACCOLADE_UNLOCK_DATA_OFFSET + Math.floor(id / 8)
+    )
+
+    this.setAccoladeCount(
+      gameData.accolades.reduce(
+        (a, c) => a + (!!c.name[this.getProfileGender()] && this.isAccoladeUnlocked(c.id) ? 1 : 0),
+        0
+      )
+    )
+  }
+
+  /*************************************************************************************************
    *                                         grotto methods                                         *
    *************************************************************************************************/
 
@@ -1708,6 +2223,7 @@ export default class SaveManager {
         layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * this.getHeldGrottoCount()
       )
       .cloneInner()
+
     this.getSaveLogBuffer()
       .subarray(
         layout.GROTTO_DATA_OFFSET + layout.GROTTO_DATA_SIZE * n,

@@ -1,0 +1,30 @@
+.profile-card {
+  grid-row: span 1;
+  grid-column: span 2;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    > label {
+      display: block;
+      margin-bottom: 6px;
+      > span {
+        display: inline-block;
+        width: 25%;
+      }
+      > input,
+      > select {
+        width: 75%;
+      }
+    }
+  }
+
+  .time-input {
+    display: inline-block;
+  }
+
+  label > label {
+    margin-left: 0.4em;
+  }
+}

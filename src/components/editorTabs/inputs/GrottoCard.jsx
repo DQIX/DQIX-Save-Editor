@@ -124,7 +124,7 @@ export default props => {
             setExportModalOpen(false)
           }}
         >
-          <Textarea value={props.grotto.exportString()}></Textarea>
+          <Textarea value={props.grotto.exportString()} readOnly={true}></Textarea>
           <Button
             onClick={e => {
               setExportModalOpen(false)
@@ -233,6 +233,7 @@ export default props => {
               props.grotto.getValidLocations().map(loc => {
                 return (
                   <div
+                    key={loc}
                     onClick={e =>
                       props.updateGrotto(save => {
                         props.grotto.setLocation(loc)

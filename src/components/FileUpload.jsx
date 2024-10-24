@@ -18,9 +18,13 @@ export default props => {
       <h1>DQIX Editor</h1>
       <h2>To start, drag and drop your save file into the browser</h2>
       <p>
-        Please note this editor is still in pre-alpha, if you run into any bugs feel free to open an
-        issue
+        The editor currently only supports raw save files (.sav ~66kb in size), always make backups
       </p>
+      {window.innerWidth < 1280 && (
+        <p>
+          <b>WARNING:</b> this app is unstable at small screen sizes
+        </p>
+      )}
       <input
         type="file"
         id="file-input"

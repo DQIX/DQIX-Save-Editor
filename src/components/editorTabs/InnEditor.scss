@@ -3,6 +3,61 @@ $grid-size: 232px;
 .inn-root {
   padding: 1em 1em;
 
+  .export-self {
+    max-height: 60vh;
+    height: 60vh;
+    > div {
+      display: flex;
+      height: calc(100% - 2em);
+      > div {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .grotto-list {
+    box-sizing: content-box;
+    margin: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 1em 0;
+    list-style: none;
+    position: relative;
+    left: -1em;
+
+    li {
+      padding: 0.2em calc(0.1em + 32px);
+      transition: 0.1s ease-in-out background-color;
+      border-left: 2px solid transparent;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+
+      > div {
+        margin-right: 0.5em;
+      }
+
+      &:hover {
+        background-color: var(--accent-fade);
+      }
+
+      &.active {
+        &::after {
+          content: "";
+          width: 32px;
+          height: 30px;
+          display: block;
+          position: absolute;
+          top: calc(50% - 32px / 2);
+          left: 0.1em;
+          background-image: url("/sword.gif");
+          background-size: cover;
+        }
+      }
+    }
+  }
+
   .sidebar {
     display: flex;
     flex-direction: column;
@@ -16,6 +71,12 @@ $grid-size: 232px;
       small {
         display: block;
       }
+    }
+
+    .edit-list {
+      display: flex;
+      align-items: center;
+      gap: 1em;
     }
   }
 
@@ -54,8 +115,31 @@ $grid-size: 232px;
         transition: 0.1s ease-in-out background-color;
         border-left: 2px solid transparent;
         position: relative;
-        > span {
-          float: right;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+
+        > div {
+          margin-right: 0.5em;
+        }
+
+        > a {
+          position: absolute;
+          right: 1em;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.1s ease-in-out;
+          &:hover {
+            background-color: var(--accent-fade);
+          }
+        }
+
+        &:hover {
+          background-color: var(--accent-fade);
         }
 
         &.active {
@@ -88,54 +172,51 @@ $grid-size: 232px;
 
   .guest-editor {
     margin-left: calc(1em + $grid-size);
+    position: relative;
+    .none-found {
+      position: absolute;
+      height: calc(100vh - var(--navbar-height) - 2em);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+      color: var(--alt-text-color);
+      opacity: 0.7;
+      font-size: 2em;
+      pointer-events: none;
+      user-select: none;
+    }
   }
 
   .guest-header {
-    display: flex;
-    align-items: center;
     padding: 1em;
     grid-column: 1/-1;
+
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    > div {
+      display: flex;
+      align-items: center;
+      > button {
+        margin-left: auto;
+      }
+      &:last-child {
+        gap: 1em;
+      }
+    }
   }
 
   .guest-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, $grid-size);
-    grid-template-rows: $grid-size * 0.3 repeat(auto-fill, $grid-size);
+    grid-template-rows: $grid-size * 0.45 repeat(auto-fill, $grid-size);
     grid-auto-flow: dense;
     grid-auto-rows: $grid-size;
     gap: 1em;
     justify-content: center;
-  }
-
-  .profile {
-    grid-row: span 1;
-    grid-column: span 2;
-
-    > div {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      > label {
-        display: block;
-        margin-bottom: 6px;
-        > span {
-          display: inline-block;
-          width: 25%;
-        }
-        > input,
-        > select {
-          width: 75%;
-        }
-      }
-    }
-
-    .time-input {
-      display: inline-block;
-    }
-
-    label > label {
-      margin-left: 0.4em;
-    }
   }
 
   .records {

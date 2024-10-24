@@ -9,6 +9,8 @@ import SaveManager from "../../saveManager"
 import { VocationIcon } from "../atoms/Icon"
 
 import gameData from "../../game/data"
+import ProfileCard from "./inputs/ProfileCard"
+import Button from "../atoms/Button"
 
 const TimeInput = props => {
   const time = [...props.value]
@@ -96,6 +98,45 @@ export default props => {
           />
         </div>
       </Card>
+      <ProfileCard
+        getOrigin={() => save.getProfileOrigin()}
+        setOrigin={value => {
+          updateSave(save => {
+            save.setProfileOrigin(value)
+          })
+        }}
+        getBirthday={() => save.getProfileBirthday()}
+        setBirthday={time => {
+          updateSave(save => {
+            save.setProfileBirthday(time)
+          })
+        }}
+        isAgeSecret={() => save.isProfileAgeSecret()}
+        setAgeSecret={secret => {
+          updateSave(save => {
+            save.setProfileAgeSecret(secret)
+          })
+        }}
+        getTitle={() => save.getProfileTitle()}
+        setTitle={title => {
+          updateSave(save => {
+            save.setProfileTitle(title)
+          })
+        }}
+        getGender={() => save.getProfileGender()}
+        getSpeechStyle={() => save.getProfileSpeechStyle()}
+        setSpeechStyle={style => {
+          updateSave(save => {
+            save.setProfileSpeechStyle(style)
+          })
+        }}
+        getMessage={() => save.getProfileMessage()}
+        setMessage={message =>
+          updateSave(save => {
+            save.setProfileMessage(message)
+          })
+        }
+      />
       <Card label="gold:" className="gold">
         <div>
           <label htmlFor="hand-gold">on hand:</label>
@@ -148,6 +189,22 @@ export default props => {
               ))
           })()}
         </div>
+        <Button
+          onClick={e => {
+            updateSave(save => {
+              const target = !save.getPartyTrickLearned(0)
+              for (
+                let i = 0;
+                i < gameData.LEARNABLE_PARTY_TRICK_END - gameData.LEARNABLE_PARTY_TRICK_START;
+                i++
+              ) {
+                save.setPartyTrickLearned(i, target)
+              }
+            })
+          }}
+        >
+          toggle all
+        </Button>
       </Card>
       <Card label="mini medals:" className="mini-medals">
         <Input
@@ -261,6 +318,30 @@ export default props => {
         </div>
         <p>
           <small>counts for zoom and chimera wings</small>
+        </p>
+      </Card>
+      <Card label="id: ">
+        <label>
+          id:{" "}
+          <Input
+            type="text"
+            value={save.getPlayerId().toString(16).toUpperCase()}
+            onChange={e => {
+              const input = e.target.value
+              if (/^[0-9A-Fa-f]+$/.test(input)) {
+                updateSave(save => {
+                  save.setPlayerId(BigInt(`0x${input}`))
+                })
+              }
+            }}
+          />
+          {save.isPlayerIdValid(save.getPlayerId()) ? "" : "⚠"}
+        </label>
+        <p>
+          <small>
+            Used for multiplayer things, probably don't touch this unless you really know what
+            you're doing.
+          </small>
         </p>
       </Card>
     </div>

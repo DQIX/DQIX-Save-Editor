@@ -94,6 +94,22 @@ $sidebar-width: calc($grid-size * 1.5 + 1em);
     grid-auto-rows: $grid-size;
     gap: 1em;
     justify-content: center;
+    position: relative;
+    .none-found {
+      position: absolute;
+      height: calc(100vh - var(--navbar-height) - 2em);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+      color: var(--alt-text-color);
+      opacity: 0.7;
+      font-size: 2em;
+      pointer-events: none;
+      user-select: none;
+    }
 
     > .info {
       grid-row: span 2;
