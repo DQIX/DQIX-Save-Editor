@@ -621,7 +621,7 @@ export default props => {
                   }}
                   min="1"
                   max="31"
-                  size="3"
+                  size="1"
                 />
               </label>
               <label>
@@ -636,7 +636,7 @@ export default props => {
                   }}
                   min="1"
                   max="12"
-                  size="3"
+                  size="1"
                 />
               </label>
               <label>

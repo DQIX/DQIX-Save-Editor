@@ -326,6 +326,7 @@ export default props => {
           <Input
             type="text"
             value={save.getPlayerId().toString(16).toUpperCase()}
+            size="16"
             onChange={e => {
               const input = e.target.value
               if (/^[0-9A-Fa-f]+$/.test(input)) {

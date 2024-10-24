@@ -27,7 +27,7 @@ export default props => (
         }}
         min={1}
         max={31}
-        size={3}
+        size={1}
       />
     </label>
     /
@@ -40,7 +40,7 @@ export default props => (
         }}
         min={1}
         max={12}
-        size={3}
+        size={1}
       />
     </label>
     /
@@ -53,7 +53,7 @@ export default props => (
         }}
         min={0}
         max={4095}
-        size={5}
+        size={4}
       />
     </label>
     {!props.noHours && (
